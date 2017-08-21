@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">jiangnankezhan</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="passwordlimit">1234567890!@#$%^&amp;*()./_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+</resources>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.hg4.jiangnankezhan.RegisterActivity"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/logup_background">
+
+    <ImageButton
+        android:id="@+id/back_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/uni_back_icon"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/login_logo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="88dp"
+        app:layout_constraintHorizontal_bias="0.501"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="304dp"
+        android:layout_height="166dp"
+        android:layout_marginLeft="28dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="28dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="31dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        android:background="@drawable/logup_rec1"
+        android:id="@+id/constraintLayout2">
+
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:textColor="#ffffff"
+            android:inputType="textPassword"
+            android:background="@drawable/uni_password_line"
+            android:paddingLeft="41dp"
+            android:hint="设置4-16位密码"
+            android:textColorHint="#80ffffff"
+            android:digits="@string/passwordlimit"
+            app:layout_constraintRight_toRightOf="@+id/sendidentify"
+            android:layout_marginLeft="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/identifyinput"
+            app:layout_constraintTop_toBottomOf="@+id/identifyinput"/>
+
+        <Button
+            android:id="@+id/sendidentify"
+            android:layout_width="86dp"
+            android:layout_height="22dp"
+            android:layout_marginBottom="77dp"
+            android:layout_marginLeft="201dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/logup_identiying"
+            android:text="发送验证码"
+            android:textColor="#80000000"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.444"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone"/>
+
+        <EditText
+            android:id="@+id/identifyinput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textColor="#ffffff"
+            android:inputType="number"
+            android:maxLength="6"
+            android:background="@drawable/uni_identitying_code"
+            android:paddingLeft="41dp"
+            android:hint="验证码"
+            android:textColorHint="#80ffffff"
+            android:layout_marginLeft="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/phone"
+            android:layout_marginRight="0dp"
+            app:layout_constraintRight_toRightOf="@+id/phone"
+            android:layout_marginTop="17dp"
+            app:layout_constraintTop_toBottomOf="@+id/phone"/>
+
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:hint="手机号码"
+            android:textColor="#ffffff"
+            android:textColorHint="#80ffffff"
+            android:background="@drawable/uni_user_line"
+            android:paddingLeft="41dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintHorizontal_bias="0.505"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="17dp"/>
+    </android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/logup_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"/>
+</android.support.constraint.ConstraintLayout>
