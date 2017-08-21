@@ -113,11 +113,11 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 		if (TextUtils.isEmpty(phone)) {
-			Toast.makeText(this, "童鞋手机号不能为空", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "客官手机号不能为空", Toast.LENGTH_SHORT).show();
 			focusView = phoneView;
 			cancel = true;
 		} else if (TextUtils.isEmpty(identify)) {
-			Toast.makeText(this, "童鞋验证码不能为空", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "客官验证码不能为空", Toast.LENGTH_SHORT).show();
 			focusView = identifyView;
 			cancel = true;
 		} else {
@@ -126,13 +126,13 @@ public class RegisterActivity extends AppCompatActivity {
 				public void done(AVException e) {
 					if (null == e) {
 						if (TextUtils.isEmpty(password)) {
-							Toast.makeText(RegisterActivity.this, "童鞋密码不能为空", Toast.LENGTH_SHORT).show();
+							Toast.makeText(RegisterActivity.this, "客官密码不能为空", Toast.LENGTH_SHORT).show();
 							focusView = phoneView;
 							cancel = true;
 						}
    /* 请求成功 */
 						else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-							Toast.makeText(RegisterActivity.this, "童鞋密码长度请设置在4-16位之间", Toast.LENGTH_SHORT).show();
+							Toast.makeText(RegisterActivity.this, "客官密码长度请设置在4-16位之间", Toast.LENGTH_SHORT).show();
 							focusView = passwordView;
 							cancel = true;
 						}

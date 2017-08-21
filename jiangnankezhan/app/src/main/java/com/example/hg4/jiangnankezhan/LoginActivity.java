@@ -78,19 +78,19 @@ public class LoginActivity extends AppCompatActivity {
         View focusView = null;
 
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            Toast.makeText(this,"童鞋密码长度应在4-16位之间",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"客官密码长度应在4-16位之间",Toast.LENGTH_SHORT).show();
             focusView = passwordView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(username)) {
-            Toast.makeText(this,"童鞋你忘了输用户名",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"客官你忘了输用户名",Toast.LENGTH_SHORT).show();
             focusView = usernameView;
             cancel = true;
         }
 
         if(TextUtils.isEmpty(password)){
-            Toast.makeText(this,"童鞋你忘了输密码",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"客官你忘了输密码",Toast.LENGTH_SHORT).show();
             focusView=passwordView;
             cancel=true;
         }
