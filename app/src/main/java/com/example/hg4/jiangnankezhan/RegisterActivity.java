@@ -57,6 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
 		register=(Button)findViewById(R.id.register);
 		back=(ImageButton)findViewById(R.id.back_icon);
 		progressDialog=new ProgressDialog(this);
+		phoneView.requestFocus();
 		back.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        usernameView.requestFocus();
     }
 
     private void attemptLogin() {
