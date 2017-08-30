@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.hg4.jiangnankezhan.InputPhoneCodeActivity"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/fgp_bg">
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="14dp"
+        android:layout_height="27dp"
+        app:srcCompat="@drawable/uni_back_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@null"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="24dp" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="304dp"
+        android:layout_height="200dp"
+        app:srcCompat="@drawable/fgp3_rec"
+        android:layout_marginTop="39dp"
+        app:layout_constraintTop_toBottomOf="@+id/back"
+        android:layout_marginRight="29dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <EditText
+        android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/fgp3_identify"
+        android:ems="10"
+        android:hint="验证码"
+        android:inputType="textPhonetic"
+        android:paddingBottom="9dp"
+        android:paddingLeft="45dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#80ffffff"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.506" />
+
+    <Button
+        android:id="@+id/confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/fgp3_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/code" />
+
+</android.support.constraint.ConstraintLayout>

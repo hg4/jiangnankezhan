@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.hg4.jiangnankezhan.EmailfindActivity"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/fgp_bg">
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="14dp"
+        android:layout_height="27dp"
+        app:srcCompat="@drawable/uni_back_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@null"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="24dp" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="304dp"
+        android:layout_height="184dp"
+        android:layout_marginEnd="29dp"
+        android:layout_marginRight="29dp"
+        android:layout_marginTop="61dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back"
+        app:srcCompat="@drawable/fgp2_rec2" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="46dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/fgp2_emai_line"
+        android:ems="10"
+        android:hint="邮箱账号"
+        android:inputType="textPhonetic"
+        android:paddingBottom="9dp"
+        android:paddingLeft="45dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#80ffffff"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <Button
+        android:id="@+id/sendEmail"
+        android:layout_width="304dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/fgp2_conf_code"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email" />
+
+</android.support.constraint.ConstraintLayout>
