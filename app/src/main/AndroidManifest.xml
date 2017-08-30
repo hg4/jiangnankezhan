@@ -28,7 +28,6 @@
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/AppTheme.noToolBar">
-            >
         </activity>
         <activity
             android:name=".RegisterOKActivity"
@@ -40,6 +39,34 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".PersonInfoActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".CreateNewpasswordActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".EmailfindActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".ForgetpasswordActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".InputEmailCodeActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".InputPhoneCodeActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".NewpasswordOKActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".PhoneFindActivity"
             android:theme="@style/AppTheme.noToolBar">
         </activity>
     </application>
