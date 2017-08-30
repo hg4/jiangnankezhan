@@ -98,6 +98,9 @@ public class PersonInfoActivity extends AppCompatActivity {
 
 							}
 						});
+						AlertDialog dialog=builder.create();
+						dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+						dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
 						builder.create().show();
 						break;
 				}

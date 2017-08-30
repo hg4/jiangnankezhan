@@ -105,7 +105,7 @@
             android:layout_height="130dp"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/icon_test"
+            android:src="@drawable/def_ava_round"
             app:civ_border_color="#80ffffff"
             app:civ_border_width="5dp"/>
 
