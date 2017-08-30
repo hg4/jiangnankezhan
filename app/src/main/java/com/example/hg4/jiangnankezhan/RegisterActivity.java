@@ -29,8 +29,6 @@ import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.gyf.barlibrary.ImmersionBar;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class RegisterActivity extends AppCompatActivity {
 	private EditText phoneView;

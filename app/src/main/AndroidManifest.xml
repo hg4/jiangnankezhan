@@ -26,16 +26,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
             android:name=".RegisterActivity"
             android:theme="@style/AppTheme.noToolBar">
             >
         </activity>
-        <activity android:name=".RegisterOKActivity"
+        <activity
+            android:name=".RegisterOKActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".PersonInfoActivity"
             android:theme="@style/AppTheme.noToolBar">
         </activity>
     </application>

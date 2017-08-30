@@ -23,22 +23,24 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.gyf.barlibrary.ImmersionBar;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class LoginActivity extends AppCompatActivity {
-    @BindView(R.id.usernameView)EditText usernameView;
-    @BindView(R.id.passwordView)EditText passwordView;
-    @BindView(R.id.login)Button login;
-    @BindView(R.id.register)Button register;
-    @BindView(R.id.forget)Button forget;
+    private EditText usernameView;
+    private EditText passwordView;
+    private Button login;
+    private Button register;
+    private Button forget;
     private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+		usernameView=(EditText)findViewById(R.id.usernameView);
+		passwordView=(EditText)findViewById(R.id.passwordView);
+		login=(Button)findViewById(R.id.login);
+		register=(Button)findViewById(R.id.register);
+		forget=(Button)findViewById(R.id.forget);
+
         ImmersionBar.with(this).transparentBar().init();
-        ButterKnife.bind(this);
         progressDialog=new ProgressDialog(this);
         if (AVUser.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
