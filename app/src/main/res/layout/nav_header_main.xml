@@ -40,17 +40,17 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/main_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
         android:text="hg4"
-        android:layout_gravity="center"
         android:textColor="#ffffff"
         android:textSize="20sp"
-     />
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
         android:paddingTop="8dp">
 
         <TextView
-            android:id="@+id/fans_number"
+            android:id="@+id/mian_fans_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
@@ -71,7 +71,7 @@
         "/>
 
         <TextView
-            android:id="@+id/follow_number"
+            android:id="@+id/mian_follow_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

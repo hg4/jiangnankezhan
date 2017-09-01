@@ -3,6 +3,7 @@ package com.example.hg4.jiangnankezhan;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.avos.avoscloud.AVUser;
 import com.gyf.barlibrary.ImmersionBar;
 
 /**
@@ -10,9 +11,11 @@ import com.gyf.barlibrary.ImmersionBar;
  */
 
 public class BaseActivity extends AppCompatActivity {
+	protected String id= AVUser.getCurrentUser().getObjectId();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ImmersionBar.with(this).transparentStatusBar().init();
+
 	}
 }

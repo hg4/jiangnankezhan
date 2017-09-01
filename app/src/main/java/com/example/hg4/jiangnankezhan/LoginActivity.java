@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
 		login=(Button)findViewById(R.id.login);
 		register=(Button)findViewById(R.id.register);
 		forget=(Button)findViewById(R.id.forget);
-
         ImmersionBar.with(this).transparentBar().init();
         progressDialog=new ProgressDialog(this);
         if (AVUser.getCurrentUser() != null) {
@@ -77,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         usernameView.requestFocus();
+
     }
 
     private void attemptLogin() {

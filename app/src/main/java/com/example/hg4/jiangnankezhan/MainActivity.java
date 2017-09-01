@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,8 +23,13 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.GetCallback;
 
 public class MainActivity extends BaseActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +37,8 @@ public class MainActivity extends BaseActivity
 	private ImageButton setting;
 	private AlertDialog dialog;
 	private NavigationView navigationView;
+	private TextView username;
+	private String getusername;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +65,9 @@ public class MainActivity extends BaseActivity
 				showAlertDialog();
 			}
 		});
+		username=(TextView) navigationView.getHeaderView(0).findViewById(R.id.main_username);
+		getusername();
+
 	}
 
 	@Override
@@ -105,7 +117,6 @@ public class MainActivity extends BaseActivity
 				break;
 			case R.id.nav_info:
 				startActivity(new Intent(MainActivity.this,PersonInfoActivity.class));
-				navigationView.getMenu().getItem(0).setChecked(true);
 				break;
 			case R.id.nav_message:
 				break;
@@ -134,5 +145,28 @@ public class MainActivity extends BaseActivity
 					}
 				});
 		builder.create().show();
+	}
+	private void getusername(){
+		SharedPreferences pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
+		getusername=pref.getString("nickname",null);
+		if(getusername!=null){
+			username.setText(getusername);
+		}
+		else {
+			AVQuery<AVObject> query=new AVQuery<>("_User");
+			query.getInBackground(id, new GetCallback<AVObject>() {
+				@Override
+				public void done(AVObject avObject, AVException e) {
+					getusername=avObject.getString("nickname");
+					username.setText(getusername);
+				}
+			});
+		}
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		navigationView.getMenu().getItem(0).setChecked(true);
+		getusername();
 	}
 }
