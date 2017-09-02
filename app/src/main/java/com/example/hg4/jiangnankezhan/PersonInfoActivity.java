@@ -1,17 +1,25 @@
 package com.example.hg4.jiangnankezhan;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +33,9 @@ import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.gyf.barlibrary.ImmersionBar;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +61,8 @@ public class PersonInfoActivity extends AppCompatActivity {
 	private int i;
 	private TextView collegeText;
 	private TextView gradeText;
+	private ImageView headView;
+	private Bitmap head;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,6 +90,14 @@ public class PersonInfoActivity extends AppCompatActivity {
 		schoolinfoAdapter.setOnItemClickLitener(new schoolOnItemClickListener());
 		schoolInfoView.setAdapter(schoolinfoAdapter);
 		initSchoolInfo();
+		initView();
+		headView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				showTypeDialog();
+			}
+		});
+
 	}
 	private void initBaseInfo(){
 		for(i=0;i<keyInfoList.size();i++){
@@ -326,7 +347,7 @@ public class PersonInfoActivity extends AppCompatActivity {
 				switch (position){
 					case 0:
 							collegeText=(TextView)view.findViewById(R.id.info_value);
-							startActivityForResult(new Intent(PersonInfoActivity.this,ListDiaglogActivity.class),0);
+							startActivityForResult(new Intent(PersonInfoActivity.this,ListDiaglogActivity.class),4);
 						break;
 					case 1:
 						final ConstraintLayout majorChange=(ConstraintLayout) getLayoutInflater().inflate(R.layout.major_dialog,null);
@@ -369,7 +390,7 @@ public class PersonInfoActivity extends AppCompatActivity {
 						break;
 					case 2:
 						gradeText=(TextView)view.findViewById(R.id.info_value);
-						startActivityForResult(new Intent(PersonInfoActivity.this,ListGradeActivity.class),1);
+						startActivityForResult(new Intent(PersonInfoActivity.this,ListGradeActivity.class),5);
 						break;
 					case 3:
 						final LinearLayout educationchange = (LinearLayout) getLayoutInflater().inflate(R.layout.edu_dialog, null);
@@ -426,7 +447,33 @@ public class PersonInfoActivity extends AppCompatActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode!=0){
 			switch (requestCode){
-				case 0:
+				case 1:
+					if (resultCode == RESULT_OK) {
+						cropPhoto(data.getData());
+					}
+
+					break;
+				case 2:
+					if (resultCode == RESULT_OK) {
+						File temp = new File(Environment.getExternalStorageDirectory() + "/head.jpg");
+						cropPhoto(Uri.fromFile(temp));
+					}
+
+					break;
+				case 3:
+					if (data != null) {
+						Bundle extras = data.getExtras();
+						head = extras.getParcelable("data");
+						if (head != null) {
+							headView.setImageBitmap(head);// 用ImageView显示出来
+							saveBitmapToSharedPreferences(head);
+
+						}
+					}
+					break;
+				default:
+					break;
+				case 4:
 					final String collegedata=data.getStringExtra("college");
 					user.put("college",collegedata);
 					user.saveInBackground(new SaveCallback() {
@@ -440,7 +487,7 @@ public class PersonInfoActivity extends AppCompatActivity {
 						}
 					});
 					break;
-				case 1:
+				case 5:
 					final String gradedata=data.getStringExtra("grade");
 					user.put("grade",gradedata);
 					user.saveInBackground(new SaveCallback() {
@@ -470,4 +517,75 @@ public class PersonInfoActivity extends AppCompatActivity {
 			else top_nicknameHolder.setText("（请填写）");
 
 		}
+	private void initView() {
+		headView = (ImageView) findViewById(R.id.info_imageView);
+		if(getBitmapFromSharedPreferences()!=null)
+		headView.setImageBitmap(getBitmapFromSharedPreferences());
+
+	}
+
+
+
+	private void showTypeDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final AlertDialog dialog = builder.create();
+		View view = View.inflate(this, R.layout.dialog_select_photo, null);
+		TextView tv_select_gallery = (TextView) view.findViewById(R.id.tv_select_gallery);
+		TextView tv_select_camera = (TextView) view.findViewById(R.id.tv_select_camera);
+		tv_select_gallery.setOnClickListener(new View.OnClickListener() {// 在相册中选取
+			@Override
+			public void onClick(View v) {
+				Intent intent1 = new Intent(Intent.ACTION_PICK, null);
+				intent1.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+				startActivityForResult(intent1, 1);
+				dialog.dismiss();
+			}
+		});
+		tv_select_camera.setOnClickListener(new View.OnClickListener() {// 调用照相机
+			@Override
+			public void onClick(View v) {
+				Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				intent2.putExtra(MediaStore.EXTRA_OUTPUT,
+						Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "head.jpg")));
+				startActivityForResult(intent2, 2);
+				dialog.dismiss();
+			}
+		});
+		dialog.setView(view);
+		dialog.show();
+	}
+
+
+	private void cropPhoto(Uri uri) {
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.setDataAndType(uri, "image/*");
+		intent.putExtra("crop", "true");
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
+		intent.putExtra("outputX", 150);
+		intent.putExtra("outputY", 150);
+		intent.putExtra("return-data", true);
+		startActivityForResult(intent, 3);
+	}
+
+
+
+	private void saveBitmapToSharedPreferences(Bitmap bitmap){
+		ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+		byte[] byteArray=byteArrayOutputStream.toByteArray();
+		String imageString=new String(Base64.encodeToString(byteArray, Base64.DEFAULT));
+		SharedPreferences sharedPreferences=getSharedPreferences(id+"userdata", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor=sharedPreferences.edit();
+		editor.putString("image", imageString);
+		editor.commit();
+	}
+	private Bitmap getBitmapFromSharedPreferences(){
+		SharedPreferences sharedPreferences=getSharedPreferences(id+"userdata", Context.MODE_PRIVATE);
+		String imageString=sharedPreferences.getString("image", "");
+		byte[] byteArray=Base64.decode(imageString, Base64.DEFAULT);
+		ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(byteArray);
+		Bitmap bitmap= BitmapFactory.decodeStream(byteArrayInputStream);
+		return bitmap;
+	}
 }

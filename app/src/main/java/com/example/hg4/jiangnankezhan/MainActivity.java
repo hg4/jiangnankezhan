@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -22,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +35,8 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
 
+import java.io.ByteArrayInputStream;
+
 public class MainActivity extends BaseActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
 	private ImageButton logout;
@@ -39,6 +45,7 @@ public class MainActivity extends BaseActivity
 	private NavigationView navigationView;
 	private TextView username;
 	private String getusername;
+	private ImageView mainheadView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,8 +73,9 @@ public class MainActivity extends BaseActivity
 			}
 		});
 		username=(TextView) navigationView.getHeaderView(0).findViewById(R.id.main_username);
+		mainheadView = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.image);
 		getusername();
-
+		getmainhead();
 	}
 
 	@Override
@@ -168,5 +176,19 @@ public class MainActivity extends BaseActivity
 		super.onResume();
 		navigationView.getMenu().getItem(0).setChecked(true);
 		getusername();
+		getmainhead();
 	}
+	private Bitmap getBitmapFromSharedPreferences(){
+		SharedPreferences sharedPreferences=getSharedPreferences(id+"userdata", MODE_PRIVATE);
+		String imageString=sharedPreferences.getString("image", "");
+		byte[] byteArray= Base64.decode(imageString, Base64.DEFAULT);
+		ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(byteArray);
+		Bitmap bitmap= BitmapFactory.decodeStream(byteArrayInputStream);
+		return bitmap;
+	}
+	private void getmainhead(){
+		mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
+
+	}
+
 }
