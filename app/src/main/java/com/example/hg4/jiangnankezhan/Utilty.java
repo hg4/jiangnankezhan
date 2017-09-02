@@ -8,5 +8,6 @@ public class Utilty {
 	public  static boolean nameIsValid(String name){
 		return true;
 	}
-
+	public static boolean phoneIsValid(String phone){return true;}
+	public static boolean emailIsValid(String email){return true;}
 }

@@ -38,7 +38,8 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".PersonInfoActivity"
+        <activity
+            android:name=".PersonInfoActivity"
             android:theme="@style/AppTheme.noToolBar">
         </activity>
         <activity
@@ -68,6 +69,11 @@
         <activity
             android:name=".PhoneFindActivity"
             android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity android:name=".ListDiaglogActivity">
+        </activity>
+        <activity android:name=".ListGradeActivity">
+
         </activity>
     </application>
 
