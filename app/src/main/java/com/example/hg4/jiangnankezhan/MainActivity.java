@@ -187,6 +187,7 @@ public class MainActivity extends BaseActivity
 		return bitmap;
 	}
 	private void getmainhead(){
+		if(getBitmapFromSharedPreferences()!=null)
 		mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
 
 	}

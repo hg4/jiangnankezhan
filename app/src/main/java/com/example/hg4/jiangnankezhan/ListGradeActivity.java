@@ -3,6 +3,7 @@ package com.example.hg4.jiangnankezhan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,7 +14,7 @@ import android.widget.TextView;
  * Created by HG4 on 2017/9/1.
  */
 
-public class ListGradeActivity extends AppCompatActivity {
+public class ListGradeActivity extends BaseActivity {
 	private String[] grade = {"2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017"};
 	private ListView list;
 
@@ -21,6 +22,8 @@ public class ListGradeActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_diaglog);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.dialog_list_item, grade);
 		list = (ListView) findViewById(R.id.list);
 		list.setAdapter(adapter);

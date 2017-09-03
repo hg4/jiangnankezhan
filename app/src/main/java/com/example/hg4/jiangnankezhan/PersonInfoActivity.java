@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
@@ -39,7 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonInfoActivity extends AppCompatActivity {
+public class PersonInfoActivity extends BaseActivity {
 	private RecyclerView baseInfoView;
 	private RecyclerView schoolInfoView;
 	private List<Info> baseInfoList=new ArrayList<>();
@@ -67,10 +68,10 @@ public class PersonInfoActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_person_info);
-		ImmersionBar.with(this).init();
 		top_collegeHolder=(TextView)findViewById(R.id.info_college);
 		top_nicknameHolder=(TextView)findViewById(R.id.info_nickname);
 		pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
+		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 		initBaseData();
 		//SharedPreferences.Editor editor=getSharedPreferences(id+"userdata",MODE_PRIVATE).edit();
 		//editor.clear();
@@ -341,7 +342,7 @@ public class PersonInfoActivity extends AppCompatActivity {
 			}
 		}
 	}
-		class schoolOnItemClickListener implements BaseInfoAdapter.OnItemClickLitener{
+	class schoolOnItemClickListener implements BaseInfoAdapter.OnItemClickLitener{
 			@Override
 			public void onItemClick(final View view, int position) {
 				switch (position){
@@ -465,6 +466,9 @@ public class PersonInfoActivity extends AppCompatActivity {
 						Bundle extras = data.getExtras();
 						head = extras.getParcelable("data");
 						if (head != null) {
+							AVFile file=new AVFile("head.jpg",Utilty.Bitmap2Bytes(head));
+							user.put("head",file);
+							user.saveInBackground();
 							headView.setImageBitmap(head);// 用ImageView显示出来
 							saveBitmapToSharedPreferences(head);
 

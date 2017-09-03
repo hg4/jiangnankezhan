@@ -70,10 +70,15 @@
             android:name=".PhoneFindActivity"
             android:theme="@style/AppTheme.noToolBar">
         </activity>
-        <activity android:name=".ListDiaglogActivity">
+        <activity
+            android:name=".ListDiaglogActivity"
+            android:label="选择学院"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".ListGradeActivity">
-
+        <activity
+            android:name=".ListGradeActivity"
+            android:label="选择入学年份"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 
