@@ -10,10 +10,60 @@
     tools:openDrawer="start"
     tools:override="true">
 
-    <include
-        layout="@layout/app_bar_main"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="#fff"
+        tools:context=".MainActivity">
+
+
+    <RadioGroup
+        android:id="@+id/rg_tab_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#fff"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/home"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/home_draw"
+            android:text="首页"
+            android:textColor="@drawable/text"/>
+
+        <RadioButton
+            android:id="@+id/schedule"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/schedule_draw"
+            android:text="课程表"
+            android:textColor="@drawable/text"/>
+
+        <RadioButton
+            android:id="@+id/message"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/message_draw"
+            android:text="消息"
+            android:textColor="@drawable/text"/>
+
+        <RadioButton
+            android:id="@+id/my"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/my_draw"
+            android:text="我"
+            android:textColor="@drawable/text"/>
+    </RadioGroup>
+        <FrameLayout
+            android:id="@+id/ly_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/rg_tab_bar">
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -32,8 +82,7 @@
             android:layout_gravity="bottom"
             android:orientation="horizontal"
             android:paddingLeft="40dp"
-            android:paddingBottom="16dp"
-          >
+            android:paddingBottom="16dp">
 
             <ImageButton
                 android:id="@+id/logout"

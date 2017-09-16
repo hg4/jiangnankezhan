@@ -10,8 +10,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -26,6 +29,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
@@ -47,11 +53,69 @@ public class MainActivity extends BaseActivity
 	private TextView username;
 	private String getusername;
 	private ImageView mainheadView;
-	@Override
+    private RadioGroup rg_tab_bar;
+    private RadioButton home;
+
+    //Fragment Object
+    private FragmentOfhomepage fg1;
+    private FragmentOfschedule fg2;
+    private FragmentOfmessage fg3;
+    private FragmentOfmy fg4;
+    private FragmentManager fManager;
+
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fManager=getSupportFragmentManager();
+        rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
+        rg_tab_bar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                FragmentTransaction fTransaction = fManager.beginTransaction();
+                hideAllFragment(fTransaction);
+                switch (i){
+                    case R.id.home:
+                        if(fg1 == null){
+                            fg1 = new FragmentOfhomepage();
+                            fTransaction.add(R.id.ly_content,fg1);
+                        }else{
+                            fTransaction.show(fg1);
+                        }
+                        break;
+                    case R.id.schedule:
+                        if(fg2 == null){
+                            fg2 = new FragmentOfschedule();
+                            fTransaction.add(R.id.ly_content,fg2);
+                        }else{
+                            fTransaction.show(fg2);
+                        }
+                        break;
+                    case R.id.message:
+                        if(fg3 == null){
+                            fg3 = new FragmentOfmessage();
+                            fTransaction.add(R.id.ly_content,fg3);
+                        }else{
+                            fTransaction.show(fg3);
+                        }
+                        break;
+                    case R.id.my:
+                        if(fg4 == null){
+                            fg4 = new FragmentOfmy();
+                            fTransaction.add(R.id.ly_content,fg4);
+                        }else{
+                            fTransaction.show(fg4);
+                        }
+                        break;
+                }
+                fTransaction.commit();
+            }
+        });
+        home = (RadioButton) findViewById(R.id.home);
+        home.setChecked(true);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,6 +141,13 @@ public class MainActivity extends BaseActivity
 		mainheadView = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.image);
 		getusername();
 		getmainhead();
+		setting.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent=new Intent(MainActivity.this,SettingActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -192,4 +263,11 @@ public class MainActivity extends BaseActivity
 		mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
 
 	}
+
+    private void hideAllFragment(FragmentTransaction fragmentTransaction){
+        if(fg1 != null)fragmentTransaction.hide(fg1);
+        if(fg2 != null)fragmentTransaction.hide(fg2);
+        if(fg3 != null)fragmentTransaction.hide(fg3);
+        if(fg4 != null)fragmentTransaction.hide(fg4);
+    }
 }
