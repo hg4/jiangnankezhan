@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,6 +35,8 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
 
 import java.io.ByteArrayInputStream;
+
+
 
 public class MainActivity extends BaseActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
@@ -191,5 +192,4 @@ public class MainActivity extends BaseActivity
 		mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
 
 	}
-
 }

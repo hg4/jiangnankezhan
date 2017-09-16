@@ -1,4 +1,4 @@
-package com.example.hg4.jiangnankezhan;
+package com.example.hg4.jiangnankezhan.Model;
 
 /**
  * Created by HG4 on 2017/8/29.
@@ -10,6 +10,9 @@ public class Info {
 	public Info(String key,String value){
 		this.key=key;
 		this.value=value;
+	}
+	public Info(){
+
 	}
 	public String getKey() {
 		return key;

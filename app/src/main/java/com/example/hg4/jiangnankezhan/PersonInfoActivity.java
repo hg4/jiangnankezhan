@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +31,8 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.SaveCallback;
-import com.gyf.barlibrary.ImmersionBar;
+import com.example.hg4.jiangnankezhan.Model.Info;
+import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

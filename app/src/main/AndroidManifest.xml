@@ -11,9 +11,9 @@
     <application
         android:name=".LeanCloudApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo_icon"
+        android:roundIcon="@mipmap/logo_icon_round"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -78,6 +78,11 @@
         <activity
             android:name=".ListGradeActivity"
             android:label="选择入学年份"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".EduLoginActivity"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
