@@ -52,13 +52,14 @@
             android:layout_gravity="center_vertical"
             android:background="@drawable/curri_search"
             />
+
         <Button
+            android:id="@+id/schedule_add_course"
             android:layout_width="17dp"
             android:layout_height="17dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="28dp"
-            android:background="@drawable/curri_add"
-            />
+            android:background="@drawable/curri_add"/>
 
     </LinearLayout>
     <LinearLayout
@@ -71,7 +72,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#222D43">
+            android:background="#222D43"
+            android:weightSum="1">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -125,7 +127,8 @@
                 android:text="周六"
                 android:layout_marginLeft="30dp"
                 android:textSize="15dp"
-                android:textColor="#fff"/>
+                android:textColor="#fff"
+                android:layout_weight="0.15"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

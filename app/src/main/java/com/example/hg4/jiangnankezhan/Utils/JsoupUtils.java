@@ -55,7 +55,7 @@ public class JsoupUtils {
 					returnInfo.put(Constants.STUDENTNAME, name);
 				}
 			} else { // 找不到学生姓名，说明登录失败，跳转回了登录界面。这里取得登录失败的原因后返回
-				Element infoElement = document.select("script[defer]").last();
+				Element infoElement = document.select("script[defer]").first();
 				if (null != infoElement) {
 					String login_failed_info = infoElement.html();
 					Pattern p = Pattern.compile("([\\u4E00-\\u9FA5]+)");

@@ -11,14 +11,23 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVCloudQueryResult;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CloudQueryCallback;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.example.hg4.jiangnankezhan.Model.Course;
 import com.example.hg4.jiangnankezhan.Utils.Constants;
 import com.example.hg4.jiangnankezhan.Utils.DaoUtil;
@@ -50,6 +59,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 	private String[] time = new String[] { "周一", "周二", "周三", "周四", "周五", "周六", "周日" };
 	private String studentName;
 	private byte[] byteCode;
+	private ImageView back;
 	private static Spinner sp_school_year;
 	private static Spinner sp_term;
 	private static String outputInfo = null;
@@ -64,11 +74,13 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		initIntent();
 		initView();
 		setTimeAdapter();
+		setTarget();
 		initRequestData();
 		initRequestBody();
 	}
 	private void initView(){
 		verficationCode=(ImageView)this.findViewById(R.id.edulogin_code);
+		back=(ImageView)this.findViewById(R.id.edu_back_home);
 		initVerCode();
 		username=(EditText)this.findViewById(R.id.edulogin_username);
 		password=(EditText)this.findViewById(R.id.edulogin_password);
@@ -77,6 +89,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		login=(Button)this.findViewById(R.id.edulogin_login);
 		refreshCode.setOnClickListener(this);
 		login.setOnClickListener(this);
+		back.setOnClickListener(this);
 		sp_school_year = (Spinner) this.findViewById(R.id.year_spinner);
 		sp_term = (Spinner) this.findViewById(R.id.term_spinner);
 
@@ -180,6 +193,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 					try {
 						result=new String(response.body().bytes(),"gb2312");
 						Log.e("test", result);
+						JsoupUtils.setViewStateValue(result);
 						Map<String, String> returnInfo = JsoupUtils.getNameOrFailedInfo(result);
 						studentName = returnInfo.get(Constants.STUDENTNAME);
 						if (null != studentName) {
@@ -188,7 +202,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 							outputInfo = "登录成功";
 							searchScheduleOperation(EduLoginActivity.this);
 						} else {
-							String failedInfo = returnInfo.get("failedinfo");
+							String failedInfo = returnInfo.get("failedInfo");
 							if (null != failedInfo) {
 								outputInfo = failedInfo;
 							} else {
@@ -224,7 +238,13 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		requestHeadersMap.put(Constants.HEAD_REFERER_KEY, newScheduleUrl);
 		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_SCHOOLYEAR_KEY,EduLoginActivity.getSelectedSchoolYearValue());
 		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_TERM_KEY, EduLoginActivity.getSelectedTermValue());
-
+		//有蜜汁bug，post参数正确不能访问当前学期的课表，其他时间正常，但是少提交一些参数可以访问当前学期，长期使用需要根据时间修正当前学期参数
+		boolean flag=EduLoginActivity.getSelectedSchoolYearValue().equals("2017-2018");
+		if(!flag){
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_VIEWSTATE_KEY,Constants.SCHEDULE_BODY_VIEWSTATE_VALUE);
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTARGUMENT_KEY,Constants.SCHEDULE_BODY_EVENTARGUMENT_VALUE);
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTTARGET_KEY,Constants.SCHEDULE_BODY_EVENTTARGET_VALUE);
+		}
 		// 这里的请求地址和Referer一样，不过这里学生姓名直接用中文也没问题。就和之前的Referer保持一致了，也用那个使用率url编码的地址
 		HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
 			@Override
@@ -256,7 +276,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 											}
 											else {
 												//本地存在则返回数据
-
+												saveCourseInCloud(course);
 											}
 										}
 
@@ -286,6 +306,83 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 			}
 		}, scheduleRequestBodyMap, requestHeadersMap);
 	}
+	/*private void searchScheduleOperation(final Context context) {
+		// 重新拼接好网址
+		String newScheduleUrl = Constants.EDU_SCHEDULE_URL
+				.replace("studentName", urlEncodeStudentName)
+				.replace("user",Constants.LOGIN_BODY_USERNAME_VALUE);
+		// 这里需要注意，OkHttp这里设置requestHeader的Referer时，如果出现中文，会报错。所以之前就对学生姓名进行了url编码
+		requestHeadersMap.put(Constants.HEAD_REFERER_KEY, newScheduleUrl);
+		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_SCHOOLYEAR_KEY,EduLoginActivity.getSelectedSchoolYearValue());
+		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_TERM_KEY, EduLoginActivity.getSelectedTermValue());
+
+		if(EduLoginActivity.getSelectedSchoolYearValue().equals("2017-2018")){
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_VIEWSTATE_KEY,Constants.SCHEDULE_BODY_VIEWSTATE_VALUE);
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTARGUMENT_KEY,Constants.SCHEDULE_BODY_EVENTARGUMENT_VALUE);
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTTARGET_KEY,Constants.SCHEDULE_BODY_EVENTTARGET_VALUE);
+		}
+
+		// 这里的请求地址和Referer一样，不过这里学生姓名直接用中文也没问题。就和之前的Referer保持一致了，也用那个使用率url编码的地址
+		HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
+			@Override
+			public void onFailure(Call call, IOException e) {
+
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				try {
+					if (null != response) {
+						String result = new String(response.body().bytes(), "gb2312");
+						Log.e("test", result);
+						List<Map<String, Course[]>> courseList = JsoupUtils.getCourseList(result);
+						if (null != courseList) {
+							outputInfo = "获取课表成功!";
+							//查询新课表时，删除本地原有课表
+							DataSupport.deleteAll(Course.class);
+							//查询本地数据库，不存在则存入数据库
+							for(String date:time){
+								for(Map<String,Course[]> temp:courseList){
+									Course[] courseArray=temp.get(date);
+									if(null!=courseArray){
+										for(Course course:courseArray){
+
+											if (DaoUtil.courseQueryByCourseData(course.getCoursedata())==null){
+												boolean b=course.save();
+												Log.d("test",course.getCoursedata());
+											}
+											else {
+												//本地存在则返回数据
+											}
+											//云端查询课程名，不存在则存到云端
+											saveCourseInCloud(course);
+										}
+								}
+								else {
+							outputInfo = "获取课表失败,请重试!";
+						}
+					}
+					}
+						}
+					}
+					else {
+						outputInfo = "获取课表失败,请重试!";
+					}
+					}catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+					outputInfo = "获取课表失败,请重试!";
+				} finally {
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(context, outputInfo, Toast.LENGTH_SHORT).show();
+						}
+					});
+				}
+			}
+		}, scheduleRequestBodyMap, requestHeadersMap);
+	}*/
+
 	private void setTimeAdapter() {
 		ArrayList<String> mList = new ArrayList<String>();
 		String strTime= PerferencesUtils.getUserStringData(this,id,"入学年份");
@@ -297,11 +394,6 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 
 		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sp_school_year.setAdapter(mAdapter);
-	}
-	public static void actionStart(Context context, byte[] verificationCode) {
-		Intent intent = new Intent(context,EduLoginActivity.class);
-		intent.putExtra("verificationCode", verificationCode);
-		context.startActivity(intent);
 	}
 
 	private void initIntent() {
@@ -317,6 +409,68 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		return sp_term.getSelectedItem().toString();
 	}
 
+	private void setTarget(){
+		sp_school_year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				Constants.SCHEDULE_BODY_EVENTTARGET_VALUE="xnd";
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+
+			}
+		});
+		sp_term.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				Constants.SCHEDULE_BODY_EVENTTARGET_VALUE="xqd";
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+
+			}
+		});
+	}
+
+	private void saveCourseInCloud(final Course course){
+		AVQuery<AVObject> query=new AVQuery<>("Course");
+		query.whereEqualTo("coursedata",course.getCoursedata());
+		query.findInBackground(new FindCallback<AVObject>() {
+			@Override
+			public void done(List<AVObject> list, AVException e) {
+				if(list.size()!=0&&list!=null){
+					Log.e("test","existed");
+				}
+				else {
+					AVObject AVcourse=new AVObject("Course");
+					AVcourse.put("coursedata",course.getCoursedata());
+					AVcourse.put("teacher",course.getTeacher());
+					AVcourse.put("courseName",course.getCourseName());
+					AVcourse.put("courseType",course.getCourseType());
+					AVcourse.put("isSingle",course.getIsSingle());
+					AVcourse.put("isDouble",course.getIsDouble());
+					AVcourse.put("start",course.getStart());
+					AVcourse.put("end",course.getEnd());
+					if(course.getLength()!="")
+						AVcourse.put("length",Integer.parseInt(course.getLength()));
+					AVcourse.put("weekLength",course.getWeekLength());
+					AVcourse.put("date",course.getDate());
+					AVcourse.put("duration",course.getDuration());
+					AVcourse.put("classroom",course.getClassroom());
+					AVcourse.put("courseBeginNumber",course.getCourseBeginNumber());
+					AVcourse.saveInBackground(new SaveCallback() {
+						@Override
+						public void done(AVException e) {
+							if(e==null)
+								Log.e("test","ok");
+						}
+					});
+				}
+			}
+		});
+	}
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()){
@@ -327,7 +481,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 				addRequestBody();
 				break;
 			case R.id.edu_back_home:
-				this.finish();
+				EduLoginActivity.this.finish();
 				break;
 		}
 	}
