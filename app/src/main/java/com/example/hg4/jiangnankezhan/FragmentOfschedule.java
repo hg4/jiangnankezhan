@@ -208,7 +208,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		}
 		else courseList=DataSupport.where("start<=? and end>=? and isSingle=1",curWeek.toString(),curWeek.toString()).find(Course.class);
 		if(courseList!=null&&courseList.size()!=0){
-			for(Course course:courseList){
+			for(final Course course:courseList){
 				Button courseButton=new Button(this.getContext());
 				int length=0;
 				if(!course.getLength().equals(""))
@@ -220,12 +220,22 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 				courseButton.setHeight(PERLENGTH*length);
 				courseButton.setWidth(PERWIDTH);
 				RelativeLayout.LayoutParams btParams=new RelativeLayout.LayoutParams(PERWIDTH,length*PERLENGTH);
-				String date=course.getDate();
-				int courseBeginNumber=course.getCourseBeginNumber();
+				final String date=course.getDate();
+				final int courseBeginNumber=course.getCourseBeginNumber();
 				int i=parseDate(date);
 				btParams.leftMargin=(i-1)*PERWIDTH;
 				btParams.topMargin=(courseBeginNumber-2)*PERLENGTH;
 				courseLayout.addView(courseButton,btParams);
+				courseButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent=new Intent(getActivity(),CosDetailsActivity.class);
+						intent.putExtra("date",date);
+						intent.putExtra("name",course.getCourseName());
+                        intent.putExtra("teacher",course.getTeacher());
+						startActivity(intent);
+					}
+				});
 			}
 		}
 

@@ -1,14 +1,17 @@
 package com.example.hg4.jiangnankezhan;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gyf.barlibrary.ImmersionBar;
@@ -16,10 +19,12 @@ import com.gyf.barlibrary.ImmersionBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+
 public class SettingActivity extends AppCompatActivity {
     private RecyclerView settingView;
     private List<Setting> settingList=new ArrayList<>();
-    private Button back;
+    private ImageView back;
     private SettingAdapter settingAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +34,7 @@ public class SettingActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         settingView.setLayoutManager(layoutManager);
         settingView.setHasFixedSize(true);
-        back=(Button)findViewById(R.id.back);
+        back=(ImageView)findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,7 +52,7 @@ public class SettingActivity extends AppCompatActivity {
         public void onItemClick(final View view, int position) {
             switch (position) {
                 case 0:
-                    Intent intent = new Intent(SettingActivity.this,Chgpswd1ctivity.class);
+                    Intent intent = new Intent(SettingActivity.this,Chgpswd1Activity.class);
                     startActivity(intent);
                     break;
             }

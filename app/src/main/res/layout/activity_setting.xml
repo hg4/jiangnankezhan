@@ -17,19 +17,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
+        <ImageView
             android:id="@+id/back"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:background="?attr/actionModeCloseDrawable" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="22dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/default_back_icon"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="36dp"
-            android:layout_marginTop="21dp"
+            android:layout_gravity="center_vertical"
             android:text="设置"
             android:textColor="#222D43"
             android:textSize="22dp" />

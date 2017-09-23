@@ -77,13 +77,16 @@
             android:name=".SettingActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".Chgpswd1ctivity"
+            android:name=".Chgpswd1Activity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Chgpswd2Activity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Chgpswd3Activity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".CosDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".FirstLoginActivity"
             android:theme="@style/AppTheme.noToolBar">

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
@@ -19,7 +20,7 @@ import static com.example.hg4.jiangnankezhan.R.id.newpassword;
 
 public class Chgpswd2Activity extends AppCompatActivity {
     private Button cancel;
-    private Button back;
+    private ImageView back;
     private Button confirm;
     private EditText newpswd1;
     private EditText newpswd2;
@@ -29,7 +30,7 @@ public class Chgpswd2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chgpswd2);
-        back = (Button) findViewById(R.id.back);
+        back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
