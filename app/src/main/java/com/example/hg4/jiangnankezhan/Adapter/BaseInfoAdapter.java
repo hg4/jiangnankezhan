@@ -1,4 +1,4 @@
-package com.example.hg4.jiangnankezhan;
+package com.example.hg4.jiangnankezhan.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.hg4.jiangnankezhan.Model.Info;
+import com.example.hg4.jiangnankezhan.R;
 
 import java.util.List;
 

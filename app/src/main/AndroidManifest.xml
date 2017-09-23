@@ -85,7 +85,11 @@
         <activity
             android:name=".Chgpswd3Activity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".FirstLoginActivity"
+        <activity
+            android:name=".FirstLoginActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
+        <activity android:name=".GuideActivity"
             android:theme="@style/AppTheme.noToolBar">
         </activity>
     </application>
