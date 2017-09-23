@@ -3,15 +3,16 @@ package com.example.hg4.jiangnankezhan;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.avos.avoscloud.AVUser;
-
-public class Chgpswd1ctivity extends AppCompatActivity {
+public class Chgpswd1Activity extends AppCompatActivity {
     private Button cancel;
-    private Button back;
+    private ImageView back;
     private Button confirm;
     private EditText oldpswd;
     private String pswd;
@@ -19,28 +20,32 @@ public class Chgpswd1ctivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chgpswd1);
-        back=(Button)findViewById(R.id.back);
+        back=(ImageView)findViewById(R.id.back);
         cancel=(Button)findViewById(R.id.cancel);
         confirm=(Button)findViewById(R.id.confirm);
         oldpswd=(EditText)findViewById(R.id.oldpswd);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Chgpswd1ctivity.this.finish();
+                Chgpswd1Activity.this.finish();
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Chgpswd1ctivity.this.finish();}
+                Chgpswd1Activity.this.finish();}
         });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                   pswd=oldpswd.getText().toString();
-                    Intent intent=new Intent(Chgpswd1ctivity.this,Chgpswd2Activity.class);
-                    intent.putExtra("string_data",pswd);
+                if (TextUtils.isEmpty(oldpswd.getText().toString())) {
+                    Toast.makeText(Chgpswd1Activity.this, "客官您没有填原密码哟", Toast.LENGTH_SHORT).show();}
+                else {
+                    pswd = oldpswd.getText().toString();
+                    Intent intent = new Intent(Chgpswd1Activity.this, Chgpswd2Activity.class);
+                    intent.putExtra("string_data", pswd);
                     startActivity(intent);
+                }
             }
         });
     }

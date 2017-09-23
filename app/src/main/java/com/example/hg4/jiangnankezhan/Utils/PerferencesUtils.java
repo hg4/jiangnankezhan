@@ -1,5 +1,6 @@
 package com.example.hg4.jiangnankezhan.Utils;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,8 +18,22 @@ import java.io.ByteArrayOutputStream;
  */
 
 public class PerferencesUtils {
+	public static void saveFirstOp(Context context,boolean isFirstOp) {
+		SharedPreferences share= PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor editor = share.edit();
+		editor.putBoolean("first open", isFirstOp);
+		editor.commit();
+	}
+
 	/**
-	 * 保存是否第一次进入应用的状态值
+	 * 获取是否第一次进入登录的状态值
+	 */
+	public static boolean getFirstOp(Context context) {
+		SharedPreferences share=PreferenceManager.getDefaultSharedPreferences(context);
+		return share.getBoolean("first open", true);
+	}
+	/**
+	 * 保存是否第一次进入登录的状态值
 	 */
 	public static void saveState(Context context, String id,boolean isFirstLogin) {
 		SharedPreferences share=context.getSharedPreferences(id+"userdata",Context.MODE_PRIVATE);
@@ -28,7 +43,7 @@ public class PerferencesUtils {
 	}
 
 	/**
-	 * 获取是否第一次进入应用的状态值
+	 * 获取是否第一次进入登录的状态值
 	 */
 	public static boolean getState(Context context,String id) {
 		SharedPreferences share=context.getSharedPreferences(id+"userdata",Context.MODE_PRIVATE);

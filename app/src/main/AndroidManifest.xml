@@ -77,7 +77,7 @@
             android:name=".SettingActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".Chgpswd1ctivity"
+            android:name=".Chgpswd1Activity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Chgpswd2Activity"
@@ -92,6 +92,9 @@
         <activity android:name=".GuideActivity"
             android:theme="@style/AppTheme.noToolBar">
         </activity>
+      <activity android:name=".CosDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>
