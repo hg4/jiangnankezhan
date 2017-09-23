@@ -230,7 +230,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 	}
 	private void searchScheduleOperation(final Context context) {
 		// 重新拼接好网址
-		String newScheduleUrl = Constants.EDU_SCHEDULE_URL
+		final String newScheduleUrl = Constants.EDU_SCHEDULE_URL
 				.replace("studentName", urlEncodeStudentName)
 				.replace("user",Constants.LOGIN_BODY_USERNAME_VALUE);
 
@@ -239,161 +239,125 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_SCHOOLYEAR_KEY,EduLoginActivity.getSelectedSchoolYearValue());
 		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_TERM_KEY, EduLoginActivity.getSelectedTermValue());
 		//有蜜汁bug，post参数正确不能访问当前学期的课表，其他时间正常，但是少提交一些参数可以访问当前学期，长期使用需要根据时间修正当前学期参数
-		boolean flag=EduLoginActivity.getSelectedSchoolYearValue().equals("2017-2018");
+		boolean flag=EduLoginActivity.getSelectedSchoolYearValue().equals("2017-2018")&&EduLoginActivity.getSelectedTermValue().equals("1");
+		try{
+			//获取课程表界面的viewstate
+			Response response=HttpUtils.postSync(newScheduleUrl,scheduleRequestBodyMap,requestHeadersMap);
+			String result=new String(response.body().bytes(),"gb2312");
+			JsoupUtils.setViewStateValue(result);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
 		if(!flag){
-			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_VIEWSTATE_KEY,Constants.SCHEDULE_BODY_VIEWSTATE_VALUE);
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_VIEWSTATE_KEY,Constants.LOGIN_BODY_VIEWSTATE_VALUE);
 			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTARGUMENT_KEY,Constants.SCHEDULE_BODY_EVENTARGUMENT_VALUE);
 			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTTARGET_KEY,Constants.SCHEDULE_BODY_EVENTTARGET_VALUE);
 		}
 		// 这里的请求地址和Referer一样，不过这里学生姓名直接用中文也没问题。就和之前的Referer保持一致了，也用那个使用率url编码的地址
-		HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
-			@Override
-			public void onFailure(Call call, IOException e) {
+		setAndSaveSchedule(context,newScheduleUrl);
+	}
 
-			}
+	private void setAndSaveSchedule(final Context context,String newScheduleUrl){
+		synchronized (this){
+			HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
+				@Override
+				public void onFailure(Call call, IOException e) {
 
-			@Override
-			public void onResponse(Call call, Response response) throws IOException {
-
-				try {
-					if (null != response) {
-						String result = new String(response.body().bytes(), "gb2312");
-						Log.e("test", result);
-						List<Map<String, Course[]>> courseList = JsoupUtils.getCourseList(result);
-						if (null != courseList) {
-							outputInfo = "获取课表成功!";
-							//查询新课表时，删除本地原有课表
-							DataSupport.deleteAll(Course.class);
-							//查询本地数据库，不存在则存入数据库
-							for(String date:time){
-								for(Map<String,Course[]> temp:courseList){
-									Course[] courseArray=temp.get(date);
-									if(null!=courseArray){
-										for(Course course:courseArray){
-											if (DaoUtil.courseQueryByCourseData(course.getCoursedata())==null){
-												boolean b=course.save();
-												Log.d("test",course.getCoursedata());
+				}
+				@Override
+				public void onResponse(Call call, Response response) throws IOException {
+					try {
+						if (null != response) {
+							String result = new String(response.body().bytes(), "gb2312");
+							Log.e("test", result);
+							JsoupUtils.setViewStateValue(result);
+							List<Map<String, Course[]>> courseList = JsoupUtils.getCourseList(result);
+							if (null != courseList) {
+								outputInfo = "获取课表成功!";
+								//查询新课表时，删除本地原有课表
+								DataSupport.deleteAll(Course.class);
+								//查询本地数据库，不存在则存入数据库
+								for(String date:time){
+									for(Map<String,Course[]> temp:courseList){
+										Course[] courseArray=temp.get(date);
+										if(null!=courseArray){
+											for(Course course:courseArray){
+												if (DaoUtil.courseQueryByCourseData(course.getCoursedata())==null){
+													boolean flag=course.save();
+													if(!flag)
+														Toast.makeText(EduLoginActivity.this,"存储课表失败",Toast.LENGTH_SHORT).show();
+												}
+												else {
+													// 云端查询课程名，不存在则存到云端
+													saveCourseInCloud(course);
+												}
 											}
-											else {
-												//本地存在则返回数据
-												saveCourseInCloud(course);
-											}
+
+
 										}
 
-										//云端查询课程名，不存在则存到云端
 									}
-
 								}
-							}
 
+							} else {
+								outputInfo = "获取课表失败,请重试!";
+							}
 						} else {
 							outputInfo = "获取课表失败,请重试!";
 						}
-					} else {
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
 						outputInfo = "获取课表失败,请重试!";
+					} finally {
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Toast.makeText(context, outputInfo, Toast.LENGTH_SHORT).show();
+								setResult(1);
+								EduLoginActivity.this.finish();
+							}
+						});
 					}
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-					outputInfo = "获取课表失败,请重试!";
-				} finally {
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Toast.makeText(context, outputInfo, Toast.LENGTH_SHORT).show();
-						}
-					});
 				}
-			}
-		}, scheduleRequestBodyMap, requestHeadersMap);
-	}
-	/*private void searchScheduleOperation(final Context context) {
-		// 重新拼接好网址
-		String newScheduleUrl = Constants.EDU_SCHEDULE_URL
-				.replace("studentName", urlEncodeStudentName)
-				.replace("user",Constants.LOGIN_BODY_USERNAME_VALUE);
-		// 这里需要注意，OkHttp这里设置requestHeader的Referer时，如果出现中文，会报错。所以之前就对学生姓名进行了url编码
-		requestHeadersMap.put(Constants.HEAD_REFERER_KEY, newScheduleUrl);
-		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_SCHOOLYEAR_KEY,EduLoginActivity.getSelectedSchoolYearValue());
-		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_TERM_KEY, EduLoginActivity.getSelectedTermValue());
-
-		if(EduLoginActivity.getSelectedSchoolYearValue().equals("2017-2018")){
-			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_VIEWSTATE_KEY,Constants.SCHEDULE_BODY_VIEWSTATE_VALUE);
-			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTARGUMENT_KEY,Constants.SCHEDULE_BODY_EVENTARGUMENT_VALUE);
-			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTTARGET_KEY,Constants.SCHEDULE_BODY_EVENTTARGET_VALUE);
+			}, scheduleRequestBodyMap, requestHeadersMap);
 		}
 
-		// 这里的请求地址和Referer一样，不过这里学生姓名直接用中文也没问题。就和之前的Referer保持一致了，也用那个使用率url编码的地址
-		HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
-			@Override
-			public void onFailure(Call call, IOException e) {
+	}
 
-			}
-
-			@Override
-			public void onResponse(Call call, Response response) throws IOException {
-				try {
-					if (null != response) {
-						String result = new String(response.body().bytes(), "gb2312");
-						Log.e("test", result);
-						List<Map<String, Course[]>> courseList = JsoupUtils.getCourseList(result);
-						if (null != courseList) {
-							outputInfo = "获取课表成功!";
-							//查询新课表时，删除本地原有课表
-							DataSupport.deleteAll(Course.class);
-							//查询本地数据库，不存在则存入数据库
-							for(String date:time){
-								for(Map<String,Course[]> temp:courseList){
-									Course[] courseArray=temp.get(date);
-									if(null!=courseArray){
-										for(Course course:courseArray){
-
-											if (DaoUtil.courseQueryByCourseData(course.getCoursedata())==null){
-												boolean b=course.save();
-												Log.d("test",course.getCoursedata());
-											}
-											else {
-												//本地存在则返回数据
-											}
-											//云端查询课程名，不存在则存到云端
-											saveCourseInCloud(course);
-										}
-								}
-								else {
-							outputInfo = "获取课表失败,请重试!";
-						}
-					}
-					}
-						}
-					}
-					else {
-						outputInfo = "获取课表失败,请重试!";
-					}
-					}catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-					outputInfo = "获取课表失败,请重试!";
-				} finally {
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Toast.makeText(context, outputInfo, Toast.LENGTH_SHORT).show();
-						}
-					});
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode){
+			case 1:
+				if(resultCode==0){
+					finish();
 				}
-			}
-		}, scheduleRequestBodyMap, requestHeadersMap);
-	}*/
+				if(resultCode==1){
+					setTimeAdapter();
+				}
+				break;
+			default:
+				break;
+		}
+	}
 
 	private void setTimeAdapter() {
 		ArrayList<String> mList = new ArrayList<String>();
 		String strTime= PerferencesUtils.getUserStringData(this,id,"入学年份");
-		int time = Integer.parseInt(strTime);
-		for(int i = 0;i < 4;i++) {
-			mList.add((time+i)+"-"+(time+i+1));
+		if("".equals(strTime)){
+			startActivityForResult(new Intent(EduLoginActivity.this,ListGradeActivity.class),1);
 		}
-		ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(EduLoginActivity.this, android.R.layout.simple_spinner_item, mList);
+		else {
+			int time = Integer.parseInt(strTime);
+			for(int i = 0;i < 4;i++) {
+				mList.add((time+i)+"-"+(time+i+1));
+			}
+			ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(EduLoginActivity.this, android.R.layout.simple_spinner_item, mList);
 
-		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		sp_school_year.setAdapter(mAdapter);
+			mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			sp_school_year.setAdapter(mAdapter);
+		}
+
 	}
 
 	private void initIntent() {

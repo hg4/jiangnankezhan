@@ -93,7 +93,7 @@ public class JsoupUtils {
 				String content = course.get(j).text();
 				String length=course.get(j).attr("rowspan");
 				if (content.length()>=2) {
-					Course[] courses=parseCourseData(content,length,i);
+					Course[] courses=parseCourseData(content,length,i,time[index]);
 					map.put(time[index], courses);
 				}
 				index++;
@@ -103,15 +103,15 @@ public class JsoupUtils {
 		}
 		return courseList;
 	}
-	private Course[] parseCourseData(String content,String length,int courseBeginNumber){
+	private Course[] parseCourseData(String content,String length,int courseBeginNumber,String date){
 		String[] data=content.split(" ");
 		if (data.length > 5) {
 			String coursedata1=data[0]+" "+data[1]+" "+data[2]+" "+data[3]+" "+data[4];
 			String coursedata2=data[5]+" "+data[6]+" "+data[7]+" "+data[8]+" "+data[9];
-			return new Course[]{new Course(coursedata1,length,courseBeginNumber,data[0],data[1],RegexUtil.regexMatches(data[2],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[2],"\\{.+\\}").get(0),data[3],data[4]),
-								new Course(coursedata2,length,courseBeginNumber,data[5],data[6],RegexUtil.regexMatches(data[7],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[7],"\\{.+\\}").get(0),data[8],data[9])};
+			return new Course[]{new Course(coursedata1,length,courseBeginNumber,data[0],data[1],RegexUtil.regexMatches(data[2],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[2],"\\{.+\\}").get(0),data[3],data[4],date),
+								new Course(coursedata2,length,courseBeginNumber,data[5],data[6],RegexUtil.regexMatches(data[7],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[7],"\\{.+\\}").get(0),data[8],data[9],date)};
 		}
-		else return new Course[]{new Course(content,length,courseBeginNumber,data[0],data[1],RegexUtil.regexMatches(data[2],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[2],"\\{.+\\}").get(0),data[3],data[4])};
+		else return new Course[]{new Course(content,length,courseBeginNumber,data[0],data[1],RegexUtil.regexMatches(data[2],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[2],"\\{.+\\}").get(0),data[3],data[4],date)};
 	}
 
 	/************************ 以下为外部可以调用的方法 ************************/

@@ -30,8 +30,10 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CloudQueryCallback;
+import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.example.hg4.jiangnankezhan.Model.Info;
+import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.io.ByteArrayInputStream;
@@ -467,10 +469,11 @@ public class PersonInfoActivity extends BaseActivity {
 						head = extras.getParcelable("data");
 						if (head != null) {
 							AVFile file=new AVFile("head.jpg",Utilty.Bitmap2Bytes(head));
+							AVUser.getCurrentUser().remove("head");
 							user.put("head",file);
 							user.saveInBackground();
 							headView.setImageBitmap(head);// 用ImageView显示出来
-							saveBitmapToSharedPreferences(head);
+							PerferencesUtils.saveBitmapToSharedPreferences(head,id,PersonInfoActivity.this);
 
 						}
 					}
@@ -498,7 +501,6 @@ public class PersonInfoActivity extends BaseActivity {
 						@Override
 						public void done(AVException e) {
 							if(e==null){
-								saveString("入学年份",gradedata);
 								gradeText.setText(gradedata);
 							}
 						}
@@ -523,9 +525,26 @@ public class PersonInfoActivity extends BaseActivity {
 		}
 	private void initView() {
 		headView = (ImageView) findViewById(R.id.info_imageView);
-		if(getBitmapFromSharedPreferences()!=null)
-		headView.setImageBitmap(getBitmapFromSharedPreferences());
+		Bitmap getBitmap=PerferencesUtils.getBitmapFromSharedPreferences(id,PersonInfoActivity.this);
+		if(getBitmap!=null)
+			headView.setImageBitmap(getBitmap);
+		else {
+			AVFile file=(AVFile)AVUser.getCurrentUser().get("head");
+			if(file!=null){
+				file.getDataInBackground(new GetDataCallback() {
+					@Override
+					public void done(byte[] bytes, AVException e) {
+						if(e==null){
+							Bitmap head=Utilty.Bytes2Bimap(bytes);
+							headView.setImageBitmap(head);
+							PerferencesUtils.saveBitmapToSharedPreferences(head,id,PersonInfoActivity.this);
+						}
+						else e.printStackTrace();
+					}
+				});
+			}
 
+		}
 	}
 
 
@@ -572,24 +591,4 @@ public class PersonInfoActivity extends BaseActivity {
 		startActivityForResult(intent, 3);
 	}
 
-
-
-	private void saveBitmapToSharedPreferences(Bitmap bitmap){
-		ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
-		byte[] byteArray=byteArrayOutputStream.toByteArray();
-		String imageString=new String(Base64.encodeToString(byteArray, Base64.DEFAULT));
-		SharedPreferences sharedPreferences=getSharedPreferences(id+"userdata", Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor=sharedPreferences.edit();
-		editor.putString("image", imageString);
-		editor.commit();
-	}
-	private Bitmap getBitmapFromSharedPreferences(){
-		SharedPreferences sharedPreferences=getSharedPreferences(id+"userdata", Context.MODE_PRIVATE);
-		String imageString=sharedPreferences.getString("image", "");
-		byte[] byteArray=Base64.decode(imageString, Base64.DEFAULT);
-		ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(byteArray);
-		Bitmap bitmap= BitmapFactory.decodeStream(byteArrayInputStream);
-		return bitmap;
-	}
 }

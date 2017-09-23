@@ -1,6 +1,7 @@
 package com.example.hg4.jiangnankezhan.Utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
 
@@ -20,5 +21,13 @@ public class Utilty {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
 		return baos.toByteArray();
+	}
+
+	public static Bitmap Bytes2Bimap(byte[] b) {
+		if (b.length != 0) {
+			return BitmapFactory.decodeByteArray(b, 0, b.length);
+		} else {
+			return null;
+		}
 	}
 }

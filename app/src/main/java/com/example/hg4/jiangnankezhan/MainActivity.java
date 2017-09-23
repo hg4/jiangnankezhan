@@ -35,10 +35,13 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.GetDataCallback;
+import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.io.ByteArrayInputStream;
 
@@ -160,27 +163,6 @@ public class MainActivity extends BaseActivity
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
 
 	@SuppressWarnings("StatementWithEmptyBody")
 	@Override
@@ -260,8 +242,21 @@ public class MainActivity extends BaseActivity
 	}
 	private void getmainhead(){
 		if(getBitmapFromSharedPreferences()!=null)
-		mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
-
+			mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
+		else {
+			AVFile file=(AVFile)AVUser.getCurrentUser().get("head");
+			if(file!=null){
+				file.getDataInBackground(new GetDataCallback() {
+					@Override
+					public void done(byte[] bytes, AVException e) {
+						if(e==null){
+							mainheadView.setImageBitmap(Utilty.Bytes2Bimap(bytes));
+						}
+						else e.printStackTrace();
+					}
+				});
+			}
+		}
 	}
 
     private void hideAllFragment(FragmentTransaction fragmentTransaction){

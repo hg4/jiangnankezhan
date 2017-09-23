@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hg4.jiangnankezhan">
+          package="com.example.hg4.jiangnankezhan">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:name=".LeanCloudApp"
         android:allowBackup="true"
         android:icon="@mipmap/logo_icon"
-        android:roundIcon="@mipmap/logo_icon_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.noToolBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".RegisterOKActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".PersonInfoActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".CreateNewpasswordActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".EmailfindActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".ForgetpasswordActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".InputEmailCodeActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".InputPhoneCodeActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".NewpasswordOKActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".PhoneFindActivity"
-            android:theme="@style/AppTheme.noToolBar" />
+            android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".ListDiaglogActivity"
             android:label="选择学院"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".ListGradeActivity"
             android:label="选择入学年份"
@@ -75,14 +75,19 @@
         </activity>
         <activity
             android:name=".SettingActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Chgpswd1ctivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Chgpswd2Activity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".Chgpswd3Activity"
+        <activity
+            android:name=".Chgpswd2Activity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Chgpswd3Activity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".FirstLoginActivity"
+            android:theme="@style/AppTheme.noToolBar">
+        </activity>
     </application>
 
 </manifest>

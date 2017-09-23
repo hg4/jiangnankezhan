@@ -170,10 +170,12 @@ public class Course extends DataSupport{
 		this.unpassRate = unpassRate;
 	}
 
-	public Course(String  coursedata,String length, int courseBeginNumber, String courseName, String courseType, String duration, String weekLength, String teacher, String classroom) {
+	public Course(String  coursedata,String length, int courseBeginNumber, String courseName, String courseType, String duration, String weekLength, String teacher, String classroom,String date) {
 		this.coursedata=coursedata;
 		this.courseBeginNumber = courseBeginNumber;
 		this.length = length;
+		if ("".equals(this.getLength()))
+			this.length="1";
 		this.courseName = courseName;
 		this.courseType = courseType;
 		this.duration = duration;
@@ -195,7 +197,7 @@ public class Course extends DataSupport{
 				isDouble = 1;
 				break;
 		}
-		date = RegexUtil.regexMatches(duration, "周[一二三四五]").get(0);
+		this.date = date;
 	}
 }
 

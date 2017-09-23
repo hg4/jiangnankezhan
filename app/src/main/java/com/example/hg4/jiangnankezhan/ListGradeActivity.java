@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
+
 /**
  * Created by HG4 on 2017/9/1.
  */
@@ -32,6 +34,7 @@ public class ListGradeActivity extends BaseActivity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				TextView college = (TextView) view.findViewById(R.id.data);
 				String gradeData = college.getText().toString();
+				PerferencesUtils.saveUserStringData(ListGradeActivity.this,ListGradeActivity.this.id,"入学年份",gradeData);
 				Intent intent = new Intent();
 				intent.putExtra("grade", gradeData);
 				ListGradeActivity.this.setResult(1, intent);

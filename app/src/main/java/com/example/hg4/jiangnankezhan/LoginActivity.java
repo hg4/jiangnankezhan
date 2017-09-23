@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.gyf.barlibrary.ImmersionBar;
 
 public class LoginActivity extends AppCompatActivity {
@@ -113,7 +114,14 @@ public class LoginActivity extends AppCompatActivity {
                 public void done(AVUser avUser, AVException e) {
                     if (e == null) {
                         progressDialog.dismiss();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        boolean isFirstLogin= PerferencesUtils.getState(LoginActivity.this,avUser.getObjectId());
+                        if(isFirstLogin){
+                            startActivity(new Intent(LoginActivity.this,FirstLoginActivity.class));
+                        }
+                        else {
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        }
+
                         LoginActivity.this.finish();
                     } else {
 

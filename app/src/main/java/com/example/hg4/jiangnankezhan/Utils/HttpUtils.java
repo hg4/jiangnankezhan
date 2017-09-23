@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import com.example.hg4.jiangnankezhan.Model.Info;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +41,17 @@ public class HttpUtils {
 			}
 		}
 		return mHttpUtil;
+	}
+	private Response mPostSync(String url, Info[] params,
+							   Info... headers) throws IOException {
+		Request request = buildPostRequest(url, params, headers);
+		Response response = mOkHttpClient.newCall(request).execute();
+		return response;
+	}
+	private Response mPostSync(String url, Map<String,String> params,Map <String,String> headers) throws IOException {
+		Request request = buildPostRequest(url, mapToInfos(params),mapToInfos(headers));
+		Response response = mOkHttpClient.newCall(request).execute();
+		return response;
 	}
 	private void mSendGetRequest(String url,Callback callback){
 		Request request=new Request.Builder().url(url).build();
@@ -105,6 +117,9 @@ public class HttpUtils {
 	}
 	public static void sendGetRequest(String url,Callback callback){
 		getInstance().mSendGetRequest(url,callback);
+	}
+	public static Response postSync(String url, Map<String,String> params,Map <String,String> headers) throws IOException {
+		return getInstance().mPostSync(url, params, headers);
 	}
 }
 
