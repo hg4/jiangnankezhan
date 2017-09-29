@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.hg4.jiangnankezhan.CommentActivity">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:background="#fff"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="22dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/default_back_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="36dp"
+            android:layout_gravity="center_vertical"
+            android:text="发表"
+            android:textColor="#222D43"
+            android:textSize="22dp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="135dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/rec_shang"
+        android:id="@+id/imageView6" />
+    <EditText
+        android:id="@+id/textcomment"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:textSize="15dp"
+        android:ems="23"
+        android:hint="分享一下你的感受吧!"
+        app:layout_constraintTop_toTopOf="@+id/imageView6"
+        android:layout_marginTop="23dp"
+        android:layout_marginLeft="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="18dp" />
+
+    <Button
+        android:id="@+id/comment"
+        android:layout_width="340dp"
+        android:layout_height="54dp"
+        android:background="#Ac7281"
+        android:text="确定发表"
+        android:textSize="17dp"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <TextView
+        android:id="@+id/textnum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="115"
+        android:textColor="#Ac7281"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="0dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="9dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        app:srcCompat="@drawable/rec_xia" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/addimage"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintLeft_toLeftOf="@+id/imageView7"
+        app:layout_constraintTop_toTopOf="@+id/imageView7"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView7"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="10dp" />
+
+</android.support.constraint.ConstraintLayout>
