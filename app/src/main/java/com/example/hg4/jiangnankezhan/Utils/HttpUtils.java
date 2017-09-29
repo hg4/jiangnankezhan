@@ -8,7 +8,9 @@ import com.example.hg4.jiangnankezhan.Model.Info;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Headers;
@@ -29,6 +31,9 @@ public class HttpUtils {
 	private HttpUtils() {
 		mOkHttpClientBuilder = new OkHttpClient.Builder();
 		mOkHttpClientBuilder.cookieJar(new CookieJar());
+		mOkHttpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
+		mOkHttpClientBuilder.writeTimeout(30,TimeUnit.SECONDS);
+		mOkHttpClientBuilder.readTimeout(30,TimeUnit.SECONDS);
 		mOkHttpClient = mOkHttpClientBuilder.build();
 	}
 
@@ -57,6 +62,13 @@ public class HttpUtils {
 		Request request=new Request.Builder().url(url).build();
 		mOkHttpClient.newCall(request).enqueue(callback);
 	}
+	private Response _getSync(String url) throws IOException {
+		final Request request = new Request.Builder().url(url).build();
+		Call call = mOkHttpClient.newCall(request);
+		Response response = call.execute();
+		return response;
+	}
+
 
 	private void mSendPostRequest(String url, Callback callback, Info[] params, Info... headers) {
 		Request request=buildPostRequest(url,params,headers);
@@ -120,6 +132,9 @@ public class HttpUtils {
 	}
 	public static Response postSync(String url, Map<String,String> params,Map <String,String> headers) throws IOException {
 		return getInstance().mPostSync(url, params, headers);
+	}
+	public static Response getSync(String url) throws IOException{
+		return getInstance()._getSync(url);
 	}
 }
 

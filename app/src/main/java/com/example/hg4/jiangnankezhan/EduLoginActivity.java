@@ -60,11 +60,12 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 	private String studentName;
 	private byte[] byteCode;
 	private ImageView back;
+	private List<Map<String, Course[]>> courseList;
 	private static Spinner sp_school_year;
 	private static Spinner sp_term;
 	private static String outputInfo = null;
 	private static String urlEncodeStudentName = null;
-	private static Map<String, String> requestHeadersMap, loginRequestBodyMap, scheduleRequestBodyMap;
+	private static Map<String, String> requestHeadersMap, loginRequestBodyMap, scheduleRequestBodyMap,pyjhRequestBodyMap;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -140,6 +141,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		requestHeadersMap=new LinkedHashMap<>();
 		loginRequestBodyMap=new LinkedHashMap<>();
 		scheduleRequestBodyMap=new LinkedHashMap<>();
+		pyjhRequestBodyMap=new LinkedHashMap<>();
 		requestHeadersMap.put(Constants.HEAD_HOST_KEY,Constants.HEAD_HOST_VALUE);
 		requestHeadersMap.put(Constants.HEAD_AGENT_KEY,Constants.HEAD_AGENT_VALUE);
 		requestHeadersMap.put(Constants.HEAD_REFERER_KEY,Constants.HEAD_REFERER_LOGIN);
@@ -240,15 +242,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_TERM_KEY, EduLoginActivity.getSelectedTermValue());
 		//有蜜汁bug，post参数正确不能访问当前学期的课表，其他时间正常，但是少提交一些参数可以访问当前学期，长期使用需要根据时间修正当前学期参数
 		boolean flag=EduLoginActivity.getSelectedSchoolYearValue().equals("2017-2018")&&EduLoginActivity.getSelectedTermValue().equals("1");
-		try{
-			//获取课程表界面的viewstate
-			Response response=HttpUtils.postSync(newScheduleUrl,scheduleRequestBodyMap,requestHeadersMap);
-			String result=new String(response.body().bytes(),"gb2312");
-			JsoupUtils.setViewStateValue(result);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
+		getViewState(newScheduleUrl,scheduleRequestBodyMap,requestHeadersMap);
 		if(!flag){
 			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_VIEWSTATE_KEY,Constants.LOGIN_BODY_VIEWSTATE_VALUE);
 			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTARGUMENT_KEY,Constants.SCHEDULE_BODY_EVENTARGUMENT_VALUE);
@@ -257,7 +251,42 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		// 这里的请求地址和Referer一样，不过这里学生姓名直接用中文也没问题。就和之前的Referer保持一致了，也用那个使用率url编码的地址
 		setAndSaveSchedule(context,newScheduleUrl);
 	}
+	private void searchPyjhOperation(){
+		final String pyjhScheduleUrl=Constants.EDU_PYJH_URL.replace("studentName", urlEncodeStudentName)
+				.replace("user",Constants.LOGIN_BODY_USERNAME_VALUE);
 
+		try{
+			Response response=HttpUtils.postSync(pyjhScheduleUrl,pyjhRequestBodyMap,requestHeadersMap);
+			String result = new String(response.body().bytes(), "gb2312");
+			JsoupUtils.setViewStateValue(result);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		requestHeadersMap.put(Constants.HEAD_REFERER_KEY, pyjhScheduleUrl);
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_EVENTARGUMENT_KEY,Constants.PYJH_BODY_EVENTARGUMENT_VALUE);
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_EVENTTARGET_KEY,Constants.PYJH_BODY_EVENTTARGET_VALUE);
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_XQ_KEY,Constants.PYJH_BODY_XQ_VALUE);
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_KCXZ_KEY,Constants.PYJH_BODY_KCXZ_VALUE);
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_BUTTON_KEY,Constants.PYJH_BODY_BUTTON_VALUE);
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_VIEWSTATE_KEY,Constants.LOGIN_BODY_VIEWSTATE_VALUE);
+
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_PAGE_KEY,Constants.PYJH_BODY_PAGE_VALUE);
+		pyjhRequestBodyMap.put(Constants.PYJH_BODY_SIZE_KEY,Constants.PYJH_BODY_SIZE_VALUE);
+		HttpUtils.sendPostRequest(pyjhScheduleUrl, new Callback() {
+			@Override
+			public void onFailure(Call call, IOException e) {
+				e.printStackTrace();
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				response=HttpUtils.postSync(pyjhScheduleUrl,pyjhRequestBodyMap,requestHeadersMap);
+				String result = new String(response.body().bytes(), "gb2312");
+				JsoupUtils.finishCourseData(result);
+			}
+		},pyjhRequestBodyMap,requestHeadersMap);
+	}
 	private void setAndSaveSchedule(final Context context,String newScheduleUrl){
 		synchronized (this){
 			HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
@@ -272,9 +301,10 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 							String result = new String(response.body().bytes(), "gb2312");
 							Log.e("test", result);
 							JsoupUtils.setViewStateValue(result);
-							List<Map<String, Course[]>> courseList = JsoupUtils.getCourseList(result);
+							courseList = JsoupUtils.getCourseList(result);
 							if (null != courseList) {
 								outputInfo = "获取课表成功!";
+
 								//查询新课表时，删除本地原有课表
 								DataSupport.deleteAll(Course.class);
 								//查询本地数据库，不存在则存入数据库
@@ -288,12 +318,8 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 													if(!flag)
 														Toast.makeText(EduLoginActivity.this,"存储课表失败",Toast.LENGTH_SHORT).show();
 												}
-												else {
-													// 云端查询课程名，不存在则存到云端
-													saveCourseInCloud(course);
-												}
-											}
 
+											}
 
 										}
 
@@ -309,22 +335,33 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 					} catch (UnsupportedEncodingException e) {
 						e.printStackTrace();
 						outputInfo = "获取课表失败,请重试!";
-					} finally {
-						runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								Toast.makeText(context, outputInfo, Toast.LENGTH_SHORT).show();
-								setResult(1);
-								EduLoginActivity.this.finish();
-							}
-						});
 					}
 				}
 			}, scheduleRequestBodyMap, requestHeadersMap);
 		}
-
+		searchPyjhOperation();
+		// 云端查询课程名，不存在则存到云端
+		saveCourseInCloud();
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(context, outputInfo, Toast.LENGTH_SHORT).show();
+				setResult(1);
+				EduLoginActivity.this.finish();
+			}
+		});
 	}
-
+	private void getViewState(String Url,Map<String,String> RequestBodyMap,Map<String,String> requestHeadersMap){
+		try{
+			//获取课程表界面的viewstate
+			Response response=HttpUtils.postSync(Url,RequestBodyMap,requestHeadersMap);
+			String result=new String(response.body().bytes(),"gb2312");
+			JsoupUtils.setViewStateValue(result);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode){
@@ -398,42 +435,50 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		});
 	}
 
-	private void saveCourseInCloud(final Course course){
-		AVQuery<AVObject> query=new AVQuery<>("Course");
-		query.whereEqualTo("coursedata",course.getCoursedata());
-		query.findInBackground(new FindCallback<AVObject>() {
-			@Override
-			public void done(List<AVObject> list, AVException e) {
-				if(list.size()!=0&&list!=null){
-					Log.e("test","existed");
+	private void saveCourseInCloud(){
+		List<Course> list=DataSupport.findAll(Course.class);
+		for(Course course:list){
+			final Course[] courses=new Course[1];
+			courses[0]=course;
+			AVQuery<AVObject> query=new AVQuery<>("Course");
+			query.whereEqualTo("coursedata",course.getCoursedata());
+			query.findInBackground(new FindCallback<AVObject>() {
+				@Override
+				public void done(List<AVObject> list, AVException e) {
+					if(list.size()!=0&&list!=null){
+						Log.e("test","existed");
+					}
+					else {
+						AVObject AVcourse=new AVObject("Course");
+						AVcourse.put("coursedata",courses[0].getCoursedata());
+						AVcourse.put("teacher",courses[0].getTeacher());
+						AVcourse.put("courseName",courses[0].getCourseName());
+						AVcourse.put("courseType",courses[0].getCourseType());
+						AVcourse.put("isSingle",courses[0].getIsSingle());
+						AVcourse.put("isDouble",courses[0].getIsDouble());
+						AVcourse.put("start",courses[0].getStart());
+						AVcourse.put("end",courses[0].getEnd());
+						if(courses[0].getLength()!="")
+							AVcourse.put("length",Integer.parseInt(courses[0].getLength()));
+						AVcourse.put("weekLength",courses[0].getWeekLength());
+						AVcourse.put("date",courses[0].getDate());
+						AVcourse.put("duration",courses[0].getDuration());
+						AVcourse.put("classroom",courses[0].getClassroom());
+						AVcourse.put("courseBeginNumber",courses[0].getCourseBeginNumber());
+						AVcourse.put("testType",courses[0].getTestType());
+						AVcourse.put("point",courses[0].getPoint());
+						AVcourse.saveInBackground(new SaveCallback() {
+							@Override
+							public void done(AVException e) {
+								if(e==null)
+									Log.e("test","ok");
+							}
+						});
+					}
 				}
-				else {
-					AVObject AVcourse=new AVObject("Course");
-					AVcourse.put("coursedata",course.getCoursedata());
-					AVcourse.put("teacher",course.getTeacher());
-					AVcourse.put("courseName",course.getCourseName());
-					AVcourse.put("courseType",course.getCourseType());
-					AVcourse.put("isSingle",course.getIsSingle());
-					AVcourse.put("isDouble",course.getIsDouble());
-					AVcourse.put("start",course.getStart());
-					AVcourse.put("end",course.getEnd());
-					if(course.getLength()!="")
-						AVcourse.put("length",Integer.parseInt(course.getLength()));
-					AVcourse.put("weekLength",course.getWeekLength());
-					AVcourse.put("date",course.getDate());
-					AVcourse.put("duration",course.getDuration());
-					AVcourse.put("classroom",course.getClassroom());
-					AVcourse.put("courseBeginNumber",course.getCourseBeginNumber());
-					AVcourse.saveInBackground(new SaveCallback() {
-						@Override
-						public void done(AVException e) {
-							if(e==null)
-								Log.e("test","ok");
-						}
-					});
-				}
-			}
-		});
+			});
+		}
+
 	}
 	@Override
 	public void onClick(View v) {

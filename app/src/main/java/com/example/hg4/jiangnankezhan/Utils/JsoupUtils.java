@@ -1,11 +1,14 @@
 package com.example.hg4.jiangnankezhan.Utils;
 
+import android.util.Log;
+
 import com.example.hg4.jiangnankezhan.Model.Course;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +71,29 @@ public class JsoupUtils {
 		}
 		return returnInfo;
 	}
-
+	private void _finishCourseData(String html){
+		if (html!=null) {
+			Document document = Jsoup.parse(html);
+			Elements table = document.getElementsByTag("table");
+			Element data = table.get(2);
+			Elements tr = data.getElementsByTag("tr");
+			for(int i=1;i<tr.size();i++){
+				Elements td = tr.get(i).getElementsByTag("td");
+				String courseName=td.get(1).text();
+				String point=td.get(2).text();
+				String testType=td.get(4).text();
+				List<Course> courseList=DaoUtil.courseQueryByName(courseName);
+				if(courseList.size()!=0&&courseList!=null){
+					for(int j=0;j<courseList.size();j++){
+						Course course=courseList.get(j);
+						course.setTestType(testType);
+						course.setPoint(point);
+						course.save();
+					}
+				}
+			}
+		}
+	}
 	private List<Map<String, Course[]>> _getCourseList(String html) {
 		List<Map<String, Course[]>> courseList =  new ArrayList<>();
 
@@ -133,6 +158,8 @@ public class JsoupUtils {
 	public static List<Map<String, Course[]>> getCourseList(String html) {
 		return getInstance()._getCourseList(html);
 	}
-
+	public static void finishCourseData(String html){
+		getInstance()._finishCourseData(html);
+	}
 }
 

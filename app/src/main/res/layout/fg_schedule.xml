@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff"
-    android:baselineAligned="false">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#fff"
+              android:baselineAligned="false"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,13 +34,14 @@
             android:text="第1周"
             android:textColor="#222D43"
             android:textSize="20sp"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/curri_unfold_more"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:background="@drawable/curri_unfold_more"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/week_last"
@@ -53,11 +54,12 @@
                 android:layout_height="8dp"/>
 
         </LinearLayout>
+
         <Button
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginLeft="55dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="55dp"
             android:background="@drawable/curri_search"
             />
 
@@ -72,126 +74,137 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/sche_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <ImageView
-            android:id="@+id/schedule_solid"
-            android:layout_width="22dp"
-            android:layout_height="match_parent"
-            android:background="#AC7281"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#222D43"
-            android:weightSum="8">
+            android:layout_height="50dp">
 
-            <TextView
-                android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/schedule_solid"
+                android:layout_width="22dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="19dp"
-                android:layout_weight="1"
-                android:ems="1"
-                android:gravity="center"
-                android:text="周一"
-                android:textColor="#fff"
-                android:textSize="15dp"/>
+                android:background="#AC7281"/>
 
-            <TextView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:ems="1"
-                android:gravity="center"
-                android:text="周二"
-                android:textColor="#fff"
-                android:textSize="15dp"/>
+                android:background="#222D43"
+                android:weightSum="8">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:ems="1"
-                android:gravity="center"
-                android:text="周三"
-                android:textColor="#fff"
-                android:textSize="15dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="19dp"
+                    android:layout_weight="1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:text="周一"
+                    android:textColor="#fff"
+                    android:textSize="15dp"/>
 
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:ems="1"
-                android:gravity="center"
-                android:text="周四"
-                android:textColor="#fff"
-                android:textSize="15dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:text="周二"
+                    android:textColor="#fff"
+                    android:textSize="15dp"/>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:ems="1"
-                android:gravity="center"
-                android:text="周五"
-                android:textColor="#fff"
-                android:textSize="15dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:text="周三"
+                    android:textColor="#fff"
+                    android:textSize="15dp"/>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:ems="1"
-                android:gravity="center"
-                android:text="周六"
-                android:textColor="#fff"
-                android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:text="周四"
+                    android:textColor="#fff"
+                    android:textSize="15dp"/>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:ems="1"
-                android:gravity="center"
-                android:text="周日"
-                android:textColor="#fff"
-                android:textSize="15dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:text="周五"
+                    android:textColor="#fff"
+                    android:textSize="15dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:text="周六"
+                    android:textColor="#fff"
+                    android:textSize="15dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:text="周日"
+                    android:textColor="#fff"
+                    android:textSize="15dp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
-    <ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="22dp"
-            android:layout_height="600dp"
-            android:background="#222D43">
-
-        </ListView>
-
-        <RelativeLayout
-            android:id="@+id/table_schedule"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="600dp"
-            android:background="#494E6B">
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="22dp"
+                    android:layout_height="600dp"
+                    android:background="#222D43">
+
+                </ListView>
+
+                <RelativeLayout
+                    android:id="@+id/table_schedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="600dp"
+                    android:background="#494E6B">
 
 
-        </RelativeLayout>
+                </RelativeLayout>
 
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
-</ScrollView>
+
 </LinearLayout>

@@ -14,11 +14,16 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.GetCallback;
 import com.example.hg4.jiangnankezhan.Model.Course;
 import com.example.hg4.jiangnankezhan.Utils.Constants;
 import com.example.hg4.jiangnankezhan.Utils.HttpUtils;
@@ -240,5 +245,4 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		}
 
 	}
-
 }

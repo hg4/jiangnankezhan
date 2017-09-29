@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.avos.avoscloud.AVUser;
+import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.gyf.barlibrary.ImmersionBar;
 
 public class RegisterOKActivity extends AppCompatActivity {
@@ -19,7 +21,13 @@ public class RegisterOKActivity extends AppCompatActivity {
 		enter.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(RegisterOKActivity.this,MainActivity.class));
+				boolean isFirstLogin= PerferencesUtils.getState(RegisterOKActivity.this, AVUser.getCurrentUser().getObjectId());
+				if(isFirstLogin){
+					startActivity(new Intent(RegisterOKActivity.this,FirstLoginActivity.class));
+				}
+				else {
+					startActivity(new Intent(RegisterOKActivity.this, MainActivity.class));
+				}
 				RegisterOKActivity.this.finish();
 			}
 		});

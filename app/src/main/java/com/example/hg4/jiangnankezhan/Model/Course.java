@@ -26,6 +26,8 @@ public class Course extends DataSupport{
 	private String length;
 
 
+
+	private String testType;
 	private String courseName;
 	private String duration;
 	private String teacher;
@@ -170,6 +172,13 @@ public class Course extends DataSupport{
 		this.unpassRate = unpassRate;
 	}
 
+	public String getTestType() {
+		return testType;
+	}
+
+	public void setTestType(String testType) {
+		this.testType = testType;
+	}
 	public Course(String  coursedata,String length, int courseBeginNumber, String courseName, String courseType, String duration, String weekLength, String teacher, String classroom,String date) {
 		this.coursedata=coursedata;
 		this.courseBeginNumber = courseBeginNumber;

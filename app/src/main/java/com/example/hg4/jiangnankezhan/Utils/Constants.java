@@ -11,6 +11,8 @@ public class Constants {
 	public static final String EDU_LOGIN_URL="http://202.195.144.163/jndx/default2.aspx";
 	//验证码网址
 	public static final String VERTIFICATION_CODE_URL="http://202.195.144.163/jndx/CheckCode.aspx?";
+	//培养计划网址
+	public static String EDU_PYJH_URL="http://202.195.144.163/jndx/pyjh.aspx?xh="+"user"+"&xm="+"studentName"+"gnmkdm=N121607";
 	//课表网址
 	public static String EDU_SCHEDULE_URL="http://202.195.144.163/jndx/xskbcx.aspx?xh="+"user"+"&xm="+"studentName"+"&gnmkdm=N121603";
 	//学生姓名
@@ -50,5 +52,22 @@ public class Constants {
 	public static final String SCHEDULE_BODY_SCHOOLYEAR_VALUE = "";
 	public static final String SCHEDULE_BODY_TERM_KEY = "xqd";
 	public static final String SCHEDULE_BODY_TERM_VALUE = "";
+	//查询学分、课程考察类型
+	public static final String PYJH_BODY_EVENTARGUMENT_KEY="__EVENTARGUMENT";
+	public static final String PYJH_BODY_EVENTARGUMENT_VALUE="";
+	public static final String PYJH_BODY_EVENTTARGET_KEY = "__EVENTTARGET";
+	public static String PYJH_BODY_EVENTTARGET_VALUE = "xq";
+	public static final String PYJH_BODY_VIEWSTATE_KEY = "__VIEWSTATE";
+	public static final String PYJH_BODY_XQ_KEY="xq";
+	public static final String PYJH_BODY_XQ_VALUE="全部";
+	public static final String PYJH_BODY_KCXZ_KEY="kcxz";
+	public static final String PYJH_BODY_KCXZ_VALUE="全部";
+	public static final String PYJH_BODY_BUTTON_KEY="Button1";
+	public static final String PYJH_BODY_BUTTON_VALUE="可替换课程";
+	public static final String PYJH_BODY_PAGE_KEY="dpDBGrid:txtChoosePage";
+	public static final String PYJH_BODY_PAGE_VALUE="1";
+	public static final String PYJH_BODY_SIZE_KEY="dpDBGrid:txtPageSize";
+	public static final String PYJH_BODY_SIZE_VALUE="100";
+
 
 }
