@@ -84,7 +84,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
         costeacher = (TextView) findViewById(R.id.costeacher);
 
         List<Course> courses = DataSupport.where("courseName=? and teacher=? and date=?", Name, teacher, weekday).find(Course.class);
-        if (courses!=null){
+        if (courses.size()!=0&&courses!=null){
             for (final Course course : courses) {
                 classroom = course.getClassroom();
                 cosbeginweek = course.getStart();
@@ -94,6 +94,15 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                 courseType = course.getCourseType();
                 point=course.getPoint();
                 examinetype=course.getTestType();
+                costeacher.setText(teacher);
+                cosname.setText(Name);
+                cosclassroom.setText(classroom);
+                cosnumber.setText(weekday + " " + cosbeginnumber + "-" + cosendnumber + "节");
+                cosweek.setText(cosbeginweek + "-" + cosendweek + "周");
+                costype.setText(courseType);
+                coscredit.setText(point);
+                cosexamtype.setText(examinetype);
+                setTime();
             }
         }else {
             AVQuery<AVObject> query = new AVQuery<>("Course");
@@ -111,7 +120,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                             cosbeginnumber = avObject.getInt("courseBeginNumber") - 1;
                             cosendnumber = cosbeginnumber + avObject.getInt("length") - 1;
                             courseType = avObject.getString("courseType");
-                            point=Integer.toString(avObject.getInt("point"));
+                            point=avObject.getString("point");
                             examinetype=avObject.getString("testType");
                             costeacher.setText(teacher);
                             cosname.setText(Name);
@@ -131,15 +140,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
             });
         }
 
-        costeacher.setText(teacher);
-        cosname.setText(Name);
-        cosclassroom.setText(classroom);
-        cosnumber.setText(weekday + " " + cosbeginnumber + "-" + cosendnumber + "节");
-        cosweek.setText(cosbeginweek + "-" + cosendweek + "周");
-        costype.setText(courseType);
-        coscredit.setText(point);
-        cosexamtype.setText(examinetype);
-        setTime();
+
     }
     private void setTime(){
         switch (cosbeginnumber) {
@@ -157,6 +158,9 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                 break;
             case 10:
                 begintime = "18:30";
+                break;
+            default:
+                begintime="0";
                 break;
         }
         switch (cosendnumber) {
@@ -184,6 +188,9 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
             case 12:
                 endtime = "20:55";
                 break;
+            default:
+                endtime="0";
+                break;
         }
         costime.setText(begintime + "-" + endtime);
     }
@@ -195,10 +202,14 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.requirement:
                 Intent intent= new Intent(CosDetailsActivity.this,RequirementsActivity.class);
+                intent.putExtra("courseName",Name);
+                intent.putExtra("teacher",teacher);
                 startActivity(intent);
                 break;
             case R.id.require:
                 Intent intent1= new Intent(CosDetailsActivity.this,RequirementsActivity.class);
+                intent1.putExtra("courseName",Name);
+                intent1.putExtra("teacher",teacher);
                 startActivity(intent1);
                 break;
         }

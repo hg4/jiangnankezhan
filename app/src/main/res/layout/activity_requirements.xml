@@ -49,11 +49,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="点名频率"
+            android:text="考试内容"
             android:textColor="@drawable/text1"
             android:textSize="14dp"
             tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp" />
+            tools:layout_editor_absoluteY="8dp"/>
 
         <TextView
             android:id="@+id/homework"
@@ -65,7 +65,7 @@
             android:textColor="@drawable/text1"
             android:textSize="14dp"
             tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp" />
+            tools:layout_editor_absoluteY="8dp"/>
 
         <TextView
             android:id="@+id/examinetype"
@@ -73,11 +73,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="考查形式"
+            android:text="点名频率"
             android:textColor="@drawable/text1"
             android:textSize="14dp"
             tools:layout_editor_absoluteX="298dp"
-            tools:layout_editor_absoluteY="8dp" />
+            tools:layout_editor_absoluteY="8dp"/>
 
     </LinearLayout>
 
@@ -103,10 +103,10 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/comment"
-        app:layout_constraintBottom_toTopOf="@+id/comment"
+        android:layout_width="0dp"
+        android:layout_height="397dp"
+        android:layout_above="@+id/addcmt_comment"
+        app:layout_constraintBottom_toTopOf="@+id/addcmt_comment"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -115,20 +115,19 @@
     </android.support.v4.view.ViewPager>
 
     <Button
-        android:id="@+id/comment"
-        android:layout_width="340dp"
-        android:layout_height="54dp"
-        android:background="#Ac7281"
-        android:text="我有话说"
-        android:textSize="17dp"
-        android:textColor="#fff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp"
+        android:id="@+id/addcmt_comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginStart="8dp"
+        android:background="@color/colorRed"
+        android:text="我有话说"
+        android:textColor="#fff"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -19,18 +18,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.hg4.jiangnankezhan.Adapter.AdapterFragment;
+
 import java.util.ArrayList;
 
 public class RequirementsActivity extends AppCompatActivity implements View.OnClickListener {
+    private String courseName;
+    private String teacher;
     private ImageView back;
     private ViewPager viewPager;
-    private ArrayList<View> viewList;
+    private ArrayList<Fragment> FragmentList;
     private TextView rollcall;
-    private TextView homework ;
+    private TextView homework;
     private TextView examinetype;
     private ImageView scrollbar;
     private View view1, view2, view3;
     private Button comment;
+    private  AdapterFragment adapterFragment;
     private int currIndex ;
     private int one;
     @Override
@@ -38,10 +42,12 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requirements);
         back=(ImageView)findViewById(R.id.back);
-        comment=(Button)findViewById(R.id.comment);
+        comment=(Button)findViewById(R.id.addcmt_comment);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         LayoutInflater inflater=getLayoutInflater();
-        view1 = inflater.inflate(R.layout.viewpager1, null);
+        courseName=getIntent().getStringExtra("courseName");
+        teacher=getIntent().getStringExtra("teacher");
+       /* view1 = inflater.inflate(R.layout.viewpager1, null);
         view2 = inflater.inflate(R.layout.viewpager2,null);
         view3 = inflater.inflate(R.layout.viewpager3, null);
         viewList = new ArrayList<View>();
@@ -73,7 +79,14 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
                 return viewList.get(position);
             }
         };
-            viewPager.setAdapter(pagerAdapter);
+            viewPager.setAdapter(pagerAdapter);*/
+        FragmentList=new ArrayList<>();
+        for(int i=0;i<3;i++){
+            CommentFragment fragment=createFragment(i);
+            FragmentList.add(fragment);
+        }
+        adapterFragment=new AdapterFragment(getSupportFragmentManager(),FragmentList);
+        viewPager.setAdapter(adapterFragment);
         viewPager.setCurrentItem(0);
         currIndex=viewPager.getCurrentItem();
         rollcall = (TextView)findViewById(R.id.rollcall);
@@ -86,15 +99,14 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
         back.setOnClickListener(this);
         comment.setOnClickListener(this);
         rollcall.performClick();
-
-                viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int screenW = displayMetrics.widthPixels;
-                one = screenW/3;
-                Matrix matrix = new Matrix();
-                matrix.postTranslate(0,0);
-                scrollbar.setImageMatrix(matrix);
+        viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenW = displayMetrics.widthPixels;
+        one = screenW/3;
+        Matrix matrix = new Matrix();
+        matrix.postTranslate(0,0);
+        scrollbar.setImageMatrix(matrix);
             }
 
 
@@ -167,12 +179,38 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
                     case R.id.back:
                        RequirementsActivity.this.finish();
                         break;
-                    case R.id.comment:
+                    case R.id.addcmt_comment:
                         Intent intent=new Intent(RequirementsActivity.this,CommentActivity.class);
-                        startActivity(intent);
+                        intent.putExtra("type",viewPager.getCurrentItem());
+                        intent.putExtra("courseName",courseName);
+                        intent.putExtra("teacher",teacher);
+                        currIndex=viewPager.getCurrentItem();
+                        startActivityForResult(intent,1);
                         break;
                 }
             }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode!=0){
+            switch (requestCode){
+                case 1:
+                    CommentFragment fragment=(CommentFragment) adapterFragment.getItem(currIndex);
+                    fragment.autoRefresh();
+                    break;
+            }
+        }
+    }
+
+    private CommentFragment createFragment(int type){
+        CommentFragment fragment=new CommentFragment();
+        Bundle bundle=new Bundle();
+        bundle.putInt("type",type);
+        bundle.putString("courseName",courseName);
+        bundle.putString("teacher",teacher);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     private void setSelected(){
         rollcall.setSelected(false);

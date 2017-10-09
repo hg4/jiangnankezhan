@@ -56,12 +56,12 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/schedule_search"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="55dp"
-            android:background="@drawable/curri_search"
-            />
+            android:background="@drawable/curri_search"/>
 
         <Button
             android:id="@+id/schedule_add_course"

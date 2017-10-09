@@ -220,7 +220,8 @@ public class MainActivity extends BaseActivity
 				@Override
 				public void done(AVObject avObject, AVException e) {
 					getusername=avObject.getString("nickname");
-					username.setText(getusername);
+					if(getusername!=null)
+						username.setText(getusername);
 				}
 			});
 		}

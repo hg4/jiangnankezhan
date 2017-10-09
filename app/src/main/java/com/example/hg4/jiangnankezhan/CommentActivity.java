@@ -1,33 +1,82 @@
 package com.example.hg4.jiangnankezhan;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
+import com.example.hg4.jiangnankezhan.Adapter.PreviewAdapter;
+import com.example.hg4.jiangnankezhan.Utils.GlideLoader;
+import com.yancy.imageselector.ImageConfig;
+import com.yancy.imageselector.ImageSelector;
+import com.yancy.imageselector.ImageSelectorActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommentActivity extends AppCompatActivity {
     private ImageView back;
-    private EditText comment;
+    private EditText content;
     private TextView textnum;
-    private int maxNum = 115;
+    private RecyclerView preview;
+    private ImageView addpic;
+    private Button subCmt;
+    private int maxNum = 100;
+    private int type;
+    private String courseName;
+    private String teacher;
+    private RecyclerView.Adapter adapter;
+    private ArrayList<String> path = new ArrayList<>();
+    public static final int REQUEST_CODE = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
         back=(ImageView)findViewById(R.id.back);
+        preview=(RecyclerView)findViewById(R.id.addcmt_picpreview);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(CommentActivity.this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        preview.setLayoutManager(layoutManager);
+        adapter=new PreviewAdapter(path);
+        preview.setAdapter(adapter);
+        addpic=(ImageView)findViewById(R.id.addcmt_addpic);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+				setResult(0);
                 CommentActivity.this.finish();
             }
         });
-        comment=(EditText)findViewById(R.id.textcomment);
+        content=(EditText)findViewById(R.id.textcomment);
         textnum=(TextView)findViewById(R.id.textnum);
-        comment.addTextChangedListener(new TextWatcher() {
+        subCmt=(Button)findViewById(R.id.addcmt_comment);
+        Intent intent=getIntent();
+        type=intent.getIntExtra("type",0);
+        courseName=intent.getStringExtra("courseName");
+        teacher=intent.getStringExtra("teacher");
+        content.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -41,5 +90,74 @@ public class CommentActivity extends AppCompatActivity {
             }
 
         });
+        addpic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+				if(ContextCompat.checkSelfPermission(CommentActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+					ActivityCompat.requestPermissions(CommentActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+				}
+                if(ContextCompat.checkSelfPermission(CommentActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+					ImageConfig imageConfig=new ImageConfig.Builder(new GlideLoader())
+							.mutiSelectMaxSize(3)
+							.pathList(path)
+							.requestCode(REQUEST_CODE)
+							.build();
+					ImageSelector.open(CommentActivity.this,imageConfig);
+				}
+
+            }
+        });
+        subCmt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!"".equals(content.getText())){
+                    AVObject comment=new AVObject("Course_comment");
+                    comment.put("from", AVUser.getCurrentUser());
+                    comment.put("type",type);
+                    if(type==0){
+                        comment.put("courseName",courseName);
+                    }
+                    else {
+                        comment.put("courseName",courseName);
+                        comment.put("teacher",teacher);
+                    }
+                    comment.put("content",content.getText());
+                    comment.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if (e!=null){
+                                Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                            else {
+                                Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                setResult(1);
+                                CommentActivity.this.finish();
+
+                            }
+                        }
+                    });
+                }
+
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            List<String> pathList = data.getStringArrayListExtra(ImageSelectorActivity.EXTRA_RESULT);
+
+            for (String path : pathList) {
+                Log.i("ImagePathList", path);
+            }
+            path.clear();
+            path.addAll(pathList);
+
+            adapter.notifyDataSetChanged();
+
+        }
     }
 }

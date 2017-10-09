@@ -1,7 +1,9 @@
 package com.example.hg4.jiangnankezhan.Utils;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by HG4 on 2017/9/19.
@@ -35,5 +37,10 @@ public class TimeUtils {
 		ca.clear(Calendar.MILLISECOND);
 		ca.set(Calendar.DAY_OF_YEAR, 1);
 		return ca.getTimeInMillis();
+	}
+	public static String dateToString(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String startTime = sdf.format(date);
+		return startTime;
 	}
 }

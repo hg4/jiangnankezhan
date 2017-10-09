@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -55,6 +56,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 	private Integer curWeek=1;
 	private RelativeLayout courseLayout;
 	private ImageView solid;
+	private Button search;
 	private int solidWidth;
 	private int width;
 	private int height;
@@ -88,6 +90,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		week=(TextView)getView().findViewById(R.id.schedule_week);
 		lastWeek=(Button)getView().findViewById(R.id.week_last);
 		nextWeek=(Button)getView().findViewById(R.id.week_next);
+		search=(Button)getView().findViewById(R.id.schedule_search);
 		courseLayout=(RelativeLayout)getView().findViewById(R.id.table_schedule);
 		initEvent();
 		updateTime();
@@ -116,19 +119,23 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.schedule_add_course:
+            	final Intent intent=new Intent(getActivity(),EduLoginActivity.class);
                 HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-
+						Toast.makeText(getContext(),"检测到学校教务系统网络异常",Toast.LENGTH_SHORT);
+						e.printStackTrace();
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        Intent intent=new Intent(getActivity(),EduLoginActivity.class);
+						Log.e("test",response.toString());
+
                         intent.putExtra("verificationCode",response.body().bytes());
-                        startActivityForResult(intent,1);
+
                     }
                 });
+				startActivityForResult(intent,1);
                 break;
 			case R.id.open_drawer:
 				drawer.openDrawer(GravityCompat.START);
@@ -147,6 +154,9 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 					createschedule();
 				}
 				break;
+			case R.id.schedule_search:
+				startActivity(new Intent(getActivity(),SearchActivity.class));
+				break;
         }
     }
 
@@ -155,6 +165,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		openDrawer.setOnClickListener(this);
 		lastWeek.setOnClickListener(this);
 		nextWeek.setOnClickListener(this);
+		search.setOnClickListener(this);
 		String savedWeek=PerferencesUtils.getUserStringData(this.getContext(),id,"savedWeek");
 		if(savedWeek!=""){
 			curWeek=Integer.parseInt(savedWeek);

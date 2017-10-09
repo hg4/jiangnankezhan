@@ -106,6 +106,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 				@Override
 				public void onFailure(Call call, IOException e) {
 					//加载获取失败图片
+					Toast.makeText(EduLoginActivity.this,"获取验证码失败",Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
@@ -399,6 +400,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 
 	private void initIntent() {
 		Intent intent = getIntent();
+		if(intent.getByteArrayExtra("verificationCode")!=null)
 		byteCode = intent.getByteArrayExtra("verificationCode");
 	}
 

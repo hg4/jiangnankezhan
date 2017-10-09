@@ -8,21 +8,21 @@ import java.security.PublicKey;
 
 public class Constants {
 	//教务系统网址
-	public static final String EDU_LOGIN_URL="http://202.195.144.163/jndx/default2.aspx";
+	public static final String EDU_LOGIN_URL="http://202.195.145.170/jndx/default2.aspx";
 	//验证码网址
-	public static final String VERTIFICATION_CODE_URL="http://202.195.144.163/jndx/CheckCode.aspx?";
+	public static final String VERTIFICATION_CODE_URL="http://202.195.144.170/jndx/CheckCode.aspx?";
 	//培养计划网址
-	public static String EDU_PYJH_URL="http://202.195.144.163/jndx/pyjh.aspx?xh="+"user"+"&xm="+"studentName"+"gnmkdm=N121607";
+	public static String EDU_PYJH_URL="http://202.195.145.170/jndx/pyjh.aspx?xh="+"user"+"&xm="+"studentName"+"gnmkdm=N121607";
 	//课表网址
-	public static String EDU_SCHEDULE_URL="http://202.195.144.163/jndx/xskbcx.aspx?xh="+"user"+"&xm="+"studentName"+"&gnmkdm=N121603";
+	public static String EDU_SCHEDULE_URL="http://202.195.145.170/jndx/xskbcx.aspx?xh="+"user"+"&xm="+"studentName"+"&gnmkdm=N121603";
 	//学生姓名
 	public static String STUDENTNAME = "studentName";
 	//请求头
 	public static final String HEAD_HOST_KEY="Host";
-	public static final String HEAD_HOST_VALUE="202.195.144.163";
+	public static final String HEAD_HOST_VALUE="202.195.145.170";
 	public static final String HEAD_REFERER_KEY="Referer";
-	public static final String HEAD_REFERER_LOGIN="http://202.195.144.163/jndx/default2.aspx";
-	public static final String HEAD_REFERER_SCHEDULE="http://202.195.144.163/jndx/xs_main.aspx?xh=";
+	public static final String HEAD_REFERER_LOGIN="http://202.195.145.170/jndx/default2.aspx";
+	public static final String HEAD_REFERER_SCHEDULE="http://202.195.145.170/jndx/xs_main.aspx?xh=";
 	public static final String HEAD_AGENT_KEY="User-Agent";
 	public static final String HEAD_AGENT_VALUE="Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3)";
 
