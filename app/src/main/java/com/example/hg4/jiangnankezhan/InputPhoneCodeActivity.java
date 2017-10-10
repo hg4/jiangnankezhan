@@ -40,6 +40,7 @@ public class InputPhoneCodeActivity extends AppCompatActivity {
                  String code = vertifycode.getText().toString();
    /* 验证成功 */            Intent intent=new Intent(InputPhoneCodeActivity.this,CreateNewpasswordActivity.class);
                              intent.putExtra("string_code",code);
+                             intent.putExtra("number",getIntent().getStringExtra("number"));
                              startActivity(intent);
             }
                 });

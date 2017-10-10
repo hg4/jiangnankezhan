@@ -2,6 +2,8 @@ package com.example.hg4.jiangnankezhan;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -119,23 +121,28 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.schedule_add_course:
-            	final Intent intent=new Intent(getActivity(),EduLoginActivity.class);
-                HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-						Toast.makeText(getContext(),"检测到学校教务系统网络异常",Toast.LENGTH_SHORT);
-						e.printStackTrace();
-                    }
+            	if (isNetworkAvailable(getActivity().getApplicationContext())==true){
+					final Intent intent=new Intent(getActivity(),EduLoginActivity.class);
+					HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
+						@Override
+						public void onFailure(Call call, IOException e) {
+							Toast.makeText(getContext(),"检测到学校教务系统网络异常",Toast.LENGTH_SHORT);
+							e.printStackTrace();
+						}
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-						Log.e("test",response.toString());
+						@Override
+						public void onResponse(Call call, Response response) throws IOException {
+							Log.e("test",response.toString());
 
-                        intent.putExtra("verificationCode",response.body().bytes());
+							intent.putExtra("verificationCode",response.body().bytes());
 
-                    }
-                });
-				startActivityForResult(intent,1);
+						}
+					});
+					startActivityForResult(intent,1);
+				}else{
+					Toast.makeText(getActivity().getApplicationContext(), "当前网络状态不佳", Toast.LENGTH_SHORT).show();
+				}
+
                 break;
 			case R.id.open_drawer:
 				drawer.openDrawer(GravityCompat.START);
@@ -256,4 +263,20 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		}
 
 	}
+	public static boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectivity = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (connectivity == null) {
+			return false;
+		} else {
+			NetworkInfo[] info = connectivity.getAllNetworkInfo();
+			if (info != null) {
+				for (int i = 0; i < info.length; i++) {
+					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+						return true;
+					}
+				}
+			}
+		}
+		      return false;
+		 }
 }

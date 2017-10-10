@@ -50,6 +50,8 @@ public class CreateNewpasswordActivity extends AppCompatActivity {
                                     public void done(AVException e) {
                                         if (e==null){
                                             Intent intent = new Intent(CreateNewpasswordActivity.this, NewpasswordOKActivity.class);
+                                            intent.putExtra("newpswd",newpassword.getText().toString());
+                                            intent.putExtra("number",getIntent().getStringExtra("number"));
                                             startActivity(intent);
                                         }else{
                                             Toast.makeText(CreateNewpasswordActivity.this, "验证码错误",Toast.LENGTH_SHORT).show();

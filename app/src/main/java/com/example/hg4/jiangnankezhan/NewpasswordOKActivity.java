@@ -1,12 +1,19 @@
 package com.example.hg4.jiangnankezhan;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.LogInCallback;
 import com.gyf.barlibrary.ImmersionBar;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 public class NewpasswordOKActivity extends AppCompatActivity {
     private Button enter;
@@ -19,10 +26,22 @@ public class NewpasswordOKActivity extends AppCompatActivity {
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(NewpasswordOKActivity.this,MainActivity.class);
-                startActivity(intent);
-                NewpasswordOKActivity.this.finish();
+                final String password = getIntent().getStringExtra("newpswd");
+                final String username=getIntent().getStringExtra("number");
+                AVUser.logInInBackground(username, password, new LogInCallback<AVUser>() {
+                    @Override
+                    public void done(AVUser avUser, AVException e) {
+                        if (e == null) {
+                            startActivity(new Intent(NewpasswordOKActivity.this, MainActivity.class));
+                            NewpasswordOKActivity.this.finish();
+                        } else {
+                            e.printStackTrace();
+                        }
+                        NewpasswordOKActivity.this.finish();
+                    }
+                });
             }
         });
     }
-}
+    }
+

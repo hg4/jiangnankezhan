@@ -1,6 +1,7 @@
 package com.example.hg4.jiangnankezhan;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -38,21 +39,23 @@ public class PhoneFindActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String phonenumber=phonenumberView.getText().toString();
-                if(phonenumber!=null) {
-                    AVUser.requestPasswordResetBySmsCodeInBackground(phonenumber, new RequestMobileCodeCallback() {
-                                    @Override
-                                    public void done(AVException e) {
-                                        if (e==null) {
-                                            Intent intent=new Intent(PhoneFindActivity.this,InputPhoneCodeActivity.class);
-                                            startActivity(intent);
-                                        } else {
-                                            Toast.makeText(PhoneFindActivity.this, "获取验证码失败/(ㄒoㄒ)/请检查一下哟", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-
-                            }else{
+                if(phonenumber == null || phonenumber.length() <= 0) {
                     Toast.makeText(PhoneFindActivity.this, "手机号不能为空", Toast.LENGTH_SHORT).show();
+                }else if(phonenumber.length()!=11){
+                    Toast.makeText(PhoneFindActivity.this, "手机号不合法", Toast.LENGTH_SHORT).show();
+                }else{
+                    AVUser.requestPasswordResetBySmsCodeInBackground(phonenumber, new RequestMobileCodeCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if (e==null) {
+                                Intent intent=new Intent(PhoneFindActivity.this,InputPhoneCodeActivity.class);
+                                intent.putExtra("number",phonenumber);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(PhoneFindActivity.this, "该手机号还没被注册过，请先去注册哦", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });
