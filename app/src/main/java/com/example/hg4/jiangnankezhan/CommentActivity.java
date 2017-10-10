@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
+import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.Adapter.PreviewAdapter;
 import com.example.hg4.jiangnankezhan.Utils.GlideLoader;
+import com.example.hg4.jiangnankezhan.Utils.Utilty;
 import com.yancy.imageselector.ImageConfig;
 import com.yancy.imageselector.ImageSelector;
 import com.yancy.imageselector.ImageSelectorActivity;
@@ -137,6 +142,22 @@ public class CommentActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    if(path.size()!=0){
+                        int index=adapter.getItemCount();
+                        for(int i=0;i<index;i++){
+                            preview.getChildAt(i);
+                            AVObject imageFile=new AVObject("cscmt_imagelist");
+                            imageFile.put("from",comment);
+                            Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
+                            byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
+                            AVFile file=new AVFile("image",bytes);
+                            imageFile.put("image",file);
+                            imageFile.saveInBackground();
+                        }
+                    }
+
+
+
                 }
 
 

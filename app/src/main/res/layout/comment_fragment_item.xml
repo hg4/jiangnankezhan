@@ -1,168 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <android.support.v7.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="341dp"
-        android:layout_height="224dp"
-        android:layout_margin="10dp"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="341dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@color/white">
 
-        android:background="@drawable/sechcs_cardbase">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.constraint.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            >
+
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/comment_head"
                 android:layout_width="41dp"
                 android:layout_height="41dp"
-                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="17dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/def_ava"
-                android:layout_marginStart="15dp"/>
+                app:srcCompat="@drawable/def_ava"/>
 
             <TextView
                 android:id="@+id/comment_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="66dp"
                 android:layout_marginTop="20dp"
                 android:text="TextView"
-                android:textSize="16sp"
-                app:layout_constraintLeft_toRightOf="@+id/comment_head"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="10dp"/>
+                android:textSize="16sp"/>
 
             <ImageView
                 android:id="@+id/imageView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/comment_clock"
-                app:layout_constraintLeft_toRightOf="@+id/comment_head"
-                android:layout_marginLeft="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/comment_head"
-                android:layout_marginStart="10dp"/>
+                android:layout_marginStart="66dp"
+                android:layout_marginTop="46dp"
+                app:srcCompat="@drawable/comment_clock"/>
 
             <TextView
                 android:id="@+id/comment_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
+                android:layout_marginStart="82dp"
+                android:layout_marginTop="46dp"
                 android:text="YYYY-MM-DD"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-                app:layout_constraintLeft_toRightOf="@+id/imageView9"
-                app:layout_constraintTop_toTopOf="@+id/imageView9"
-                android:layout_marginStart="6dp"/>
+                />
 
             <TextView
                 android:id="@+id/comment_content"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="17dp"
-                android:layout_marginLeft="17dp"
-                android:layout_marginRight="17dp"
                 android:layout_marginStart="17dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="86dp"
                 android:maxLength="100"
                 android:maxLines="5"
+                android:maxWidth="289dp"
                 android:text="恶魔们密密麻麻木木木木木木木木木木木木木木木"
                 android:textAlignment="viewStart"
                 android:textColor="#9e9e9e"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/comment_date"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/comment_date"/>
 
-            <FrameLayout
-                android:id="@+id/comment_likelayout"
-                android:layout_width="152dp"
-                android:layout_height="37dp"
-                android:layout_marginBottom="14dp"
-                android:layout_marginLeft="14dp"
-                android:layout_marginStart="14dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent">
+        </RelativeLayout>
 
-                <Button
-                    android:id="@+id/comment_like_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#15546A79"
-                    />
+        <LinearLayout
+            android:id="@+id/comment_image_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imageView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="35dp"
-                    app:srcCompat="@drawable/comment_like"/>
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/comment_liketext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="50dp"
-                    android:text="点赞"
-                    android:textColor="@color/colorRed"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="14dp"
+            android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/comment_like_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="95dp"
-                    android:text="100"/>
-            </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/comment_likelayout"
+                    android:layout_width="152dp"
+                    android:layout_height="37dp"
+                    >
 
-            <FrameLayout
-                android:id="@+id/comment_comentlayout"
-                android:layout_width="152dp"
-                android:layout_height="37dp"
-                android:layout_marginBottom="14dp"
-                android:layout_marginRight="14dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginEnd="14dp">
+                    <Button
+                        android:id="@+id/comment_like_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#15546A79"
+                        />
 
-                <Button
-                    android:id="@+id/comment_comment_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#15546A79"
-                    />
+                    <ImageView
+                        android:id="@+id/imageView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="35dp"
+                        app:srcCompat="@drawable/comment_like"/>
 
-                <TextView
-                    android:id="@+id/comment_commenttext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="50dp"
-                    android:text="评论"
-                    android:textColor="@color/colorDarkbule"
-                    />
+                    <TextView
+                        android:id="@+id/comment_liketext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="50dp"
+                        android:text="点赞"
+                        android:textColor="@color/colorRed"/>
 
-                <ImageView
-                    android:id="@+id/imageView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="35dp"
-                    app:srcCompat="@drawable/comment_comment"/>
+                    <TextView
+                        android:id="@+id/comment_like_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="95dp"
+                        android:text="100"/>
+                </FrameLayout>
 
-                <TextView
-                    android:id="@+id/comment_comment_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="95dp"
-                    android:text="100"/>
-            </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/comment_comentlayout"
+                    android:layout_width="152dp"
+                    android:layout_height="37dp"
+                    android:layout_marginLeft="10dp"
+                    app:layout_constraintLeft_toRightOf="@+id/comment_likelayout"
+                    tools:layout_editor_absoluteY="0dp">
 
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
+                    <Button
+                        android:id="@+id/comment_comment_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#15546A79"
+                        />
+
+                    <TextView
+                        android:id="@+id/comment_commenttext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="50dp"
+                        android:text="评论"
+                        android:textColor="@color/colorDarkbule"
+                        />
+
+                    <ImageView
+                        android:id="@+id/imageView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="35dp"
+                        app:srcCompat="@drawable/comment_comment"/>
+
+                    <TextView
+                        android:id="@+id/comment_comment_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="95dp"
+                        android:text="100"/>
+                </FrameLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

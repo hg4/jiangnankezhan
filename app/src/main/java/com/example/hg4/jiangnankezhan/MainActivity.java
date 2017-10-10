@@ -41,6 +41,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.io.ByteArrayInputStream;
@@ -54,7 +55,7 @@ public class MainActivity extends BaseActivity
 	private AlertDialog dialog;
 	private NavigationView navigationView;
 	private TextView username;
-	private String getusername;
+	private String getusername=new String();
 	private ImageView mainheadView;
     private RadioGroup rg_tab_bar;
     private RadioButton home;
@@ -210,7 +211,7 @@ public class MainActivity extends BaseActivity
 	}
 	private void getusername(){
 		SharedPreferences pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
-		getusername=pref.getString("nickname",null);
+		getusername=pref.getString("昵称",null);
 		if(getusername!=null){
 			username.setText(getusername);
 		}
@@ -219,9 +220,16 @@ public class MainActivity extends BaseActivity
 			query.getInBackground(id, new GetCallback<AVObject>() {
 				@Override
 				public void done(AVObject avObject, AVException e) {
-					getusername=avObject.getString("nickname");
-					if(getusername!=null)
-						username.setText(getusername);
+					if(avObject!=null&&e!=null){
+						getusername=avObject.getString("nickname");
+						if(getusername!=null){
+							username.setText(getusername);
+							PerferencesUtils.saveUserStringData(MainActivity.this,id,"昵称",getusername);
+						}
+
+					}
+
+
 				}
 			});
 		}

@@ -141,14 +141,20 @@ public class PersonInfoActivity extends BaseActivity {
 		query.doCloudQueryInBackground(cql, new CloudQueryCallback<AVCloudQueryResult>() {
 			@Override
 			public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
-				AVObject avObject=avCloudQueryResult.getResults().get(0);
-				String findValue=avObject.getString(findkey);
-				SharedPreferences.Editor editor=getSharedPreferences(id+"userdata",MODE_PRIVATE).edit();
-				editor.putString(key,findValue);
-				editor.apply();
-				Info info=new Info(key,findValue);
-				baseInfoList.add(info);
-				baseAdapter.notifyDataSetChanged();
+				if(e==null){
+					if(avCloudQueryResult!=null&&avCloudQueryResult.getResults().size()!=0){
+						AVObject avObject=avCloudQueryResult.getResults().get(0);
+						String findValue=avObject.getString(findkey);
+						SharedPreferences.Editor editor=getSharedPreferences(id+"userdata",MODE_PRIVATE).edit();
+						editor.putString(key,findValue);
+						editor.apply();
+						Info info=new Info(key,findValue);
+						baseInfoList.add(info);
+						baseAdapter.notifyDataSetChanged();
+					}
+				}
+				else e.printStackTrace();
+
 			}
 		});
 	}

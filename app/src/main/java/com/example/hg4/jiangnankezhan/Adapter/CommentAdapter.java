@@ -5,18 +5,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.PersonInfoActivity;
 import com.example.hg4.jiangnankezhan.R;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
@@ -50,6 +55,8 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 		TextView commentText;
 		Button like;
 		Button comment_comment;
+		LinearLayout imageList;
+		LinearLayout commentList;
 		AVObject AvComment;
 		public ViewHolder(View view){
 			super(view);
@@ -64,6 +71,8 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			commentCount=(TextView)view.findViewById(R.id.comment_comment_count);
 			likeText=(TextView)view.findViewById(R.id.comment_liketext);
 			commentText=(TextView)view.findViewById(R.id.comment_commenttext);
+			imageList=(LinearLayout)view.findViewById(R.id.comment_image_list);
+
 		}
 	}
 
@@ -114,7 +123,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			file.getDataInBackground(new GetDataCallback() {
 				@Override
 				public void done(byte[] bytes, AVException e) {
-					if(e==null){
+					if(e==null&&bytes!=null){
 						Bitmap head= Utilty.Bytes2Bimap(bytes);
 						holder.head.setImageBitmap(head);
 					}
@@ -128,9 +137,63 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			intCommentCount=comment.getInt("commentCount");
 			holder.likeCount.setText(intLikeCount.toString());
 			holder.commentCount.setText(intCommentCount.toString());
+			AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
+			imgQuery.whereEqualTo("from",comment);
+			imgQuery.findInBackground(new FindCallback<AVObject>() {
+				@Override
+				public void done(List<AVObject> list, AVException e) {
+					if(e==null&&list.size()!=0){
+						for(AVObject image:list){
+							AVFile file=image.getAVFile("image");
+							String url=file.getUrl();
+							ImageView imageView=new ImageView(mContext);
+							LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(200,200);
+							layoutParams.setMargins(40,10,0,0);
+							imageView.setLayoutParams(layoutParams);
+							imageView.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
 
-
-
+								}
+							});
+							Glide.with(mContext).load(url).centerCrop().into(imageView);
+							holder.imageList.addView(imageView);
+						}
+					}
+					else {
+						Log.e("test",((Integer)list.size()).toString());
+					}
+				}
+			});
+		/*	AVQuery<AVObject> query=new AVQuery<>("course_comment");
+			query.whereEqualTo("objectId",comment.getObjectId());
+			AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
+			imgQuery.whereMatchesQuery("from",query);
+			imgQuery.findInBackground(new FindCallback<AVObject>() {
+				@Override
+				public void done(List<AVObject> list, AVException e) {
+					if(e==null&&list.size()!=0){
+						for(AVObject image:list){
+							AVFile pic=image.getAVFile("image");
+							pic.getDataInBackground(new GetDataCallback() {
+								@Override
+								public void done(byte[] bytes, AVException e) {
+									if(e==null&&bytes!=null){
+										ImageView imageView=new ImageView(mContext);
+										imageView.setLayoutParams(new LinearLayout.LayoutParams(50,50));
+										Glide.with(mContext).load(bytes).centerCrop().into(imageView);
+										holder.imageList.addView(imageView);
+									}
+								}
+							});
+						}
+					}
+					else {
+						e.printStackTrace();
+						Log.e("test",((Integer)list.size()).toString());
+					}
+				}
+			}); */
 	}
 
 	@Override

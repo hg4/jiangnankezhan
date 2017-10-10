@@ -10,20 +10,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetDataCallback;
+import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.Adapter.CommentAdapter;
 import com.example.hg4.jiangnankezhan.Adapter.SechcsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.hg4.jiangnankezhan.R.id.holder;
 
 
 /**
@@ -34,6 +40,7 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 	private SwipeToLoadLayout swipeToLoadLayout;
 	private List<AVObject> commentList=new ArrayList<>();
 	private List<AVObject> displayCourseList=new ArrayList<>();
+	private List<AVObject> imageList=new ArrayList<>();
 	private Bundle mArguments;
 	private int type;
 	private CommentAdapter adapter;
