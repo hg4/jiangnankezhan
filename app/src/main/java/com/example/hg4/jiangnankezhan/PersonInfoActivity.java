@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,8 +28,10 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CloudQueryCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.Adapter.BaseInfoAdapter;
 import com.example.hg4.jiangnankezhan.Model.Info;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
@@ -531,21 +534,28 @@ public class PersonInfoActivity extends BaseActivity {
 		if(getBitmap!=null)
 			headView.setImageBitmap(getBitmap);
 		else {
-			AVFile file=(AVFile)AVUser.getCurrentUser().get("head");
-			if(file!=null){
-				file.getDataInBackground(new GetDataCallback() {
-					@Override
-					public void done(byte[] bytes, AVException e) {
-						if(e==null){
-							Bitmap head=Utilty.Bytes2Bimap(bytes);
-							headView.setImageBitmap(head);
-							PerferencesUtils.saveBitmapToSharedPreferences(head,id,PersonInfoActivity.this);
-						}
-						else e.printStackTrace();
-					}
-				});
-			}
+			AVQuery<AVUser> query=new AVQuery<>("_User");
+			query.getInBackground(id, new GetCallback<AVUser>() {
+				@Override
+				public void done(AVUser avUser, AVException e) {
+					if (avUser != null) {
+						AVFile file = avUser.getAVFile("head");
+						if (file != null) {
+							file.getDataInBackground(new GetDataCallback() {
+								@Override
+								public void done(byte[] bytes, AVException e) {
+									if (e == null) {
+										Bitmap head = Utilty.Bytes2Bimap(bytes);
+										headView.setImageBitmap(head);
+										PerferencesUtils.saveBitmapToSharedPreferences(head, id, PersonInfoActivity.this);
+									}
+								}
+							});
 
+						}
+					}
+				}
+			});
 		}
 	}
 
