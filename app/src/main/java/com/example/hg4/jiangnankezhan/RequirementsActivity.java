@@ -184,6 +184,7 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
                         intent.putExtra("type",viewPager.getCurrentItem());
                         intent.putExtra("courseName",courseName);
                         intent.putExtra("teacher",teacher);
+                        intent.putExtra("from",1);
                         currIndex=viewPager.getCurrentItem();
                         startActivityForResult(intent,1);
                         break;

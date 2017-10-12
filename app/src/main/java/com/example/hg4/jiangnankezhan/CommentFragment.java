@@ -39,8 +39,6 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 	private RecyclerView commentView;
 	private SwipeToLoadLayout swipeToLoadLayout;
 	private List<AVObject> commentList=new ArrayList<>();
-	private List<AVObject> displayCourseList=new ArrayList<>();
-	private List<AVObject> imageList=new ArrayList<>();
 	private Bundle mArguments;
 	private int type;
 	private CommentAdapter adapter;
@@ -87,7 +85,7 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 			switch (type){
 				case 0:
 					AVQuery<AVObject> query=new AVQuery<>("Course_comment");
-					query.orderByDescending("updatedAt");
+					query.orderByDescending("createdAt");
 					query.whereEqualTo("courseName",courseName);
 					query.whereEqualTo("type",type);
 					query.include("from");
@@ -108,9 +106,8 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 					});
 					break;
 				case 1:
-					swipeToLoadLayout.setBackgroundColor(getResources().getColor(R.color.colorBlue));
 					AVQuery<AVObject> query1=new AVQuery<>("Course_comment");
-					query1.orderByDescending("updatedAt");
+					query1.orderByDescending("createdAt");
 					query1.whereEqualTo("courseName",courseName);
 					query1.whereEqualTo("teacher",teacher);
 					query1.whereEqualTo("type",type);
@@ -132,9 +129,8 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 					});
 					break;
 				case 2:
-					swipeToLoadLayout.setBackgroundColor(getResources().getColor(R.color.colorBrown));
 					AVQuery<AVObject> query2=new AVQuery<>("Course_comment");
-					query2.orderByDescending("updatedAt");
+					query2.orderByDescending("createdAt");
 					query2.whereEqualTo("courseName",courseName);
 					query2.whereEqualTo("teacher",teacher);
 					query2.whereEqualTo("type",type);
@@ -158,13 +154,18 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 		}
 	}
 	private void loadMoreComment(){
+		List<AVObject> displayCourseList=new ArrayList<>();
 		if(commentList.size()>index){
-			displayCourseList=commentList.subList(0,index);
+			if(displayCourseList.size()!=0)
+				displayCourseList.clear();
+			displayCourseList.addAll(commentList.subList(0,index));
 			index=index+INCREMENT;
 		}
 		else {
+			if(displayCourseList.size()!=0)
+				displayCourseList.clear();
 			index=commentList.size();
-			displayCourseList=commentList.subList(0,index);
+			displayCourseList.addAll(commentList.subList(0,index));
 			swipeToLoadLayout.setLoadMoreEnabled(false);
 		}
 		adapter=new CommentAdapter(displayCourseList);

@@ -372,7 +372,7 @@ public class PersonInfoActivity extends BaseActivity {
 												@Override
 												public void done(AVException e) {
 													if(e==null) {
-														saveString("邮箱", newmajor);
+														saveString("专业", newmajor);
 														TextView textView = (TextView) view.findViewById(R.id.info_value);
 														textView.setText(newmajor);
 													}

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -50,10 +51,15 @@ public class CommentActivity extends AppCompatActivity {
     private Button subCmt;
     private int maxNum = 100;
     private int type;
+    private int from;
+    private Intent intent;
     private String courseName;
     private String teacher;
+    private ConstraintLayout pic_cmt;
     private RecyclerView.Adapter adapter;
     private ArrayList<String> path = new ArrayList<>();
+    private static final int FROM_REQUEST=1;
+    private static final int FROM_COMMENT=2;
     public static final int REQUEST_CODE = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,7 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
         back=(ImageView)findViewById(R.id.back);
         preview=(RecyclerView)findViewById(R.id.addcmt_picpreview);
+        pic_cmt=(ConstraintLayout)findViewById(R.id.pic_cmt);
         LinearLayoutManager layoutManager=new LinearLayoutManager(CommentActivity.this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         preview.setLayoutManager(layoutManager);
@@ -77,10 +84,16 @@ public class CommentActivity extends AppCompatActivity {
         content=(EditText)findViewById(R.id.textcomment);
         textnum=(TextView)findViewById(R.id.textnum);
         subCmt=(Button)findViewById(R.id.addcmt_comment);
-        Intent intent=getIntent();
+        intent=getIntent();
         type=intent.getIntExtra("type",0);
         courseName=intent.getStringExtra("courseName");
         teacher=intent.getStringExtra("teacher");
+        from=intent.getIntExtra("from",0);
+        if(from==FROM_COMMENT){
+            preview.setVisibility(View.INVISIBLE);
+            addpic.setVisibility(View.INVISIBLE);
+            pic_cmt.setVisibility(View.INVISIBLE);
+        }
         content.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -115,51 +128,76 @@ public class CommentActivity extends AppCompatActivity {
         subCmt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!"".equals(content.getText())){
-                    AVObject comment=new AVObject("Course_comment");
-                    comment.put("from", AVUser.getCurrentUser());
-                    comment.put("type",type);
-                    if(type==0){
-                        comment.put("courseName",courseName);
-                    }
-                    else {
-                        comment.put("courseName",courseName);
-                        comment.put("teacher",teacher);
-                    }
-                    comment.put("content",content.getText());
-                    comment.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(AVException e) {
-                            if (e!=null){
-                                Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
-                                e.printStackTrace();
-                            }
-                            else {
-                                Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
-                                setResult(1);
-                                CommentActivity.this.finish();
-
-                            }
+                if(from==FROM_COMMENT){
+                    if(!"".equals(content.getText().toString())){
+                        AVObject comment=new AVObject("cscmt_commentlist");
+                        comment.put("from", AVUser.getCurrentUser());
+                        comment.put("content",content.getText());
+                        String cmtid=intent.getStringExtra("cmtid");
+                        if(cmtid!=null){
+                            AVObject toComment=AVObject.createWithoutData("Course_comment",cmtid);
+                            comment.put("to",toComment);
+                            comment.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if (e!=null){
+                                        Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                        e.printStackTrace();
+                                    }
+                                    else {
+                                        Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                        setResult(1);
+                                        CommentActivity.this.finish();
+                                    }
+                                }
+                            });
                         }
-                    });
-                    if(path.size()!=0){
-                        int index=adapter.getItemCount();
-                        for(int i=0;i<index;i++){
-                            preview.getChildAt(i);
-                            AVObject imageFile=new AVObject("cscmt_imagelist");
-                            imageFile.put("from",comment);
-                            Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
-                            byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
-                            AVFile file=new AVFile("image",bytes);
-                            imageFile.put("image",file);
-                            imageFile.saveInBackground();
-                        }
-                    }
-
-
 
                 }
+                }
+                if(from==FROM_REQUEST){
+                    if(!"".equals(content.getText().toString())){
+                        AVObject comment=new AVObject("Course_comment");
+                        comment.put("from", AVUser.getCurrentUser());
+                        comment.put("type",type);
+                        if(type==0){
+                            comment.put("courseName",courseName);
+                        }
+                        else {
+                            comment.put("courseName",courseName);
+                            comment.put("teacher",teacher);
+                        }
+                        comment.put("content",content.getText());
+                        comment.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (e!=null){
+                                    Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
+                                else {
+                                    Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                    setResult(1);
+                                    CommentActivity.this.finish();
 
+                                }
+                            }
+                        });
+                        if(path.size()!=0){
+                            int index=adapter.getItemCount();
+                            for(int i=0;i<index;i++){
+                                preview.getChildAt(i);
+                                AVObject imageFile=new AVObject("cscmt_imagelist");
+                                imageFile.put("from",comment);
+                                Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
+                                byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
+                                AVFile file=new AVFile("image",bytes);
+                                imageFile.put("image",file);
+                                imageFile.saveInBackground();
+                            }
+                        }
+                    }
+                }
 
             }
         });
