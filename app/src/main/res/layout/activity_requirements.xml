@@ -122,7 +122,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginStart="8dp"
-        android:background="@color/colorRed"
+        android:background="@drawable/button1"
         android:text="我有话说"
         android:textColor="#fff"
         android:textSize="17dp"

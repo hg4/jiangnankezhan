@@ -107,8 +107,8 @@
     <Button
         android:id="@+id/addcmt_comment"
         android:layout_width="340dp"
-        android:layout_height="54dp"
-        android:background="#Ac7281"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button1"
         android:text="确定发表"
         android:textSize="17dp"
         android:textColor="#fff"

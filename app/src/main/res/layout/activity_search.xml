@@ -55,19 +55,19 @@
 
                     <EditText
                         android:id="@+id/sechcs_text"
-                        android:layout_width="match_parent"
+                        android:layout_width="220dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:paddingLeft="15dp"
                         android:layout_marginRight="5dp"
                         android:background="@null"
                         android:ems="10"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:maxLength="16"
                         android:hint="搜索"
+                        android:inputType="text"
+                        android:maxLength="16"
+                        android:maxLines="1"
+                        android:paddingLeft="15dp"
                         android:textColorHint="#AEAEAE"
-                        android:textSize="12dp"/>
+                        android:textSize="12dp" />
 
                 </LinearLayout>
 

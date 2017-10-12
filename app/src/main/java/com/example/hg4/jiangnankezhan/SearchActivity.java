@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.SwipeLoadMoreFooterLayout;
@@ -26,6 +27,8 @@ import com.example.hg4.jiangnankezhan.Model.Course;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.hg4.jiangnankezhan.FragmentOfschedule.isNetworkAvailable;
 
 public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 	private EditText input;
@@ -56,29 +59,32 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 		find.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String findText=input.getText().toString();
-				if(!"".equals(findText)){
-					AVSearchQuery<AVObject> avSearchQuery=new AVSearchQuery<AVObject>(findText);
-					avSearchQuery.setClassName("Course");
-					avSearchQuery.setLimit(10);
-					avSearchQuery.findInBackgroud(new FindCallback<AVObject>() {
-						@Override
-						public void done(List<AVObject> list, AVException e) {
-							if(e==null){
-								if(courseList.size()!=0){
-									courseList.clear();
-									index=ORI;
+				if (isNetworkAvailable(SearchActivity.this)==true){
+					String findText=input.getText().toString();
+					if(!"".equals(findText)){
+						AVSearchQuery<AVObject> avSearchQuery=new AVSearchQuery<AVObject>(findText);
+						avSearchQuery.setClassName("Course");
+						avSearchQuery.setLimit(10);
+						avSearchQuery.findInBackgroud(new FindCallback<AVObject>() {
+							@Override
+							public void done(List<AVObject> list, AVException e) {
+								if(e==null){
+									if(courseList.size()!=0){
+										courseList.clear();
+										index=ORI;
+									}
+									if(list.size()!=0){
+										Log.e("test",list.toString());
+										courseList=list;
+										loadMoreCourse();
+									}
 								}
-								if(list.size()!=0){
-									Log.e("test",list.toString());
-									courseList=list;
-									loadMoreCourse();
-								}
+								else e.printStackTrace();
 							}
-							else e.printStackTrace();
-
-						}
-					});
+						});
+					}
+				}else{
+					Toast.makeText(SearchActivity.this, "当前网络不可用", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});

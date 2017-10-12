@@ -43,6 +43,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 /**
  * Created by Administrator on 2017/9/10.
  */
@@ -135,12 +137,11 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 							Log.e("test",response.toString());
 
 							intent.putExtra("verificationCode",response.body().bytes());
-
 						}
 					});
 					startActivityForResult(intent,1);
 				}else{
-					Toast.makeText(getActivity().getApplicationContext(), "当前网络状态不佳", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity().getApplicationContext(), "当前网络不可用", Toast.LENGTH_SHORT).show();
 				}
 
                 break;

@@ -24,6 +24,7 @@ import org.litepal.crud.DataSupport;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.hg4.jiangnankezhan.R.id.examinetype;
 import static com.example.hg4.jiangnankezhan.R.id.week;
 import static org.litepal.crud.DataSupport.where;
 
@@ -38,10 +39,9 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
     private int cosendweek;
     private String courseType;
     private String point;
-    private String unpassRate;
     private String begintime;
     private String endtime;
-    private String examinetype;
+    private String examtype;
 
     private TextView cosname;
     private TextView costime;
@@ -52,7 +52,6 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
 
     private TextView costype;
     private TextView coscredit;
-    private TextView cosfailrate;
     private TextView costeacher;
     private ImageView back;
     private TextView require;
@@ -79,8 +78,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
         cosweek = (TextView) findViewById(R.id.cosweek);
         costype = (TextView) findViewById(R.id.costype);
         coscredit = (TextView) findViewById(R.id.coscredit);
-        cosexamtype=(TextView)findViewById(R.id.examinetype);
-        cosfailrate = (TextView) findViewById(R.id.cosfailrate);
+        cosexamtype=(TextView)findViewById(R.id.cosexamtype);
         costeacher = (TextView) findViewById(R.id.costeacher);
 
         List<Course> courses = DataSupport.where("courseName=? and teacher=? and date=?", Name, teacher, weekday).find(Course.class);
@@ -93,7 +91,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                 cosendnumber = cosbeginnumber + Integer.parseInt(course.getLength()) - 1;
                 courseType = course.getCourseType();
                 point=course.getPoint();
-                examinetype=course.getTestType();
+                examtype=course.getTestType();
                 costeacher.setText(teacher);
                 cosname.setText(Name);
                 cosclassroom.setText(classroom);
@@ -101,7 +99,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                 cosweek.setText(cosbeginweek + "-" + cosendweek + "周");
                 costype.setText(courseType);
                 coscredit.setText(point);
-                cosexamtype.setText(examinetype);
+                cosexamtype.setText(examtype);
                 setTime();
             }
         }else {
@@ -121,7 +119,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                             cosendnumber = cosbeginnumber + avObject.getInt("length") - 1;
                             courseType = avObject.getString("courseType");
                             point=avObject.getString("point");
-                            examinetype=avObject.getString("testType");
+                            examtype=avObject.getString("testType");
                             costeacher.setText(teacher);
                             cosname.setText(Name);
                             cosclassroom.setText(classroom);
@@ -129,7 +127,7 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                             cosweek.setText(cosbeginweek + "-" + cosendweek + "周");
                             costype.setText(courseType);
                             coscredit.setText(point);
-                            cosexamtype.setText(examinetype);
+                            cosexamtype.setText(examtype);
                             setTime();
                         } else {
                             e.printStackTrace();
