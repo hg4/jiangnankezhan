@@ -1,10 +1,12 @@
 package com.example.hg4.jiangnankezhan;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -13,9 +15,12 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -50,6 +55,11 @@ import java.io.ByteArrayInputStream;
 
 public class MainActivity extends BaseActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
+	static final String[] PERMISSION = new String[]{
+			Manifest.permission.READ_CONTACTS,// 写入权限
+			Manifest.permission.READ_EXTERNAL_STORAGE,  //读取权限
+			Manifest.permission.WRITE_CALL_LOG,        //读取设备信息
+	};
 	private ImageButton logout;
 	private ImageButton setting;
 	private AlertDialog dialog;
@@ -71,6 +81,9 @@ public class MainActivity extends BaseActivity
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(!PerferencesUtils.getPermission(this,id)){
+			setPermissions();
+		}
 		setContentView(R.layout.activity_main);
         fManager=getSupportFragmentManager();
         rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
@@ -152,6 +165,7 @@ public class MainActivity extends BaseActivity
 				startActivity(intent);
 			}
 		});
+
 	}
 
 	@Override
@@ -175,6 +189,7 @@ public class MainActivity extends BaseActivity
 
 				break;
 			case R.id.nav_display:
+				startActivity(new Intent(MainActivity.this,MyCommentActivity.class));
 				break;
 			case R.id.nav_collect:
 				break;
@@ -274,4 +289,18 @@ public class MainActivity extends BaseActivity
         if(fg3 != null)fragmentTransaction.hide(fg3);
         if(fg4 != null)fragmentTransaction.hide(fg4);
     }
+
+
+	/**
+	 * 设置Android6.0的权限申请
+	 */
+	private void setPermissions() {
+		if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+			//Android 6.0申请权限
+			ActivityCompat.requestPermissions(this,PERMISSION,1);
+			PerferencesUtils.savePermission(this,id,true);
+		}else{
+			Log.i("tag","权限申请ok");
+		}
+	}
 }

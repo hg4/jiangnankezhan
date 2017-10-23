@@ -22,7 +22,7 @@ import com.example.hg4.jiangnankezhan.Adapter.AdapterFragment;
 
 import java.util.ArrayList;
 
-public class RequirementsActivity extends AppCompatActivity implements View.OnClickListener {
+public class RequirementsActivity extends BaseActivity implements View.OnClickListener {
     private String courseName;
     private String teacher;
     private ImageView back;
@@ -32,10 +32,9 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
     private TextView homework;
     private TextView examinetype;
     private ImageView scrollbar;
-    private View view1, view2, view3;
     private Button comment;
     private  AdapterFragment adapterFragment;
-    private int currIndex ;
+    private int currIndex=0;
     private int one;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,42 +43,15 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
         back=(ImageView)findViewById(R.id.back);
         comment=(Button)findViewById(R.id.addcmt_comment);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        LayoutInflater inflater=getLayoutInflater();
+        rollcall = (TextView)findViewById(R.id.rollcall);
+        homework = (TextView)findViewById(R.id.homework);
+        examinetype = (TextView)findViewById(R.id.examinetype);
+        scrollbar = (ImageView)findViewById(R.id.scrollbar);
         courseName=getIntent().getStringExtra("courseName");
         teacher=getIntent().getStringExtra("teacher");
-       /* view1 = inflater.inflate(R.layout.viewpager1, null);
-        view2 = inflater.inflate(R.layout.viewpager2,null);
-        view3 = inflater.inflate(R.layout.viewpager3, null);
-        viewList = new ArrayList<View>();
-        viewList.add(view1);
-        viewList.add(view2);
-        viewList.add(view3);
-        PagerAdapter pagerAdapter = new PagerAdapter() {
-            @Override
-            public boolean isViewFromObject(View arg0, Object arg1) {
-                return arg0 == arg1;
-            }
-
-            @Override
-            public int getCount() {
-                return viewList.size();
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position,
-                                    Object object) {
-                container.removeView(viewList.get(position));
-            }
-
-            @Override
-            public Object instantiateItem(ViewGroup container, int position) {
-                container.addView(viewList.get(position));
-
-
-                return viewList.get(position);
-            }
-        };
-            viewPager.setAdapter(pagerAdapter);*/
+        if(getIntent().getIntExtra("type",0)!=0){
+            currIndex=getIntent().getIntExtra("type",0);
+        }
         FragmentList=new ArrayList<>();
         for(int i=0;i<3;i++){
             CommentFragment fragment=createFragment(i);
@@ -87,19 +59,15 @@ public class RequirementsActivity extends AppCompatActivity implements View.OnCl
         }
         adapterFragment=new AdapterFragment(getSupportFragmentManager(),FragmentList);
         viewPager.setAdapter(adapterFragment);
-        viewPager.setCurrentItem(0);
-        currIndex=viewPager.getCurrentItem();
-        rollcall = (TextView)findViewById(R.id.rollcall);
-        homework = (TextView)findViewById(R.id.homework);
-        examinetype = (TextView)findViewById(R.id.examinetype);
-        scrollbar = (ImageView)findViewById(R.id.scrollbar);
+        viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+        viewPager.setCurrentItem(currIndex);
         rollcall.setOnClickListener(this);
         homework.setOnClickListener(this);
         examinetype.setOnClickListener(this);
         back.setOnClickListener(this);
         comment.setOnClickListener(this);
         rollcall.performClick();
-        viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenW = displayMetrics.widthPixels;

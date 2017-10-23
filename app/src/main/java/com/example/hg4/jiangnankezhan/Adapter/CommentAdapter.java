@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,23 +25,14 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
-import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CommentActivity;
-import com.example.hg4.jiangnankezhan.PersonInfoActivity;
 import com.example.hg4.jiangnankezhan.R;
-import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
-import com.example.hg4.jiangnankezhan.Utils.RegexUtil;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * Created by HG4 on 2017/10/4.
@@ -71,7 +63,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			head=(ImageView)view.findViewById(R.id.comment_head);
 			username=(TextView)view.findViewById(R.id.comment_username);
 			date=(TextView)view.findViewById(R.id.comment_date);
-			comment=(TextView)view.findViewById(R.id.comment_content);
+			comment=(TextView)view.findViewById(R.id.mycomment_content);
 			like=(Button)view.findViewById(R.id.comment_like_button);
 			comment_comment=(Button)view.findViewById(R.id.comment_comment_button);
 			likeCount=(TextView)view.findViewById(R.id.comment_like_count);
@@ -155,12 +147,18 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 				if(e==null&&list.size()!=0){
 					for(AVObject image:list){
 						AVFile pic=image.getAVFile("image");
-						String url=pic.getUrl();
+						final String url=pic.getUrl();
 						ImageView imageView=new ImageView(mContext);
 						imageView.setTag(R.id.tag_img,url);
 						LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(200,200);
 						layoutParams.setMargins(40,10,0,0);
 						imageView.setLayoutParams(layoutParams);
+						imageView.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+										Utilty.imgDetailDialog(mContext,url);
+							}
+						});
 						if ((int)holder.cardView.getTag()==position&&imageView.getTag(R.id.tag_img) != null && imageView.getTag(R.id.tag_img).equals(url)){
 							Glide.with(mContext).load(url).centerCrop().placeholder(R.mipmap.ic_launcher).into(imageView);
 							holder.imageList.addView(imageView);

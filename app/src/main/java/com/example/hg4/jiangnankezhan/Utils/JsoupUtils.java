@@ -71,7 +71,7 @@ public class JsoupUtils {
 		}
 		return returnInfo;
 	}
-	private void _finishCourseData(String html){
+	private void  _finishCourseData(String html){
 		if (html!=null) {
 			Document document = Jsoup.parse(html);
 			Elements table = document.getElementsByTag("table");

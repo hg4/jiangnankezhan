@@ -2,8 +2,10 @@ package com.example.hg4.jiangnankezhan;
 
 import android.content.Intent;
 import android.media.Image;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +30,7 @@ import static com.example.hg4.jiangnankezhan.R.id.examinetype;
 import static com.example.hg4.jiangnankezhan.R.id.week;
 import static org.litepal.crud.DataSupport.where;
 
-public class CosDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class CosDetailsActivity extends BaseActivity implements View.OnClickListener {
     private String Name;
     private String teacher;
     private String classroom;
@@ -56,7 +58,8 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
     private ImageView back;
     private TextView require;
     private ImageView require1;
-
+    private ImageView content_button;
+    private ConstraintLayout content_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +67,16 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
         Name = getIntent().getStringExtra("name");
         weekday = getIntent().getStringExtra("date");
         teacher = getIntent().getStringExtra("teacher");
-
+        content_button=(ImageView)findViewById(R.id.content_button);
+        content_layout=(ConstraintLayout)findViewById(R.id.content_layout);
         require = (TextView) findViewById(R.id.requirement);
         require1 = (ImageView) findViewById(R.id.require);
         back = (ImageView) findViewById(R.id.back);
         require.setOnClickListener(this);
         require1.setOnClickListener(this);
         back.setOnClickListener(this);
+        content_layout.setOnClickListener(this);
+        content_button.setOnClickListener(this);
         cosname = (TextView) findViewById(R.id.cosname);
         costime = (TextView) findViewById(R.id.costime);
         cosnumber = (TextView) findViewById(R.id.cosnumber);
@@ -209,6 +215,18 @@ public class CosDetailsActivity extends AppCompatActivity implements View.OnClic
                 intent1.putExtra("courseName",Name);
                 intent1.putExtra("teacher",teacher);
                 startActivity(intent1);
+                break;
+            case R.id.content_button:
+                Intent intent2= new Intent(CosDetailsActivity.this,CosContentActivity.class);
+                intent2.putExtra("courseName",Name);
+                intent2.putExtra("teacher",teacher);
+                startActivity(intent2);
+                break;
+            case R.id.content_layout:
+                Intent intent3= new Intent(CosDetailsActivity.this,CosContentActivity.class);
+                intent3.putExtra("courseName",Name);
+                intent3.putExtra("teacher",teacher);
+                startActivity(intent3);
                 break;
         }
     }

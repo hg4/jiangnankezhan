@@ -342,6 +342,7 @@
         android:id="@+id/linearLayout2">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -358,7 +359,7 @@
                 android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -370,9 +371,10 @@
                 android:text="看看别的同学怎么说"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
+                android:id="@+id/content_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -382,12 +384,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/info_next_icon" />
+                app:srcCompat="@drawable/info_next_icon"/>
 
             <ImageView
-                android:layout_width="match_parent"
+                android:layout_width="344dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/uni_div" />
+                android:background="@drawable/uni_div"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="414dp"/>
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 
@@ -431,9 +435,11 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginEnd="20dp" />
             <ImageView
-                android:layout_width="match_parent"
+                android:layout_width="344dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/uni_div" />
+                android:background="@drawable/uni_div"
+                tools:layout_editor_absoluteY="475dp"
+                tools:layout_editor_absoluteX="8dp"/>
         </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>

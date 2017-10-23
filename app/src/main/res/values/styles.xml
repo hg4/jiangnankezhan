@@ -32,6 +32,15 @@
         <item name="android:paddingTop">7dp</item>
         <item name="android:textColor">@drawable/text</item>
         <item name="android:textSize">10sp</item>
+
+    </style>
+    <style name="Dialog_Fullscreen">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="contextMenuAnim" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/bottom_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/bottom_leave_anim</item>
+    </style>
 </resources>

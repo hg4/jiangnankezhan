@@ -32,6 +32,7 @@ import com.example.hg4.jiangnankezhan.Utils.Constants;
 import com.example.hg4.jiangnankezhan.Utils.HttpUtils;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
+import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import org.litepal.crud.DataSupport;
 
@@ -123,7 +124,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.schedule_add_course:
-            	if (isNetworkAvailable(getActivity().getApplicationContext())==true){
+            	if (Utilty.isNetworkAvailable(getActivity().getApplicationContext())==true){
 					final Intent intent=new Intent(getActivity(),EduLoginActivity.class);
 					HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
 						@Override
@@ -163,7 +164,10 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 				}
 				break;
 			case R.id.schedule_search:
-				startActivity(new Intent(getActivity(),SearchActivity.class));
+				Intent intent=new Intent(getActivity(),SearchActivity.class);
+				intent.putExtra("findname","Course");
+				intent.putExtra("adaptertype",1);
+				startActivity(intent);
 				break;
         }
     }
@@ -264,20 +268,5 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		}
 
 	}
-	public static boolean isNetworkAvailable(Context context) {
-		ConnectivityManager connectivity = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (connectivity == null) {
-			return false;
-		} else {
-			NetworkInfo[] info = connectivity.getAllNetworkInfo();
-			if (info != null) {
-				for (int i = 0; i < info.length; i++) {
-					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-						return true;
-					}
-				}
-			}
-		}
-		      return false;
-		 }
+
 }

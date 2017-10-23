@@ -30,23 +30,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.hg4.jiangnankezhan.R.id.holder;
+import static com.example.hg4.jiangnankezhan.R.id.list;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CommentFragment extends Fragment  implements OnRefreshListener, OnLoadMoreListener {
-	private RecyclerView commentView;
-	private SwipeToLoadLayout swipeToLoadLayout;
-	private List<AVObject> commentList=new ArrayList<>();
-	private Bundle mArguments;
+public class CommentFragment extends RecyclerFragment {
 	private int type;
-	private CommentAdapter adapter;
 	private String courseName;
 	private String teacher;
-	private int index=ORI;
-	private static final int INCREMENT=4;
-	private static final int ORI=4;
 	public CommentFragment() {
 		// Required empty public constructor
 
@@ -61,15 +54,11 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View view=inflater.inflate(R.layout.fragment_comment, container, false);
-		commentView=(RecyclerView)view.findViewById(R.id.swipe_target);
-		swipeToLoadLayout=(SwipeToLoadLayout) view.findViewById(R.id.cmt_swipeLayout);
-		swipeToLoadLayout.setOnLoadMoreListener(this);
-		swipeToLoadLayout.setOnRefreshListener(this);
-		LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
-		commentView.setLayoutManager(layoutManager);
+		List<AVObject> displayCmtList=new ArrayList<>();
+		setDisplayCmtList(displayCmtList);
+		setAdapter(new CommentAdapter(displayCmtList));
 		setConfig();
-		return view;
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	@Override
@@ -77,6 +66,13 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 		super.onActivityCreated(savedInstanceState);
 
 	}
+
+	@Override
+	public void onRefresh() {
+		setConfig();
+		super.onRefresh();
+	}
+
 	private void setConfig(){
 		if(mArguments!=null){
 			type=mArguments.getInt("type",0);
@@ -150,59 +146,28 @@ public class CommentFragment extends Fragment  implements OnRefreshListener, OnL
 						}
 					});
 					break;
+				case 3:
+					AVQuery<AVObject> query3=new AVQuery<>("Course_comment");
+					query3.orderByDescending("createdAt");
+					query3.whereEqualTo("courseName",courseName);
+					query3.whereEqualTo("type",type);
+					query3.include("from");
+					query3.findInBackground(new FindCallback<AVObject>() {
+						@Override
+						public void done(List<AVObject> list, AVException e) {
+							if(e==null){
+								if(commentList.size()!=0){
+									commentList.clear();
+								}
+								if(list.size()!=0){
+									commentList=list;
+									loadMoreComment();
+								}
+							}
+						}
+					});
 			}
 		}
-	}
-	private void loadMoreComment(){
-		List<AVObject> displayCourseList=new ArrayList<>();
-		if(commentList.size()>index){
-			if(displayCourseList.size()!=0)
-				displayCourseList.clear();
-			displayCourseList.addAll(commentList.subList(0,index));
-			index=index+INCREMENT;
-		}
-		else {
-			if(displayCourseList.size()!=0)
-				displayCourseList.clear();
-			index=commentList.size();
-			displayCourseList.addAll(commentList.subList(0,index));
-			swipeToLoadLayout.setLoadMoreEnabled(false);
-		}
-		adapter=new CommentAdapter(displayCourseList);
-		commentView.setAdapter(adapter);
-	}
-
-	@Override
-	public void onRefresh() {
-		index=ORI;
-		swipeToLoadLayout.setLoadMoreEnabled(true);
-		swipeToLoadLayout.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				swipeToLoadLayout.setRefreshing(false);
-				setConfig();
-			}
-		},1000);
-	}
-
-	@Override
-	public void onLoadMore() {
-		swipeToLoadLayout.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				swipeToLoadLayout.setLoadingMore(false);
-				loadMoreComment();
-			}
-		},1000);
-	}
-
-	public void autoRefresh() {
-		swipeToLoadLayout.post(new Runnable() {
-			@Override
-			public void run() {
-				swipeToLoadLayout.setRefreshing(true);
-			}
-		});
 	}
 
 

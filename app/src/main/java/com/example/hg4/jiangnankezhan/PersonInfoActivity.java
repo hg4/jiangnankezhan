@@ -486,30 +486,13 @@ public class PersonInfoActivity extends BaseActivity {
 				default:
 					break;
 				case 4:
-					final String collegedata=data.getStringExtra("college");
-					user.put("college",collegedata);
-					user.saveInBackground(new SaveCallback() {
-						@Override
-						public void done(AVException e) {
-							if(e==null){
-								saveString("学院",collegedata);
-								collegeText.setText(collegedata);
-								top_collegeHolder.setText(collegedata);
-							}
-						}
-					});
+					String collegedata=data.getStringExtra("college");
+					collegeText.setText(collegedata);
+					top_collegeHolder.setText(collegedata);
 					break;
 				case 5:
-					final String gradedata=data.getStringExtra("grade");
-					user.put("grade",gradedata);
-					user.saveInBackground(new SaveCallback() {
-						@Override
-						public void done(AVException e) {
-							if(e==null){
-								gradeText.setText(gradedata);
-							}
-						}
-					});
+					String gradedata=data.getStringExtra("grade");
+					gradeText.setText(gradedata);
 					break;
 			}
 		}

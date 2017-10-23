@@ -13,10 +13,15 @@ import java.util.List;
 
 public class AdapterFragment extends FragmentStatePagerAdapter {
 	private List<Fragment> mFragments;
-
+	private String[] titleList;
 	public AdapterFragment(FragmentManager fm, List<Fragment> mFragments) {
 		super(fm);
 		this.mFragments = mFragments;
+	}
+	public AdapterFragment(FragmentManager fm,List<Fragment> mFragments,String[] titleList){
+		super(fm);
+		this.mFragments=mFragments;
+		this.titleList=titleList;
 	}
 
 	@Override
@@ -31,6 +36,6 @@ public class AdapterFragment extends FragmentStatePagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {//选择性实现
-		return mFragments.get(position).getClass().getSimpleName();
-	}
+		return titleList[position];
+}
 }

@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 
 /**
@@ -33,12 +36,26 @@ public class ListGradeActivity extends BaseActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				TextView college = (TextView) view.findViewById(R.id.data);
-				String gradeData = college.getText().toString();
-				PerferencesUtils.saveUserStringData(ListGradeActivity.this,ListGradeActivity.this.id,"入学年份",gradeData);
-				Intent intent = new Intent();
-				intent.putExtra("grade", gradeData);
-				ListGradeActivity.this.setResult(1, intent);
-				ListGradeActivity.this.finish();
+				final String gradeData = college.getText().toString();
+				AVUser user=AVUser.getCurrentUser();
+				user.put("grade",gradeData);
+				user.saveInBackground(new SaveCallback() {
+					@Override
+					public void done(AVException e) {
+						if(e==null){
+							PerferencesUtils.saveUserStringData(ListGradeActivity.this,ListGradeActivity.this.id,"入学年份",gradeData);
+							Intent intent = new Intent();
+							intent.putExtra("grade", gradeData);
+							ListGradeActivity.this.setResult(1, intent);
+							ListGradeActivity.this.finish();
+						}
+						else {
+							ListGradeActivity.this.setResult(0);
+							ListGradeActivity.this.finish();
+						}
+					}
+				});
+
 			}
 		});
 	}

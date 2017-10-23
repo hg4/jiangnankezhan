@@ -49,7 +49,16 @@ public class PerferencesUtils {
 		SharedPreferences share=context.getSharedPreferences(id+"userdata",Context.MODE_PRIVATE);
 		return share.getBoolean("first login", true);
 	}
-
+	public static void savePermission(Context context, String id,boolean isFirstPermiss) {
+		SharedPreferences share=context.getSharedPreferences(id+"userdata",Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = share.edit();
+		editor.putBoolean("first permiss", isFirstPermiss);
+		editor.commit();
+	}
+	public static boolean getPermission(Context context,String id) {
+		SharedPreferences share=context.getSharedPreferences(id+"userdata",Context.MODE_PRIVATE);
+		return share.getBoolean("first permiss", true);
+	}
 	//根据用户id创建私人preferences并保存信息
 	public static void saveUserStringData(Context context,String id,String key,String value){
 		SharedPreferences share=context.getSharedPreferences(id+"userdata",Context.MODE_PRIVATE);

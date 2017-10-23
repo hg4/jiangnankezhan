@@ -34,11 +34,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         if(PerferencesUtils.getFirstOp(this)==true){
             startActivity(new Intent(LoginActivity.this,GuideActivity.class));
             this.finish();
         }
+        if (AVUser.getCurrentUser() != null) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            LoginActivity.this.finish();
+        }
+        setContentView(R.layout.activity_login);
 		usernameView=(EditText)findViewById(R.id.usernameView);
 		passwordView=(EditText)findViewById(R.id.passwordView);
 		login=(Button)findViewById(R.id.login);
@@ -46,10 +50,7 @@ public class LoginActivity extends AppCompatActivity {
 		forget=(Button)findViewById(R.id.forget);
         ImmersionBar.with(this).transparentBar().init();
         progressDialog=new ProgressDialog(this);
-        if (AVUser.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            LoginActivity.this.finish();
-        }
+
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

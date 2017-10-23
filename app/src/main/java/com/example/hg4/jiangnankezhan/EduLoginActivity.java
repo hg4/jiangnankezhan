@@ -1,5 +1,6 @@
 package com.example.hg4.jiangnankezhan;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -60,6 +61,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 	private String studentName;
 	private byte[] byteCode;
 	private ImageView back;
+	private LoadingDialog dialog;
 	private List<Map<String, Course[]>> courseList;
 	private static Spinner sp_school_year;
 	private static Spinner sp_term;
@@ -285,11 +287,12 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 				response=HttpUtils.postSync(pyjhScheduleUrl,pyjhRequestBodyMap,requestHeadersMap);
 				String result = new String(response.body().bytes(), "gb2312");
 				JsoupUtils.finishCourseData(result);
+					// 云端查询课程名，不存在则存到云端
+				saveCourseInCloud();
 			}
 		},pyjhRequestBodyMap,requestHeadersMap);
 	}
 	private void setAndSaveSchedule(final Context context,String newScheduleUrl){
-		synchronized (this){
 			HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
 				@Override
 				public void onFailure(Call call, IOException e) {
@@ -309,7 +312,9 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 								//查询新课表时，删除本地原有课表
 								DataSupport.deleteAll(Course.class);
 								//查询本地数据库，不存在则存入数据库
+								boolean finished=false;
 								for(String date:time){
+
 									for(Map<String,Course[]> temp:courseList){
 										Course[] courseArray=temp.get(date);
 										if(null!=courseArray){
@@ -323,10 +328,11 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 											}
 
 										}
-
 									}
+									finished=true;
 								}
-
+								if(finished)
+									searchPyjhOperation();
 							} else {
 								outputInfo = "获取课表失败,请重试!";
 							}
@@ -339,18 +345,8 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 					}
 				}
 			}, scheduleRequestBodyMap, requestHeadersMap);
-		}
-		searchPyjhOperation();
-		// 云端查询课程名，不存在则存到云端
-		saveCourseInCloud();
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				Toast.makeText(context, outputInfo, Toast.LENGTH_SHORT).show();
-				setResult(1);
-				EduLoginActivity.this.finish();
-			}
-		});
+
+
 	}
 	private void getViewState(String Url,Map<String,String> RequestBodyMap,Map<String,String> requestHeadersMap){
 		try{
@@ -447,40 +443,52 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 			query.findInBackground(new FindCallback<AVObject>() {
 				@Override
 				public void done(List<AVObject> list, AVException e) {
-					if(list.size()!=0&&list!=null){
-						Log.e("test","existed");
-					}
-					else {
-						AVObject AVcourse=new AVObject("Course");
-						AVcourse.put("coursedata",courses[0].getCoursedata());
-						AVcourse.put("teacher",courses[0].getTeacher());
-						AVcourse.put("courseName",courses[0].getCourseName());
-						AVcourse.put("courseType",courses[0].getCourseType());
-						AVcourse.put("isSingle",courses[0].getIsSingle());
-						AVcourse.put("isDouble",courses[0].getIsDouble());
-						AVcourse.put("start",courses[0].getStart());
-						AVcourse.put("end",courses[0].getEnd());
-						if(courses[0].getLength()!="")
-							AVcourse.put("length",Integer.parseInt(courses[0].getLength()));
-						AVcourse.put("weekLength",courses[0].getWeekLength());
-						AVcourse.put("date",courses[0].getDate());
-						AVcourse.put("duration",courses[0].getDuration());
-						AVcourse.put("classroom",courses[0].getClassroom());
-						AVcourse.put("courseBeginNumber",courses[0].getCourseBeginNumber());
-						AVcourse.put("testType",courses[0].getTestType());
-						AVcourse.put("point",courses[0].getPoint());
-						AVcourse.saveInBackground(new SaveCallback() {
-							@Override
-							public void done(AVException e) {
-								if(e==null)
-									Log.e("test","ok");
-							}
-						});
+					if(list!=null&&e==null){
+						if(list.size()!=0){
+							Log.e("test","existed");
+						}
+						else {
+							AVObject AVcourse=new AVObject("Course");
+							AVcourse.put("coursedata",courses[0].getCoursedata());
+							AVcourse.put("teacher",courses[0].getTeacher());
+							AVcourse.put("courseName",courses[0].getCourseName());
+							AVcourse.put("courseType",courses[0].getCourseType());
+							AVcourse.put("isSingle",courses[0].getIsSingle());
+							AVcourse.put("isDouble",courses[0].getIsDouble());
+							AVcourse.put("start",courses[0].getStart());
+							AVcourse.put("end",courses[0].getEnd());
+							if(courses[0].getLength()!="")
+								AVcourse.put("length",Integer.parseInt(courses[0].getLength()));
+							AVcourse.put("weekLength",courses[0].getWeekLength());
+							AVcourse.put("date",courses[0].getDate());
+							AVcourse.put("duration",courses[0].getDuration());
+							AVcourse.put("classroom",courses[0].getClassroom());
+							AVcourse.put("courseBeginNumber",courses[0].getCourseBeginNumber());
+							AVcourse.put("testType",courses[0].getTestType());
+							AVcourse.put("point",courses[0].getPoint());
+							AVcourse.saveInBackground(new SaveCallback() {
+								@Override
+								public void done(AVException e) {
+									if(e==null){
+										Log.e("test","ok");
+									}
+								}
+							});
+						}
 					}
 				}
 			});
 		}
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(EduLoginActivity.this, outputInfo, Toast.LENGTH_SHORT).show();
+				setResult(1);
+				dialog.dismiss();
+				EduLoginActivity.this.finish();
 
+			}
+		});
 	}
 	@Override
 	public void onClick(View v) {
@@ -490,6 +498,8 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 				break;
 			case R.id.edulogin_login:
 				addRequestBody();
+				dialog=new LoadingDialog(this);
+				dialog.setMessage("获取课表中").show();
 				break;
 			case R.id.edu_back_home:
 				EduLoginActivity.this.finish();

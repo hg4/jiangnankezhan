@@ -3,8 +3,7 @@
                                                  android:id="@+id/cmt_swipeLayout"
                                                  android:orientation="vertical"
                                                  android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 tools:context="com.example.hg4.jiangnankezhan.CommentFragment">
+                                                 android:layout_height="match_parent">
 <com.example.hg4.jiangnankezhan.RefreshHeaderView
     android:layout_width="match_parent"
     android:id="@+id/swipe_refresh_header"

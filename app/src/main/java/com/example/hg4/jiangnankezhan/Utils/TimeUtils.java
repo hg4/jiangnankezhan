@@ -43,4 +43,9 @@ public class TimeUtils {
 		String startTime = sdf.format(date);
 		return startTime;
 	}
+	public static String dateToHMSString(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		String startTime = sdf.format(date);
+		return startTime;
+	}
 }

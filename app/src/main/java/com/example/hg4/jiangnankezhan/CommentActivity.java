@@ -60,6 +60,7 @@ public class CommentActivity extends AppCompatActivity {
     private ArrayList<String> path = new ArrayList<>();
     private static final int FROM_REQUEST=1;
     private static final int FROM_COMMENT=2;
+    private static final int FROM_CONTENT=3;
     public static final int REQUEST_CODE = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +199,45 @@ public class CommentActivity extends AppCompatActivity {
                         }
                     }
                 }
+                if(from==FROM_CONTENT){
+                    if(!"".equals(content.getText().toString())){
+                        AVObject comment=new AVObject("Course_comment");
+                        comment.put("from", AVUser.getCurrentUser());
+                        comment.put("type",type);
+                        if(type==3){
+                            comment.put("courseName",courseName);
+                        }
+                        comment.put("content",content.getText());
+                        comment.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (e!=null){
+                                    Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
+                                else {
+                                    Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                    setResult(1);
+                                    CommentActivity.this.finish();
 
+                                }
+                            }
+                        });
+                        if(path.size()!=0){
+                            int index=adapter.getItemCount();
+                            for(int i=0;i<index;i++){
+                                preview.getChildAt(i);
+                                AVObject imageFile=new AVObject("cscmt_imagelist");
+                                imageFile.put("from",comment);
+                                Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
+                                byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
+                                AVFile file=new AVFile("image",bytes);
+                                imageFile.put("image",file);
+                                imageFile.saveInBackground();
+                            }
+                        }
+                    }
+                }
             }
         });
     }
