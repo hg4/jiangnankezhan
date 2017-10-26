@@ -36,12 +36,18 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 	private SwipeToLoadLayout swipeToLoadLayout;
 	private LoadingDialog dialog;
 	private String className;
-	private String condition;
+	private Bundle condition;
 	private RecyclerView.Adapter adapter;
 	private int adapterType;
+	private int conditionType;
 	private int index=ORI;
 	private static final int INCREMENT=3;
 	private static final int ORI=4;
+	private static final int CONDITION_CSFILE=2;
+	private static final int CONDITION_MYCMT=1;
+	private static final int ADAPTER_CS=0;
+	private static final int ADAPTER_MYCMT=1;
+	private static final int ADAPTER_CSFILE=2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,9 +56,10 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 		setSupportActionBar(toolbar);
 		className=getIntent().getStringExtra("findname");
 		adapterType=getIntent().getIntExtra("adaptertype",0);
-		if(getIntent().getStringExtra("condition")!=null){
+		if(getIntent().getBundleExtra("condition")!=null){
 			//若有查询条件 设置
-			condition=getIntent().getStringExtra("condition");
+			condition=getIntent().getBundleExtra("condition");
+			conditionType=condition.getInt("conditiontype");
 		}
 		input=(EditText)findViewById(R.id.sechcs_text);
 		find=(TextView)findViewById(R.id.schcs_find);
@@ -67,13 +74,12 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 			@Override
 			public void onClick(View v) {
 
-				if (Utilty.isNetworkAvailable(SearchActivity.this)==true){
+				if (Utilty.isNetworkAvailable(SearchActivity.this)){
 					String findText=input.getText().toString();
 					if(!"".equals(findText)){
 						dialog=Utilty.createDiaglog(SearchActivity.this,"努力加载中...");
 						AVSearchQuery<AVObject> avSearchQuery=new AVSearchQuery<AVObject>();
 						avSearchQuery.setClassName(className);
-
 						avSearchQuery.setQueryString(findText);
 						avSearchQuery.setLimit(10);
 						avSearchQuery.findInBackgroud(new FindCallback<AVObject>() {
@@ -88,15 +94,7 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 										Log.e("test",list.toString());
 										//传递来的查询条件,必须为objectId;
 										if(condition!=null){
-											List<AVObject> sublist=new ArrayList<>();
-											for(AVObject data:list){
-												AVObject from=data.getAVObject("from");
-												Log.e("test",from.getObjectId());
-												if(condition.equals(from.getObjectId())){
-													sublist.add(data);
-												}
-											}
-											searchList=sublist;
+											subData(list);
 										}
 										else {
 											searchList=list;
@@ -153,16 +151,46 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 	}
 	private void setRecyclerAdapter(){
 		switch (adapterType){
-			case 1:
+			case ADAPTER_CS:
 				adapter=new SechcsAdapter(displaySearchList);
 				recyclerView.setAdapter(adapter);
 				break;
-			case 2:
+			case ADAPTER_MYCMT:
 				adapter=new MyCmtAdapter(displaySearchList);
 				recyclerView.setAdapter(adapter);
+				break;
+			case ADAPTER_CSFILE:
 				break;
 			default:
 				break;
 		}
 	}
+	private void subData(List<AVObject> list){
+		List<AVObject> sublist=new ArrayList<>();
+		switch (conditionType){
+			case CONDITION_MYCMT:
+				String id=condition.getString("objectid");
+				for(AVObject data:list){
+					AVObject from=data.getAVObject("from");
+					if(id.equals(from.getObjectId())){
+						sublist.add(data);
+					}
+				}
+				searchList=sublist;
+				break;
+			case CONDITION_CSFILE:
+				for(AVObject data:list){
+					String courseName=data.getString("Course");
+					String getname=condition.getString("courseName");
+					if(getname!=null){
+						if(getname.equals(courseName)){
+							sublist.add(data);
+						}
+					}
+
+				}
+				break;
+		}
+	}
+
 }

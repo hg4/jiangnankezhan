@@ -47,7 +47,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
-        android:text="hg4"
+        android:text="(请填写）"
         android:textColor="#ffffff"
         android:textSize="20sp"
         />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
 
             android:layout_weight="1"
-            android:text="136"
+            android:text="0"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="32sp"/>
@@ -75,7 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="56"
+            android:text="0"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="32sp"/>

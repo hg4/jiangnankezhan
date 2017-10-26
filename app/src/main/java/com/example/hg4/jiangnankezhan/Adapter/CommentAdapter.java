@@ -13,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
@@ -120,18 +123,23 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			AVObject comment=mCommentList.get(position);
 			holder.AvComment=comment;
 			AVObject user=comment.getAVUser("from");
-			AVFile file=user.getAVFile("head");
-			file.getDataInBackground(new GetDataCallback() {
-				@Override
-				public void done(byte[] bytes, AVException e) {
-					if(e==null&&bytes!=null){
-						Bitmap head= Utilty.Bytes2Bimap(bytes);
-						holder.head.setImageBitmap(head);
-					}
-					else e.printStackTrace();
+			if(user.getAVFile("head")!=null){
+				AVFile file=user.getAVFile("head");
+				if(file!=null&&file.getUrl()!=null){
+					file.getDataInBackground(new GetDataCallback() {
+						@Override
+						public void done(byte[] bytes, AVException e) {
+							if(e==null&&bytes!=null){
+								Bitmap head= Utilty.Bytes2Bimap(bytes);
+								holder.head.setImageBitmap(head);
+							}
+							else e.printStackTrace();
+						}
+					});
 				}
-			});
-			holder.username.setText(user.getString("nickname"));
+			}
+			if(!user.getString("nickname").equals("(请填写)"))
+				holder.username.setText(user.getString("nickname"));
 			holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
 			holder.comment.setText(comment.getString("content"));
 			Integer intLikeCount=comment.getInt("likeCount");
@@ -160,7 +168,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 							}
 						});
 						if ((int)holder.cardView.getTag()==position&&imageView.getTag(R.id.tag_img) != null && imageView.getTag(R.id.tag_img).equals(url)){
-							Glide.with(mContext).load(url).centerCrop().placeholder(R.mipmap.ic_launcher).into(imageView);
+							Glide.with(mContext).load(url).centerCrop().placeholder(R.drawable.placeholder).into(imageView);
 							holder.imageList.addView(imageView);
 						}
 
@@ -180,18 +188,18 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 					if(e==null&&list!=null){
 						if(list.size()!=0){
 							holder.commentCount.setText(((Integer)list.size()).toString());
+							ArrayList<String> data=new ArrayList<String>();
 							for(AVObject cmt:list){
 								String content=cmt.getString("content");
 								AVUser cmter=cmt.getAVUser("from");
 								String name=cmter.getString("nickname");
 								TextView textView=new TextView(mContext);
 								textView.setText(name+" : "+content);
-								LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(900,60);
+								LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 								layoutParams.setMargins(51,0,0,18);
 								textView.setLayoutParams(layoutParams);
 								holder.commentList.addView(textView);
 							}
-
 						}
 
 					}

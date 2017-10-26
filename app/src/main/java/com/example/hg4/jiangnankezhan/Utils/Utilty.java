@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -129,7 +130,7 @@ public class Utilty {
 				return true;
 			}
 		});
-		Glide.with(imgEntryView.getContext()).load(url).into(img);
+		Glide.with(imgEntryView.getContext()).load(url).placeholder(R.drawable.placeholder).into(img);
 		dialog.setView(imgEntryView);
 		dialog.show();
 		return dialog;
@@ -192,5 +193,14 @@ public class Utilty {
 		// 最后通知图库更新
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
 		Log.e("test","ok");
+	}
+
+	public static void showNetworkFail(Context context,ViewGroup holder){
+		ImageView error=new ImageView(context);
+		 error.setImageResource(R.drawable.net_error);
+		 error.setScaleType(ImageView.ScaleType.CENTER_CROP);
+		 error.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+		 holder.removeAllViews();
+		 holder.addView(error);
 	}
 }

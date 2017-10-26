@@ -108,6 +108,8 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		switch (requestCode){
 			case 1:
 				if(resultCode==1){
+					curWeek=1;
+					setCurWeek(curWeek);
 					createschedule();
 				}
 				if(resultCode==0){
@@ -166,7 +168,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 			case R.id.schedule_search:
 				Intent intent=new Intent(getActivity(),SearchActivity.class);
 				intent.putExtra("findname","Course");
-				intent.putExtra("adaptertype",1);
+				intent.putExtra("adaptertype",0);
 				startActivity(intent);
 				break;
         }

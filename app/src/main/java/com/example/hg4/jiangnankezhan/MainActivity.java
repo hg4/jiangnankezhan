@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity
 	static final String[] PERMISSION = new String[]{
 			Manifest.permission.READ_CONTACTS,// 写入权限
 			Manifest.permission.READ_EXTERNAL_STORAGE,  //读取权限
-			Manifest.permission.WRITE_CALL_LOG,        //读取设备信息
+			Manifest.permission.WRITE_EXTERNAL_STORAGE      //读取设备信息
 	};
 	private ImageButton logout;
 	private ImageButton setting;
@@ -226,8 +226,8 @@ public class MainActivity extends BaseActivity
 	}
 	private void getusername(){
 		SharedPreferences pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
-		getusername=pref.getString("昵称",null);
-		if(getusername!=null){
+		getusername=pref.getString("昵称","");
+		if(!getusername.equals("")){
 			username.setText(getusername);
 		}
 		else {
@@ -235,7 +235,7 @@ public class MainActivity extends BaseActivity
 			query.getInBackground(id, new GetCallback<AVObject>() {
 				@Override
 				public void done(AVObject avObject, AVException e) {
-					if(avObject!=null&&e!=null){
+					if(e==null){
 						getusername=avObject.getString("nickname");
 						if(getusername!=null){
 							username.setText(getusername);
@@ -268,18 +268,25 @@ public class MainActivity extends BaseActivity
 		if(getBitmapFromSharedPreferences()!=null)
 			mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
 		else {
-			AVFile file=(AVFile)AVUser.getCurrentUser().get("head");
-			if(file!=null){
-				file.getDataInBackground(new GetDataCallback() {
-					@Override
-					public void done(byte[] bytes, AVException e) {
-						if(e==null){
-							mainheadView.setImageBitmap(Utilty.Bytes2Bimap(bytes));
-						}
-						else e.printStackTrace();
+			AVQuery<AVObject> query=new AVQuery<>("_User");
+			query.getInBackground(id, new GetCallback<AVObject>() {
+				@Override
+				public void done(AVObject avObject, AVException e) {
+					AVFile file=avObject.getAVFile("head");
+					if(file!=null){
+						file.getDataInBackground(new GetDataCallback() {
+							@Override
+							public void done(byte[] bytes, AVException e) {
+								if(e==null){
+									mainheadView.setImageBitmap(Utilty.Bytes2Bimap(bytes));
+								}
+								else e.printStackTrace();
+							}
+						});
 					}
-				});
-			}
+				}
+			});
+
 		}
 	}
 

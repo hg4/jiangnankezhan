@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -79,8 +80,11 @@ public class MyCommentActivity  extends BaseActivity implements ViewPager.OnPage
 			public void onClick(View v) {
 				Intent intent=new Intent(MyCommentActivity.this,SearchActivity.class);
 				intent.putExtra("findname","Course_comment");
-				intent.putExtra("adaptertype",2);
-				intent.putExtra("condition",id);
+				intent.putExtra("adaptertype",1);
+				Bundle bundle=new Bundle();
+				bundle.putInt("conditiontype",1);
+				bundle.putString("objectid",id);
+				intent.putExtra("condition",bundle);
 				startActivity(intent);
 			}
 		});
@@ -91,6 +95,10 @@ public class MyCommentActivity  extends BaseActivity implements ViewPager.OnPage
 		fragmentList.add(recyclerFragment);
 		RecyclerFragment recyclerFragment1=new RecyclerFragment();
 		fragmentList.add(recyclerFragment1);
+		if(!Utilty.isNetworkAvailable(this)){
+			Utilty.dismissDiaglog(dialog,1000);
+			Toast.makeText(this,"网络连接不可用",Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private void initData() {

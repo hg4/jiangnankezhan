@@ -73,7 +73,6 @@ public class PersonInfoActivity extends BaseActivity {
 		top_nicknameHolder=(TextView)findViewById(R.id.info_nickname);
 		pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
 		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-		initBaseData();
 		//SharedPreferences.Editor editor=getSharedPreferences(id+"userdata",MODE_PRIVATE).edit();
 		//editor.clear();
 		//editor.apply();
@@ -92,6 +91,7 @@ public class PersonInfoActivity extends BaseActivity {
 		schoolinfoAdapter.setOnItemClickLitener(new schoolOnItemClickListener());
 		schoolInfoView.setAdapter(schoolinfoAdapter);
 		initSchoolInfo();
+		initBaseData();
 		initView();
 		headView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -131,6 +131,12 @@ public class PersonInfoActivity extends BaseActivity {
 				String findkey=findkeyList2.get(i);
 				String cql="select "+findkey+" from _User where username='"+username+"'";
 				findSchoolDataInBackground(cql,key,findkey);
+				try{
+					Thread.sleep(200);
+				}
+				catch (Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 	}

@@ -20,6 +20,7 @@ import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.example.hg4.jiangnankezhan.Model.Course;
+import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import org.litepal.crud.DataSupport;
 
@@ -51,10 +52,10 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
     private TextView cosclassroom;
     private TextView cosweek;
     private TextView cosexamtype;
-
     private TextView costype;
     private TextView coscredit;
     private TextView costeacher;
+    private ConstraintLayout rootview;
     private ImageView back;
     private TextView require;
     private ImageView require1;
@@ -64,6 +65,8 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cos_details);
+        rootview=(ConstraintLayout)findViewById(R.id.rootview);
+
         Name = getIntent().getStringExtra("name");
         weekday = getIntent().getStringExtra("date");
         teacher = getIntent().getStringExtra("teacher");
@@ -86,7 +89,6 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
         coscredit = (TextView) findViewById(R.id.coscredit);
         cosexamtype=(TextView)findViewById(R.id.cosexamtype);
         costeacher = (TextView) findViewById(R.id.costeacher);
-
         List<Course> courses = DataSupport.where("courseName=? and teacher=? and date=?", Name, teacher, weekday).find(Course.class);
         if (courses.size()!=0&&courses!=null){
             for (final Course course : courses) {
@@ -137,14 +139,13 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
                             setTime();
                         } else {
                             e.printStackTrace();
-                            Toast.makeText(CosDetailsActivity.this, "暂时没有这门课程的数据哦", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
             });
         }
-
-
+        if(!Utilty.isNetworkAvailable(this))
+            Utilty.showNetworkFail(this,rootview);
     }
     private void setTime(){
         switch (cosbeginnumber) {

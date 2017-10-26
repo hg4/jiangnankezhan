@@ -46,6 +46,7 @@ public class BaseInfoAdapter extends RecyclerView.Adapter<BaseInfoAdapter.ViewHo
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.baseinfo_item,parent,false);
 		ViewHolder viewHolder=new ViewHolder(view);
+		viewHolder.setIsRecyclable(false);
 		return viewHolder;
 	}
 

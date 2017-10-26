@@ -20,11 +20,7 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.noToolBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -32,6 +28,14 @@
         <activity
             android:name=".RegisterOKActivity"
             android:theme="@style/AppTheme.noToolBar"/>
+        <activity android:name=".OpenActivity"
+            android:theme="@style/AppTheme.noToolBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+    </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -114,6 +118,7 @@
             android:label="@string/title_activity_my_comment"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 /**
  * Created by HG4 on 2017/10/13.
@@ -23,7 +24,7 @@ public class LoadingDialog extends Dialog {
 		setContentView(R.layout.loading);
 		loading_text = (TextView) findViewById(R.id.loading_text);
 		loading_pic=(ImageView)findViewById(R.id.loading_img);
-		Glide.with(context).load(R.drawable.loading).into(loading_pic);
+		Glide.with(context).load(R.drawable.loading).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(loading_pic);
 		setCanceledOnTouchOutside(false);
 	}
 

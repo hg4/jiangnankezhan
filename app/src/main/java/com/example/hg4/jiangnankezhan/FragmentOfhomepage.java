@@ -36,10 +36,10 @@ public class FragmentOfhomepage extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         hpLayout=(LinearLayout)getView().findViewById(R.id.hp_layout);
-        ImageView error=new ImageView(this.getContext());
-        error.setImageResource(R.drawable.net_error);
-        error.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        hpLayout.addView(error);
+       // ImageView error=new ImageView(this.getContext());
+       // error.setImageResource(R.drawable.net_error);
+       // error.setScaleType(ImageView.ScaleType.CENTER_CROP);
+       // hpLayout.addView(error);
 
     }
 
