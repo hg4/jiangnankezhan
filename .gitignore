@@ -1,11 +1,12 @@
+ jiangnankezhan.iws 
+.idea/workspace.xml
 *.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-app/src/main/java/com/example/hg4/jiangnankezhan/MainActivity.java
-app/src/main/res/values/strings.xml
+.idea/
+.gradle/ 
+build/ 
+app/build/
+local.properties
+.idea/misc.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/misc.xml
