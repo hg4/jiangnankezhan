@@ -388,12 +388,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/info_next_icon"/>
 
-            <ImageView
-                android:layout_width="344dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/uni_div"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="414dp"/>
+
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 
@@ -406,9 +401,11 @@
                   app:layout_constraintHorizontal_bias="0.0"
                   app:layout_constraintLeft_toLeftOf="parent"
                   app:layout_constraintRight_toRightOf="parent"
-                  app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+                  app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        android:id="@+id/linearLayout6">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/material"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -438,14 +435,44 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/info_next_icon"/>
 
-            <ImageView
-                android:layout_width="344dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/uni_div"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="475dp"/>
+
         </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:background="#E4E4E4"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:background="#E4E4E4"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        android:id="@+id/imageView12" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:background="#E4E4E4"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 </android.support.constraint.ConstraintLayout>

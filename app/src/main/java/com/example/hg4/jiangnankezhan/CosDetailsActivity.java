@@ -29,6 +29,7 @@ import java.util.List;
 
 import static com.example.hg4.jiangnankezhan.R.id.examinetype;
 import static com.example.hg4.jiangnankezhan.R.id.week;
+import static org.litepal.crud.DataSupport.find;
 import static org.litepal.crud.DataSupport.where;
 
 public class CosDetailsActivity extends BaseActivity implements View.OnClickListener {
@@ -61,6 +62,8 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
     private ImageView require1;
     private ImageView content_button;
     private ConstraintLayout content_layout;
+    private ConstraintLayout material_layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,7 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
         teacher = getIntent().getStringExtra("teacher");
         content_button=(ImageView)findViewById(R.id.content_button);
         content_layout=(ConstraintLayout)findViewById(R.id.content_layout);
+        material_layout=(ConstraintLayout)findViewById(R.id.material);
         require = (TextView) findViewById(R.id.requirement);
         require1 = (ImageView) findViewById(R.id.require);
         back = (ImageView) findViewById(R.id.back);
@@ -80,6 +84,7 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
         back.setOnClickListener(this);
         content_layout.setOnClickListener(this);
         content_button.setOnClickListener(this);
+        material_layout.setOnClickListener(this);
         cosname = (TextView) findViewById(R.id.cosname);
         costime = (TextView) findViewById(R.id.costime);
         cosnumber = (TextView) findViewById(R.id.cosnumber);
@@ -228,6 +233,11 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
                 intent3.putExtra("courseName",Name);
                 intent3.putExtra("teacher",teacher);
                 startActivity(intent3);
+                break;
+            case R.id.material:
+                Intent intent4= new Intent(CosDetailsActivity.this,MaterialActivity.class);
+                intent4.putExtra("courseName",Name);
+                startActivity(intent4);
                 break;
         }
     }

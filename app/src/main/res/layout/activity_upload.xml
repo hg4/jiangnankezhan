@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.hg4.jiangnankezhan.UploadActivity">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:background="#fff"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="22dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/default_back_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="36dp"
+            android:layout_gravity="center_vertical"
+            android:text="上传资料"
+            android:textColor="#222D43"
+            android:textSize="22dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/upload"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/button1"
+        android:text="上传资料"
+        android:textColor="#fff"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:layout_width="341dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="13dp"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/base"
+        android:id="@+id/imageView1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="23dp"
+        android:layout_marginStart="23dp"
+        android:background="@null"
+        android:ems="15"
+        android:hint="标题 资料的名称很重要哦"
+        android:textColorHint="#9FA2A4"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView1"
+        app:layout_constraintLeft_toLeftOf="@+id/imageView1" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="341dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="17dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView1"
+        app:srcCompat="@drawable/base2"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <EditText
+        android:id="@+id/introduce"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="23dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="19dp"
+        android:background="@null"
+        android:ems="15"
+        android:hint="介绍一下你分享的资料吧！"
+        android:textColorHint="#9FA2A4"
+        android:textSize="17dp"
+        app:layout_constraintLeft_toLeftOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
+    <TextView
+        android:id="@+id/textnum1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100"
+        android:textColor="#Ac7281"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        android:layout_marginBottom="5dp" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="341dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="14dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:srcCompat="@drawable/base3"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <ImageView
+        android:id="@+id/addfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/choose"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="25dp"
+        app:layout_constraintLeft_toLeftOf="@+id/imageView3"
+        android:layout_marginStart="25dp" />
+
+    <ImageView
+        android:id="@+id/cha"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="66dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintLeft_toLeftOf="@+id/addfile"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:srcCompat="@null" />
+
+</android.support.constraint.ConstraintLayout>
