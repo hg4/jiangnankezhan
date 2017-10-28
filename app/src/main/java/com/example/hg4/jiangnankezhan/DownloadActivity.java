@@ -20,7 +20,7 @@ import com.avos.avoscloud.GetDataCallback;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
-public class DownloadActivity extends AppCompatActivity {
+public class DownloadActivity extends BaseActivity {
     private TextView materialname;
     private TextView owner;
     private TextView date;

@@ -18,6 +18,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.search.AVSearchQuery;
+import com.example.hg4.jiangnankezhan.Adapter.MaterialSchAdapter;
 import com.example.hg4.jiangnankezhan.Adapter.MyCmtAdapter;
 import com.example.hg4.jiangnankezhan.Adapter.SechcsAdapter;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
@@ -160,6 +161,8 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 				recyclerView.setAdapter(adapter);
 				break;
 			case ADAPTER_CSFILE:
+				adapter=new MaterialSchAdapter(displaySearchList);
+				recyclerView.setAdapter(adapter);
 				break;
 			default:
 				break;
@@ -187,8 +190,8 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 							sublist.add(data);
 						}
 					}
-
 				}
+				searchList=sublist;
 				break;
 		}
 	}

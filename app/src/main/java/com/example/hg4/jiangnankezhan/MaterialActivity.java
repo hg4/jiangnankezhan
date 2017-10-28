@@ -19,13 +19,13 @@ import com.example.hg4.jiangnankezhan.Adapter.MaterialAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaterialActivity extends AppCompatActivity {
+public class MaterialActivity extends BaseActivity {
     private ImageView back;
     private Button upload;
     private ListView material;
     private List<String> materialList=new ArrayList<>();
     private MaterialAdapter adapter;
-
+    private Button search;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +33,7 @@ public class MaterialActivity extends AppCompatActivity {
         back = (ImageView) findViewById(R.id.back);
         upload = (Button) findViewById(R.id.upload);
         material=(ListView) findViewById(R.id.material);
+        search=(Button)findViewById(R.id.meterial_search);
         adapter=new MaterialAdapter(MaterialActivity.this, R.layout.setting_item,materialList);
         material.setAdapter(adapter);
         material.setDivider(null);
@@ -75,6 +76,19 @@ public class MaterialActivity extends AppCompatActivity {
                 Intent intent=new Intent(MaterialActivity.this,UploadActivity.class);
                 intent.putExtra("courseName",getIntent().getStringExtra("courseName"));
                 startActivityForResult(intent,1);
+            }
+        });
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MaterialActivity.this,SearchActivity.class);
+                intent.putExtra("findname","Course_file");
+                intent.putExtra("adaptertype",2);
+                Bundle bundle=new Bundle();
+                bundle.putInt("conditiontype",2);
+                bundle.putString("courseName",getIntent().getStringExtra("courseName"));
+                intent.putExtra("condition",bundle);
+                startActivity(intent);
             }
         });
     }

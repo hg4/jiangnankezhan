@@ -31,7 +31,7 @@ import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.io.FileNotFoundException;
 
-public class UploadActivity extends AppCompatActivity {
+public class UploadActivity extends BaseActivity {
     private Dialog dialog;
     private ImageView back;
     private Button upload;
@@ -137,7 +137,7 @@ public class UploadActivity extends AppCompatActivity {
                     path = getPath(UploadActivity.this, uri);
                     dialog = Utilty.createDiaglog(UploadActivity.this, "正在上传中...");
                     try {
-                        file = AVFile.withAbsoluteLocalPath(title.getText().toString(), path);
+                        file = AVFile.withAbsoluteLocalPath("file", path);
                         file.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(AVException e) {
