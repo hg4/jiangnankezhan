@@ -109,15 +109,14 @@ public class DownloadActivity extends BaseActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AVQuery<AVObject> query = new AVQuery<>("_File");
-                query.whereEqualTo("name", getIntent().getStringExtra("content"));
-                query.include("url");
+                AVQuery<AVObject> query = new AVQuery<>("Course_file");
+                query.whereEqualTo("Title", getIntent().getStringExtra("content"));
                 query.getFirstInBackground(new GetCallback<AVObject>() {
                     @Override
                     public void done(AVObject avObject, AVException e) {
                         {
                             if (e == null) {
-                                Uri uri = Uri.parse(avObject.getString("url"));
+                                Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
                             } else {
