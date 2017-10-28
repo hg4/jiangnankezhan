@@ -25,6 +25,7 @@ public class Chgpswd3Activity extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
                                       @Override
                                       public void onClick(View view) {
+                                          finish();
                                           Intent intent=new Intent(Chgpswd3Activity.this,SettingActivity.class);
                                           startActivity(intent);
                                       }

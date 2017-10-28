@@ -139,7 +139,6 @@ public class UploadActivity extends BaseActivity {
                     File f=new File(path);
                     String fileName=f.getName();
                     String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
-                    Toast.makeText(UploadActivity.this, prefix, Toast.LENGTH_SHORT).show();
                     dialog = Utilty.createDiaglog(UploadActivity.this, "正在上传中...");
                     try {
                         file = AVFile.withAbsoluteLocalPath("file."+prefix, path);

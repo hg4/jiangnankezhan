@@ -41,6 +41,7 @@ public class Chgpswd1Activity extends AppCompatActivity {
                 if (TextUtils.isEmpty(oldpswd.getText().toString())) {
                     Toast.makeText(Chgpswd1Activity.this, "客官您没有填原密码哟", Toast.LENGTH_SHORT).show();}
                 else {
+                    finish();
                     pswd = oldpswd.getText().toString();
                     Intent intent = new Intent(Chgpswd1Activity.this, Chgpswd2Activity.class);
                     intent.putExtra("string_data", pswd);

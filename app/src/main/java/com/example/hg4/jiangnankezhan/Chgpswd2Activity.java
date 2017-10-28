@@ -65,6 +65,7 @@ public class Chgpswd2Activity extends AppCompatActivity {
                                     @Override
                                     public void done(AVException e) {
                                         if (e == null) {
+                                            finish();
                                             Intent intent = new Intent(Chgpswd2Activity.this, Chgpswd3Activity.class);
                                             startActivity(intent);
                                         }
