@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -131,6 +132,25 @@ public class Utilty {
 			}
 		});
 		Glide.with(imgEntryView.getContext()).load(url).placeholder(R.drawable.placeholder).into(img);
+		dialog.setView(imgEntryView);
+		dialog.show();
+		return dialog;
+	}
+	public static android.support.v7.app.AlertDialog leadDialog(final Context mContext,int drawableId){
+		LayoutInflater inflater = LayoutInflater.from(mContext);
+		final View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
+		final android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(mContext,R.style.Dialog_Fullscreen).create();
+		ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
+
+		img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+		img.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				dialog.dismiss();
+				return true;
+			}
+		});
+		img.setImageResource(drawableId);
 		dialog.setView(imgEntryView);
 		dialog.show();
 		return dialog;

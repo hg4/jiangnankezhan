@@ -42,7 +42,7 @@ import com.yancy.imageselector.ImageSelectorActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentActivity extends AppCompatActivity {
+public class CommentActivity extends BaseActivity {
     private ImageView back;
     private EditText content;
     private TextView textnum;

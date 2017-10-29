@@ -39,17 +39,18 @@ import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PersonInfoActivity extends BaseActivity {
 	private RecyclerView baseInfoView;
 	private RecyclerView schoolInfoView;
-	private List<Info> baseInfoList=new ArrayList<>();
-	private List<Info> schoolInfoList=new ArrayList<>();
+	private List<Info> baseInfoList= Collections.synchronizedList(new ArrayList<Info>());
+	private List<Info> schoolInfoList= Collections.synchronizedList(new ArrayList<Info>());
 	private List<String> keyInfoList=new ArrayList<String>(){{add("昵称");add("性别");add("手机");add("邮箱");}};
-	private List<String> schoolkeyInfoList=new ArrayList<String>(){{add("学院");add("专业");add("入学年份");add("学历");}};
+	private List<String> schoolkeyInfoList=new ArrayList<String>(){{add("学院");add("入学年份");add("专业");add("学历");}};
 	private List<String> findkeyList1=new ArrayList<String>(){{add("nickname");add("sex");add("mobilePhoneNumber");add("email");}};
-	private List<String> findkeyList2=new ArrayList<String>(){{add("college");add("major");add("grade");add("education");}};
+	private List<String> findkeyList2=new ArrayList<String>(){{add("college");add("grade");add("major");add("education");}};
 	private TextView top_nicknameHolder;
 	private TextView top_collegeHolder;
 	private String key;
@@ -65,6 +66,7 @@ public class PersonInfoActivity extends BaseActivity {
 	private TextView gradeText;
 	private ImageView headView;
 	private Bitmap head;
+	private boolean flag;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -102,43 +104,38 @@ public class PersonInfoActivity extends BaseActivity {
 
 	}
 	private void initBaseInfo(){
-		for(i=0;i<keyInfoList.size();i++){
-			String defaultValue="";
-			key=keyInfoList.get(i);
-			value=pref.getString(key,defaultValue);
-			if(value!=defaultValue){
-				Info info=new Info(key,value);
-				baseInfoList.add(info);
+			for(i=0;i<keyInfoList.size();i++){
+				String defaultValue="";
+				key=keyInfoList.get(i);
+				value=pref.getString(key,defaultValue);
+				if(!value.equals(defaultValue)){
+					Info info=new Info(key,value);
+					baseInfoList.add(info);
+				}
+				else {
+					String findkey=findkeyList1.get(i);
+					String cql="select "+findkey+" from _User where username='"+username+"'";
+					findBaseDataInBackground(cql,key,findkey);
+				}
 			}
-			else {
-				String findkey=findkeyList1.get(i);
-				String cql="select "+findkey+" from _User where username='"+username+"'";
-				findBaseDataInBackground(cql,key,findkey);
-			}
-		}
 	}
 	private void initSchoolInfo(){
-		for(i=0;i<schoolkeyInfoList.size();i++){
-			String defaultValue="";
-			key=schoolkeyInfoList.get(i);
-			value=pref.getString(key,defaultValue);
-			Log.d("initschool",key+value);
-			if(value!=defaultValue){
-				Info info=new Info(key,value);
-				schoolInfoList.add(info);
-			}
-			else {
-				String findkey=findkeyList2.get(i);
-				String cql="select "+findkey+" from _User where username='"+username+"'";
-				findSchoolDataInBackground(cql,key,findkey);
-				try{
-					Thread.sleep(200);
-				}
-				catch (Exception e){
-					e.printStackTrace();
+
+			for(i=0;i<schoolkeyInfoList.size();i++) {
+				flag = true;
+				String defaultValue = "";
+				key = schoolkeyInfoList.get(i);
+				value = pref.getString(key, defaultValue);
+				Log.d("initschool", key + value);
+				if (!value.equals(defaultValue)) {
+					Info info = new Info(key, value);
+					schoolInfoList.add(info);
+				} else {
+					String findkey = findkeyList2.get(i);
+					String cql = "select " + findkey + " from _User where username='" + username + "'";
+					findSchoolDataInBackground(cql, key, findkey);
 				}
 			}
-		}
 	}
 	private void saveString(String key,String data){
 		SharedPreferences.Editor editor=getSharedPreferences(id+"userdata",MODE_PRIVATE).edit();
@@ -167,8 +164,8 @@ public class PersonInfoActivity extends BaseActivity {
 			}
 		});
 	}
-	private void findSchoolDataInBackground(String cql,final String key,final String findkey){
-		AVQuery<AVObject> query=new AVQuery<>("_User");
+	 private void findSchoolDataInBackground(final String cql,final String key,final String findkey){
+		final AVQuery<AVObject> query=new AVQuery<>("_User");
 		query.doCloudQueryInBackground(cql, new CloudQueryCallback<AVCloudQueryResult>() {
 			@Override
 			public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
@@ -180,6 +177,7 @@ public class PersonInfoActivity extends BaseActivity {
 				Info info=new Info(key,findValue);
 				schoolInfoList.add(info);
 				schoolinfoAdapter.notifyDataSetChanged();
+				flag=false;
 			}
 		});
 	}
@@ -363,7 +361,7 @@ public class PersonInfoActivity extends BaseActivity {
 							collegeText=(TextView)view.findViewById(R.id.info_value);
 							startActivityForResult(new Intent(PersonInfoActivity.this,ListDiaglogActivity.class),4);
 						break;
-					case 1:
+					case 2:
 						final ConstraintLayout majorChange=(ConstraintLayout) getLayoutInflater().inflate(R.layout.major_dialog,null);
 						AlertDialog.Builder majorBuilder=new AlertDialog.Builder(PersonInfoActivity.this);
 						majorBuilder.setView(majorChange)
@@ -372,7 +370,7 @@ public class PersonInfoActivity extends BaseActivity {
 									public void onClick(DialogInterface dialog, int which) {
 										EditText majorInput = (EditText) majorChange.findViewById(R.id.majorinput);
 										final String newmajor=majorInput.getText().toString();
-										if (Utilty.emailIsValid(newmajor)) {
+										if (Utilty.nameIsValid(newmajor)) {
 											user.put("major", newmajor);
 											user.saveInBackground(new SaveCallback() {
 												@Override
@@ -387,7 +385,7 @@ public class PersonInfoActivity extends BaseActivity {
 											dialog.dismiss();
 										}
 										else{
-											Toast.makeText(PersonInfoActivity.this,"邮箱号不合法",Toast.LENGTH_SHORT).show();
+											Toast.makeText(PersonInfoActivity.this,"专业名不合法",Toast.LENGTH_SHORT).show();
 										}
 									}
 								})
@@ -402,7 +400,7 @@ public class PersonInfoActivity extends BaseActivity {
 						majorDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
 						majorDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
 						break;
-					case 2:
+					case 1:
 						gradeText=(TextView)view.findViewById(R.id.info_value);
 						startActivityForResult(new Intent(PersonInfoActivity.this,ListGradeActivity.class),5);
 						break;

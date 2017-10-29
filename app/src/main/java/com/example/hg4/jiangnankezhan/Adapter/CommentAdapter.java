@@ -159,7 +159,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 						ImageView imageView=new ImageView(mContext);
 						imageView.setTag(R.id.tag_img,url);
 						LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(200,200);
-						layoutParams.setMargins(40,10,0,0);
+						layoutParams.setMargins(45,10,0,0);
 						imageView.setLayoutParams(layoutParams);
 						imageView.setOnClickListener(new View.OnClickListener() {
 							@Override

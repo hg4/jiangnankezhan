@@ -41,7 +41,16 @@ public class PerferencesUtils {
 		editor.putBoolean("first login", isFirstLogin);
 		editor.commit();
 	}
-
+	public static void saveState(Context context,String id,int viewId,boolean isShow){
+		SharedPreferences share=context.getSharedPreferences(id+"userdata"+viewId,Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = share.edit();
+		editor.putBoolean("isShow", isShow);
+		editor.commit();
+	}
+	public static boolean getState(Context context,String id,int viewId) {
+		SharedPreferences share=context.getSharedPreferences(id+"userdata"+viewId,Context.MODE_PRIVATE);
+		return share.getBoolean("isShow", true);
+	}
 	/**
 	 * 获取是否第一次进入登录的状态值
 	 */

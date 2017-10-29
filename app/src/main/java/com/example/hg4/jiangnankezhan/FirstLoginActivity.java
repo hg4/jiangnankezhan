@@ -33,9 +33,11 @@ public class FirstLoginActivity extends AppCompatActivity {
 				case 1:
 					startActivityForResult(new Intent(FirstLoginActivity.this,ListDiaglogActivity.class),2);
 					break;
-				case 2:startActivity(new Intent(FirstLoginActivity.this,MainActivity.class));
+				case 2:
 					PerferencesUtils.saveState(FirstLoginActivity.this, AVUser.getCurrentUser().getObjectId(),false);
-					this.finish();
+					startActivity(new Intent(FirstLoginActivity.this,MainActivity.class));
+					FirstLoginActivity.this.finish();
+					break;
 			}
 		}
 	}

@@ -67,6 +67,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 	private int height;
 	private static final int PERLENGTH=148;
 	private static int PERWIDTH;
+	private ImageView lead;
 	private String id= AVUser.getCurrentUser().getObjectId();
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup contain, Bundle savedInstanceState) {
@@ -97,6 +98,10 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 		nextWeek=(Button)getView().findViewById(R.id.week_next);
 		search=(Button)getView().findViewById(R.id.schedule_search);
 		courseLayout=(RelativeLayout)getView().findViewById(R.id.table_schedule);
+		if(PerferencesUtils.getState(getContext(),id,addCourse.getId())){
+			Utilty.leadDialog(getContext(),R.drawable.lead);
+			PerferencesUtils.saveState(getContext(),id,addCourse.getId(),false);
+		}
 		initEvent();
 		updateTime();
 		createschedule();
