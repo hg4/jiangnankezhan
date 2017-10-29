@@ -43,7 +43,7 @@ public class UploadActivity extends BaseActivity {
     private AVFile file;
     private ImageView cha;
     private TextView textnum;
-    private int maxNum = 80;
+    private int maxNum = 90;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

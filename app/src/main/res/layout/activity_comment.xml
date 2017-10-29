@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -45,13 +46,13 @@
 
     <EditText
         android:id="@+id/textcomment"
-        android:layout_width="330dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="18dp"
         android:layout_marginStart="18dp"
         android:layout_marginTop="23dp"
         android:background="@null"
-        android:ems="23"
+        android:maxLength="100"
         android:hint="分享一下你的感受吧!"
         android:textAlignment="viewStart"
         android:textSize="15dp"
