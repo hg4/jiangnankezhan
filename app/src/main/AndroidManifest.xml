@@ -129,7 +129,12 @@
             android:name=".DownloadActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
+        <activity android:name=".SuggestionActivity"
+                  android:theme="@style/AppTheme.NoActionBar"
+                  android:windowSoftInputMode="adjustPan"></activity>
+        <activity android:name=".ComquesListActivity"
+                  android:label="常见问题"
+                  android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
