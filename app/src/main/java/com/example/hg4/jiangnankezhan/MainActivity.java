@@ -299,8 +299,9 @@ public class MainActivity extends BaseActivity
 			query.getInBackground(id, new GetCallback<AVObject>() {
 				@Override
 				public void done(AVObject avObject, AVException e) {
-					AVFile file=avObject.getAVFile("head");
-					if(file!=null){
+					if(avObject!=null){
+						AVFile file=avObject.getAVFile("head");
+						if(file!=null){
 						file.getDataInBackground(new GetDataCallback() {
 							@Override
 							public void done(byte[] bytes, AVException e) {
@@ -310,6 +311,7 @@ public class MainActivity extends BaseActivity
 								else e.printStackTrace();
 							}
 						});
+						}
 					}
 				}
 			});

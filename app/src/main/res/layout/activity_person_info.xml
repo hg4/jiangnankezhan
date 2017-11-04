@@ -148,20 +148,10 @@
 
     </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/baseinfo"
+    <include
+        layout="@layout/content_personinfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
-        android:elevation="3dp"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/schoolinfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorWhite"
-        android:elevation="3dp"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

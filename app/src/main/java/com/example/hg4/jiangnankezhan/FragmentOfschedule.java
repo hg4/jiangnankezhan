@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,14 +62,12 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 	private Button nextWeek;
 	private Integer curWeek=1;
 	private RelativeLayout courseLayout;
-	private ImageView solid;
 	private Button search;
-	private int solidWidth;
 	private int width;
 	private int height;
-	private static final int PERLENGTH=148;
+	private float density;
+	private static int PERLENGTH;
 	private static int PERWIDTH;
-	private ImageView lead;
 	private String id= AVUser.getCurrentUser().getObjectId();
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup contain, Bundle savedInstanceState) {
@@ -82,22 +82,25 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
         ListView listView=(ListView)getView().findViewById(R.id.listView);
         listView.setAdapter(adapter);
         listView.setDivider(null);
-		WindowManager wm = (WindowManager) getContext()
-				.getSystemService(Context.WINDOW_SERVICE);
-
-		width = wm.getDefaultDisplay().getWidth();
-		height = wm.getDefaultDisplay().getHeight();
-		solid=(ImageView)getView().findViewById(R.id.schedule_solid);
-		solidWidth=solid.getWidth();
-		PERWIDTH=(width-solidWidth)/7-10;
-        addCourse=(Button)getView().findViewById(R.id.schedule_add_course);
+		courseLayout=(RelativeLayout)getView().findViewById(R.id.table_schedule);
+		addCourse=(Button)getView().findViewById(R.id.schedule_add_course);
 		openDrawer=(Button)getView().findViewById(R.id.open_drawer);
 		drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer_layout);
 		week=(TextView)getView().findViewById(R.id.schedule_week);
 		lastWeek=(Button)getView().findViewById(R.id.week_last);
 		nextWeek=(Button)getView().findViewById(R.id.week_next);
 		search=(Button)getView().findViewById(R.id.schedule_search);
-		courseLayout=(RelativeLayout)getView().findViewById(R.id.table_schedule);
+		getDensity();
+		PERWIDTH=width/7-10;
+		//PERLENGTH=(int)((height-130*(int)density)/9.2);
+		//if(height>2000){
+		//	PERLENGTH=(int)((height-130*(int)density)/11.0);
+		//}
+		int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+		int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+		courseLayout.measure(w, h);
+		height =courseLayout.getMeasuredHeight();
+		PERLENGTH=height/12;
 		if(PerferencesUtils.getState(getContext(),id,addCourse.getId())){
 			Utilty.leadDialog(getContext(),R.drawable.lead);
 			PerferencesUtils.saveState(getContext(),id,addCourse.getId(),false);
@@ -136,14 +139,12 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 					HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
 						@Override
 						public void onFailure(Call call, IOException e) {
-							Toast.makeText(getContext(),"检测到学校教务系统网络异常",Toast.LENGTH_SHORT);
-							e.printStackTrace();
+							Toast.makeText(getActivity().getApplicationContext(),"检测到学校教务系统网络异常",Toast.LENGTH_SHORT);
 						}
 
 						@Override
 						public void onResponse(Call call, Response response) throws IOException {
 							Log.e("test",response.toString());
-
 							intent.putExtra("verificationCode",response.body().bytes());
 						}
 					});
@@ -178,8 +179,16 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 				break;
         }
     }
+	private void getDensity() {
+		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+		density=displayMetrics.density;
+		width=displayMetrics.widthPixels;
+		height=displayMetrics.heightPixels;
+		Log.d("test","Density is "+displayMetrics.density+" densityDpi is "+displayMetrics.densityDpi+" height: "+displayMetrics.heightPixels+
+				" width: "+displayMetrics.widthPixels);
+	}
 
-    private void initEvent(){
+	private void initEvent(){
 		addCourse.setOnClickListener(this);
 		openDrawer.setOnClickListener(this);
 		lastWeek.setOnClickListener(this);
@@ -249,8 +258,10 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 				if(!course.getLength().equals(""))
 					length=Integer.parseInt(course.getLength());
 				courseButton.setText(course.getCourseName()+"\n"+course.getClassroom());
-				courseButton.setMaxLines(6);
 				courseButton.setTextSize(12);
+				courseButton.setMaxLines(3*length);
+				courseButton.setEllipsize(TextUtils.TruncateAt.END);
+
 				courseButton.setBackgroundResource(R.drawable.shape);
 				courseButton.setHeight(PERLENGTH*length);
 				courseButton.setWidth(PERWIDTH);

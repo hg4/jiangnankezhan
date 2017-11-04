@@ -102,13 +102,14 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 			Bitmap bitmap=BitmapFactory.decodeByteArray(byteCode,0,byteCode.length);
 			verficationCode.setBackground(new BitmapDrawable(getResources(),resizeBitmap(bitmap,100,60)));
 			byteCode=null;
-		}
+
+	}
 		else {
 			HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
 				@Override
 				public void onFailure(Call call, IOException e) {
 					//加载获取失败图片
-					Toast.makeText(EduLoginActivity.this,"获取验证码失败",Toast.LENGTH_SHORT).show();
+					Toast.makeText(EduLoginActivity.this,"获取验证码失败,请使用校园网",Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
@@ -122,7 +123,6 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 								verficationCode.setBackground(new BitmapDrawable(getResources(),resizeBitmap(bitmap,100,60)));
 							}
 						});
-
 					}
 
 				}
@@ -204,12 +204,14 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 						if (null != studentName) {
 							// 将gb2312编码的学生姓名转为url编码的字符串
 							urlEncodeStudentName = URLEncoder.encode(studentName, "gb2312");
-							outputInfo = "登录成功";
+							outputInfo = "登录成功，为防止课程数据丢失，请耐心等待不要离开";
 							searchScheduleOperation(EduLoginActivity.this);
 						} else {
 							String failedInfo = returnInfo.get("failedInfo");
 							if (null != failedInfo) {
 								outputInfo = failedInfo;
+								dialog.dismiss();
+								initVerCode();
 							} else {
 								outputInfo = "服务器错误，请重试!";
 							}
