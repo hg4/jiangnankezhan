@@ -109,7 +109,12 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 				@Override
 				public void onFailure(Call call, IOException e) {
 					//加载获取失败图片
-					Toast.makeText(EduLoginActivity.this,"获取验证码失败,请使用校园网",Toast.LENGTH_SHORT).show();
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(EduLoginActivity.this,"获取验证码失败,请使用校园网",Toast.LENGTH_SHORT).show();
+						}
+					});
 				}
 
 				@Override

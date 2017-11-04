@@ -9,77 +9,106 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.hg4.jiangnankezhan.EduLoginActivity"
     tools:showIn="@layout/activity_edu_login">
+<android.support.constraint.ConstraintLayout
+    android:layout_width="300dp"
+    android:layout_height="400dp"
+    android:background="@drawable/card_base"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_marginTop="63dp"
+    android:layout_marginLeft="8dp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    android:layout_marginRight="8dp"
+    app:layout_constraintRight_toRightOf="parent"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp">
+
 
     <Spinner
         android:id="@+id/year_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
         android:layout_marginTop="18dp"
-        android:background="@drawable/jwsystem_tri_long"
+        android:background="#E3CDD3"
         android:entries="@array/school_year_labels"
         app:layout_constraintLeft_toLeftOf="@+id/textView16"
         app:layout_constraintTop_toBottomOf="@+id/textView16"/>
 
     <Button
         android:id="@+id/edulogin_login"
-        android:layout_width="261dp"
+        android:layout_width="284dp"
         android:layout_height="54dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="391dp"
-        android:background="@drawable/jwsystem_button"
-        android:textColor="@color/colorRed"
+        android:layout_marginTop="53dp"
+        android:background="@null"
+        android:text="登录"
+        android:textColor="#fff"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/imageView18" />
 
     <EditText
         android:id="@+id/edulogin_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="178dp"
-        android:background="@drawable/jwsystem_rec"
+        android:layout_marginTop="125dp"
         android:ems="10"
-        android:textColorHint="#c1c1c1"
-        android:paddingLeft="24dp"
+        android:background="@null"
+        android:textColorHint="#BC9CA4"
         android:hint="学号"
         android:inputType="textPersonName"
         app:layout_constraintLeft_toLeftOf="@+id/year_spinner"
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="3dp"
+        android:background="#E3CDD3"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/edulogin_username"
+        app:layout_constraintTop_toBottomOf="@+id/edulogin_username" />
+
     <EditText
         android:id="@+id/edulogin_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:background="@drawable/jwsystem_rec"
         android:ems="10"
         android:hint="教务处密码"
+        android:background="@null"
         android:inputType="textPassword"
-        android:paddingLeft="24dp"
-        android:textColorHint="#c1c1c1"
+        android:textColorHint="#BC9CA4"
         app:layout_constraintLeft_toLeftOf="@+id/edulogin_username"
         app:layout_constraintRight_toRightOf="@+id/edulogin_username"
         app:layout_constraintTop_toBottomOf="@+id/edulogin_username"/>
-
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="3dp"
+        android:background="#E3CDD3"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/edulogin_password"
+        app:layout_constraintTop_toBottomOf="@+id/edulogin_password"
+        android:id="@+id/imageView15" />
     <EditText
         android:id="@+id/edulogin_codeinput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="验证码"
-        android:paddingLeft="24dp"
         android:background="@drawable/jwsystem_short"
-        android:textColorHint="#c1c1c1"
+        android:textColorHint="#BC9CA5"
         android:layout_marginTop="20dp"
         android:ems="4"
         android:inputType="textPersonName"
         app:layout_constraintLeft_toLeftOf="@+id/edulogin_password"
         app:layout_constraintTop_toBottomOf="@+id/edulogin_password"/>
-
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="3dp"
+        android:background="#E3CDD3"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/edulogin_codeinput"
+        app:layout_constraintTop_toBottomOf="@+id/edulogin_codeinput"
+        android:id="@+id/imageView18" />
     <ImageView
         android:id="@+id/edulogin_code"
         android:layout_width="70dp"
@@ -88,83 +117,82 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="#ffffff"
+        android:background="#Ac7281"
         app:layout_constraintBottom_toBottomOf="@+id/edulogin_codeinput"
         app:layout_constraintLeft_toRightOf="@+id/edulogin_codeinput"
         app:layout_constraintTop_toTopOf="@+id/edulogin_codeinput"
-        app:layout_constraintVertical_bias="0.333"/>
+        app:layout_constraintVertical_bias="1.0"/>
 
     <Button
         android:id="@+id/edulogin_refresh"
-        android:layout_width="26dp"
-        android:layout_height="28dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:background="@null"
         android:lineSpacingExtra="8sp"
         android:text="看不清换一张"
-        android:textColor="#fff"
+        android:textColor="#AC7281"
         android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="@+id/edulogin_code"
         app:layout_constraintLeft_toRightOf="@+id/edulogin_code"
         app:layout_constraintTop_toTopOf="@+id/edulogin_code"
-        app:layout_constraintVertical_bias="0.666"
-        tools:layout_editor_absoluteY="285dp"/>
+        app:layout_constraintVertical_bias="0.666" />
 
     <Spinner
         android:id="@+id/term_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="0dp"
-        android:background="@drawable/jwsystem_tri_short"
+        android:background="#E3CDD3"
         android:entries="@array/term_labels"
         app:layout_constraintBottom_toBottomOf="@+id/year_spinner"
         app:layout_constraintLeft_toRightOf="@+id/textView11"
         app:layout_constraintTop_toTopOf="@+id/year_spinner"
-        app:layout_constraintVertical_bias="0.0"/>
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginStart="16dp" />
 
     <TextView
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="学年"
-        android:textColor="#fff"
+        android:textColor="#AC7281"
         android:textSize="20sp"
         app:layout_constraintLeft_toRightOf="@+id/year_spinner"
         android:layout_marginLeft="16dp"
         app:layout_constraintTop_toTopOf="@+id/year_spinner"
-        android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/year_spinner"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintVertical_bias="0.4"/>
+        app:layout_constraintVertical_bias="0.4"
+        android:layout_marginStart="16dp" />
 
     <TextView
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="学期"
-        android:textColor="#fff"
+        android:textColor="#AC7281"
         android:textSize="20sp"
         app:layout_constraintLeft_toRightOf="@+id/term_spinner"
         android:layout_marginLeft="16dp"
         app:layout_constraintTop_toTopOf="@+id/term_spinner"
-        android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/term_spinner"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintVertical_bias="0.4"/>
+        app:layout_constraintVertical_bias="0.4"
+        android:layout_marginStart="16dp" />
 
     <TextView
         android:id="@+id/textView16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="85dp"
+        android:layout_marginTop="36dp"
         android:text="选择导入的课表年份"
-        android:textColor="#ffffff"
+        android:textColor="#AC7281"
         android:textSize="22sp"
         app:layout_constraintLeft_toLeftOf="@+id/edulogin_login"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp" />
+</android.support.constraint.ConstraintLayout>
+
+
 
 </android.support.constraint.ConstraintLayout>

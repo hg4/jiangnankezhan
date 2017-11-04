@@ -139,7 +139,6 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 					HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
 						@Override
 						public void onFailure(Call call, IOException e) {
-							Toast.makeText(getActivity().getApplicationContext(),"检测到学校教务系统网络异常",Toast.LENGTH_SHORT);
 						}
 
 						@Override
