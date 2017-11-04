@@ -61,7 +61,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="13dp"
             android:text="资料名"
-            android:maxEms="10"
+            android:maxEms="13"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="#fff"

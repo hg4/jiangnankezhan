@@ -3,6 +3,7 @@ package com.example.hg4.jiangnankezhan;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,14 +31,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
@@ -46,15 +52,29 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.example.hg4.jiangnankezhan.Model.Course;
+import com.example.hg4.jiangnankezhan.Utils.Constants;
+import com.example.hg4.jiangnankezhan.Utils.HttpUtils;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
+import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
-import java.io.ByteArrayInputStream;
+import org.litepal.crud.DataSupport;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+import static org.litepal.LitePalApplication.getContext;
 
 
 public class MainActivity extends BaseActivity
-		implements NavigationView.OnNavigationItemSelectedListener {
+		implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener  {
 	static final String[] PERMISSION = new String[]{
 			Manifest.permission.READ_CONTACTS,// 写入权限
 			Manifest.permission.READ_EXTERNAL_STORAGE,  //读取权限
@@ -76,8 +96,25 @@ public class MainActivity extends BaseActivity
     private FragmentOfmessage fg3;
     private FragmentOfmy fg4;
     private FragmentManager fManager;
-
-
+/*以下为课程表变量*/
+	private String[] data={"1","2","3","4","5","6","7","8","9","10","11","12"};
+	private Button addCourse;
+	private Button openDrawer;
+	private DrawerLayout drawer;
+	private TextView week;
+	private Button lastWeek;
+	private Button nextWeek;
+	private Integer curWeek=1;
+	private RelativeLayout courseLayout;
+	private ImageView solid;
+	private Button search;
+	private int solidWidth;
+	private int width;
+	private int height;
+	private static final int PERLENGTH=148;
+	private static int PERWIDTH;
+	private ImageView lead;
+	private String id= AVUser.getCurrentUser().getObjectId();
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,7 +123,7 @@ public class MainActivity extends BaseActivity
 		}
 		setContentView(R.layout.activity_main);
         fManager=getSupportFragmentManager();
-        rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
+       /* rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
         rg_tab_bar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
@@ -131,10 +168,10 @@ public class MainActivity extends BaseActivity
         });
         home = (RadioButton) findViewById(R.id.home);
         home.setChecked(true);
-
+*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		drawer.setDrawerListener(toggle);
@@ -166,11 +203,40 @@ public class MainActivity extends BaseActivity
 			}
 		});
 
+		/*
+		 */
+		ArrayAdapter<String> adapter=new ArrayAdapter<String>(MainActivity.this,R.layout.classlist,data);
+		ListView listView=(ListView)findViewById(R.id.listView);
+		listView.setAdapter(adapter);
+		listView.setDivider(null);
+		WindowManager wm = (WindowManager) getContext()
+				.getSystemService(Context.WINDOW_SERVICE);
+
+		width = wm.getDefaultDisplay().getWidth();
+		height = wm.getDefaultDisplay().getHeight();
+		solid=(ImageView)findViewById(R.id.schedule_solid);
+		solidWidth=solid.getWidth();
+		PERWIDTH=(width-solidWidth)/7-10;
+		addCourse=(Button)findViewById(R.id.schedule_add_course);
+		openDrawer=(Button)findViewById(R.id.open_drawer);
+		week=(TextView)findViewById(R.id.schedule_week);
+		lastWeek=(Button)findViewById(R.id.week_last);
+		nextWeek=(Button)findViewById(R.id.week_next);
+		search=(Button)findViewById(R.id.schedule_search);
+		courseLayout=(RelativeLayout)findViewById(R.id.table_schedule);
+		if(PerferencesUtils.getState(MainActivity.this,id,addCourse.getId())){
+			Utilty.leadDialog(MainActivity.this,R.drawable.lead);
+			PerferencesUtils.saveState(MainActivity.this,id,addCourse.getId(),false);
+		}
+		initEvent();
+		updateTime();
+		createschedule();
+		Log.e("test", TimeUtils.getTimeOfWeekStart().toString());
+
 	}
 
 	@Override
 	public void onBackPressed() {
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		if (drawer.isDrawerOpen(GravityCompat.START)) {
 			drawer.closeDrawer(GravityCompat.START);
 		} else {
@@ -309,5 +375,173 @@ public class MainActivity extends BaseActivity
 		}else{
 			Log.i("tag","权限申请ok");
 		}
+	}
+	/*以下为课程表代码*/
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode){
+			case 1:
+				if(resultCode==1){
+					curWeek=1;
+					setCurWeek(curWeek);
+					createschedule();
+				}
+				if(resultCode==0){
+
+				}
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()){
+			case R.id.schedule_add_course:
+				if (Utilty.isNetworkAvailable(MainActivity.this)==true){
+					final Intent intent=new Intent(MainActivity.this,EduLoginActivity.class);
+					HttpUtils.sendGetRequest(Constants.VERTIFICATION_CODE_URL, new Callback() {
+						@Override
+						public void onFailure(Call call, IOException e) {
+							Toast.makeText(getContext(),"检测到学校教务系统网络异常",Toast.LENGTH_SHORT);
+							e.printStackTrace();
+						}
+
+						@Override
+						public void onResponse(Call call, Response response) throws IOException {
+							Log.e("test",response.toString());
+
+							intent.putExtra("verificationCode",response.body().bytes());
+						}
+					});
+					startActivityForResult(intent,1);
+				}else{
+					Toast.makeText(MainActivity.this, "当前网络不可用", Toast.LENGTH_SHORT).show();
+				}
+
+				break;
+			case R.id.open_drawer:
+				drawer.openDrawer(GravityCompat.START);
+				break;
+			case R.id.week_last:
+				if(curWeek>1){
+					curWeek--;
+					setCurWeek(curWeek);
+					createschedule();
+				}
+				break;
+			case R.id.week_next:
+				if(curWeek<20){
+					curWeek++;
+					setCurWeek(curWeek);
+					createschedule();
+				}
+				break;
+			case R.id.schedule_search:
+				Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+				intent.putExtra("findname","Course");
+				intent.putExtra("adaptertype",0);
+				startActivity(intent);
+				break;
+		}
+	}
+
+	private void initEvent(){
+		addCourse.setOnClickListener(this);
+		openDrawer.setOnClickListener(this);
+		lastWeek.setOnClickListener(this);
+		nextWeek.setOnClickListener(this);
+		search.setOnClickListener(this);
+		String savedWeek=PerferencesUtils.getUserStringData(MainActivity.this,id,"savedWeek");
+		if(savedWeek!=""){
+			curWeek=Integer.parseInt(savedWeek);
+			week.setText("第"+savedWeek+"周");
+		}
+	}
+
+	private void updateTime(){
+		String savedSystemWeek=PerferencesUtils.getUserStringData(MainActivity.this,id,"systemWeek");
+		String nowSystemWeek= TimeUtils.getTimeOfWeekStart().toString();
+		if(savedSystemWeek!=""){
+			if(!savedSystemWeek.equals(nowSystemWeek)){
+				PerferencesUtils.saveUserStringData(MainActivity.this,id,"systemWeek",nowSystemWeek);
+				if(curWeek<20)
+					setCurWeek(++curWeek);
+			}
+		}
+		else PerferencesUtils.saveUserStringData(MainActivity.this,id,"systemWeek",nowSystemWeek);
+	}
+
+	private void setCurWeek(Integer curWeek){
+		if(curWeek>=1&&curWeek<=20){
+			String strWeek=curWeek.toString();
+			week.setText("第"+strWeek+"周");
+			PerferencesUtils.saveUserStringData(MainActivity.this,id,"savedWeek",strWeek);
+		}
+
+	}
+	private int parseDate(String date){
+		int i=1;
+		switch (date){
+			case "周一":
+				i=1;
+				break;
+			case "周二":
+				i=2;
+				break;
+			case "周三":
+				i=3;
+				break;
+			case "周四":
+				i=4;
+				break;
+			case "周五":
+				i=5;
+				break;
+			default:break;
+		}
+		return i;
+	}
+	private void createschedule(){
+		courseLayout.removeAllViews();
+		List<Course> courseList=new ArrayList<>();
+		if(curWeek%2==0){
+			courseList= DataSupport.where("start<=? and end>=? and isDouble=1",curWeek.toString(),curWeek.toString()).find(Course.class);
+		}
+		else courseList=DataSupport.where("start<=? and end>=? and isSingle=1",curWeek.toString(),curWeek.toString()).find(Course.class);
+		if(courseList!=null&&courseList.size()!=0){
+			for(final Course course:courseList){
+				Button courseButton=new Button(this);
+				int length=0;
+				if(!course.getLength().equals(""))
+					length=Integer.parseInt(course.getLength());
+				courseButton.setText(course.getCourseName()+"\n"+course.getClassroom());
+				courseButton.setMaxLines(6);
+				courseButton.setTextSize(12);
+				courseButton.setBackgroundResource(R.drawable.shape);
+				courseButton.setHeight(PERLENGTH*length);
+				courseButton.setWidth(PERWIDTH);
+				RelativeLayout.LayoutParams btParams=new RelativeLayout.LayoutParams(PERWIDTH,length*PERLENGTH);
+				final String date=course.getDate();
+				final int courseBeginNumber=course.getCourseBeginNumber();
+				int i=parseDate(date);
+				btParams.leftMargin=(i-1)*PERWIDTH;
+				btParams.topMargin=(courseBeginNumber-2)*PERLENGTH;
+				courseLayout.addView(courseButton,btParams);
+				courseButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
+						intent.putExtra("date",date);
+						intent.putExtra("name",course.getCourseName());
+						intent.putExtra("teacher",course.getTeacher());
+						startActivity(intent);
+					}
+				});
+			}
+		}
+
 	}
 }
