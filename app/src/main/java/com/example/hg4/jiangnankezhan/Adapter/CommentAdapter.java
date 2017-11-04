@@ -138,7 +138,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 					});
 				}
 			}
-			if(!user.getString("nickname").equals("(请填写)"))
+			if(!user.getString("nickname").equals("（请填写）"))
 				holder.username.setText(user.getString("nickname"));
 			holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
 			holder.comment.setText(comment.getString("content"));
@@ -193,6 +193,9 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 								String content=cmt.getString("content");
 								AVUser cmter=cmt.getAVUser("from");
 								String name=cmter.getString("nickname");
+								if(cmter.getString("nickname").equals("（请填写）")){
+									name="匿名用户";
+								}
 								TextView textView=new TextView(mContext);
 								textView.setText(name+" : "+content);
 								LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

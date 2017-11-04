@@ -183,7 +183,7 @@ public class RegisterActivity extends AppCompatActivity {
 		}
 		private boolean isPasswordValid(String password) {
 		//TODO: Replace this with your own logic
-		return password.length() > 4&&password.length()<16;
+		return password.length() >= 4&&password.length()<=16;
 	}
 	public class PhoneCountDownTimer extends CountDownTimer {
 		public PhoneCountDownTimer(long millisInFuture, long countDownInterval) {

@@ -61,7 +61,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="作业要求"
+            android:text="教师风格"
             android:textColor="@drawable/text1"
             android:textSize="14dp"
             tools:layout_editor_absoluteX="8dp"
@@ -103,8 +103,8 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="392dp"
         android:layout_above="@+id/addcmt_comment"
         app:layout_constraintBottom_toTopOf="@+id/addcmt_comment"
         app:layout_constraintHorizontal_bias="1.0"

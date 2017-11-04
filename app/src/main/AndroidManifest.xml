@@ -90,6 +90,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".FirstLoginActivity"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.noToolBar"/>
         <activity
             android:name=".GuideActivity"
