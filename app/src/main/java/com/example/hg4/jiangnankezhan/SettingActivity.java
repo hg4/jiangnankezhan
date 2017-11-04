@@ -1,6 +1,4 @@
 package com.example.hg4.jiangnankezhan;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +50,10 @@ public class SettingActivity extends AppCompatActivity {
                     Intent intent = new Intent(SettingActivity.this,Chgpswd1Activity.class);
                     startActivity(intent);
                     break;
+                case 1:
+                    Intent intent1 = new Intent(SettingActivity.this,SuggestionActivity.class);
+                    startActivity(intent1);
+                    break;
             }
         }
     }
@@ -59,10 +61,12 @@ public class SettingActivity extends AppCompatActivity {
     private void initItems() {
         Setting changepswd = new Setting("修改密码");
         settingList.add(changepswd);
-        Setting update = new Setting("版本更新");
+        Setting suggestion=new Setting("意见反馈");
+        settingList.add(suggestion);
+        /*Setting update = new Setting("版本更新");
         settingList.add(update);
         Setting clear = new Setting("清理缓存");
-        settingList.add(clear);
+        settingList.add(clear);*/
 
     }
 }

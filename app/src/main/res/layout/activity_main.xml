@@ -16,9 +16,11 @@
         android:layout_height="match_parent"
         android:background="#fff"
         tools:context=".MainActivity">
+        <include
+            layout="@layout/fg_schedule"/>
 
-
-    <RadioGroup
+        <!--
+        <RadioGroup
         android:id="@+id/rg_tab_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -54,6 +56,7 @@
             android:text="我"
             android:textColor="@drawable/text"/>
     </RadioGroup>
+
         <FrameLayout
             android:id="@+id/ly_content"
             android:layout_width="match_parent"
@@ -61,6 +64,7 @@
             android:layout_above="@id/rg_tab_bar">
 
         </FrameLayout>
+        -->
 
     </RelativeLayout>
 
