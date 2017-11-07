@@ -82,7 +82,6 @@ public class SearchActivity extends BaseActivity implements OnLoadMoreListener{
 						AVSearchQuery<AVObject> avSearchQuery=new AVSearchQuery<AVObject>();
 						avSearchQuery.setClassName(className);
 						avSearchQuery.setQueryString(findText);
-						avSearchQuery.setLimit(10);
 						avSearchQuery.findInBackgroud(new FindCallback<AVObject>() {
 							@Override
 							public void done(List<AVObject> list, AVException e) {

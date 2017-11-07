@@ -7,6 +7,9 @@ import android.graphics.Bitmap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -60,6 +63,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 		LinearLayout imageList;
 		LinearLayout commentList;
 		AVObject AvComment;
+		int maxTalkGroup;
 		public ViewHolder(View view){
 			super(view);
 			cardView=(CardView)view;
@@ -110,7 +114,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 				if(viewHolder.AvComment!=null){
 					Intent intent=new Intent(mContext, CommentActivity.class);
 					intent.putExtra("from",2);
-					intent.putExtra("cmtid",viewHolder.AvComment.getObjectId());
+					intent.putExtra("cmt",viewHolder.AvComment.toString());
 					((Activity)mContext).startActivityForResult(intent,1);
 				}
 			}
@@ -122,6 +126,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 	public void onBindViewHolder(final CommentAdapter.ViewHolder holder, final int position) {
 			AVObject comment=mCommentList.get(position);
 			holder.AvComment=comment;
+			holder.head.setImageResource(R.drawable.def_ava_round);
 			AVObject user=comment.getAVUser("from");
 			if(user.getAVFile("head")!=null){
 				AVFile file=user.getAVFile("head");
@@ -181,23 +186,39 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			});
 			AVQuery<AVObject> cmtQuery=new AVQuery<>("cscmt_commentlist");
 			cmtQuery.whereEqualTo("to",comment);
+			cmtQuery.addAscendingOrder("talkGroup");
 			cmtQuery.include("from");
+			cmtQuery.include("targetUser");
 			cmtQuery.findInBackground(new FindCallback<AVObject>() {
 				@Override
 				public void done(List<AVObject> list, AVException e) {
 					if(e==null&&list!=null){
 						if(list.size()!=0){
 							holder.commentCount.setText(((Integer)list.size()).toString());
+							if(list.get(list.size()-1).getInt("talkGroup")!=0)
+								holder.maxTalkGroup=list.get(list.size()-1).getInt("talkGroup");
 							ArrayList<String> data=new ArrayList<String>();
 							for(AVObject cmt:list){
 								String content=cmt.getString("content");
 								AVUser cmter=cmt.getAVUser("from");
-								String name=cmter.getString("nickname");
+								String fromName=cmter.getString("nickname");
+								String toName="";
+								if(cmt.getAVObject("targetUser")!=null)
+									toName=cmt.getAVObject("targetUser").getString("nickname");
 								if(cmter.getString("nickname").equals("（请填写）")){
-									name="匿名用户";
+									fromName="匿名用户";
+								}
+								if(toName.equals("（请填写）")){
+									toName="匿名用户";
 								}
 								TextView textView=new TextView(mContext);
-								textView.setText(name+" : "+content);
+								SpannableString spanString=new SpannableString(fromName+"回复"+toName+":"+content);
+								ForegroundColorSpan colorSpan1=new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorRed));
+								ForegroundColorSpan colorSpan2=new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorRed));
+								spanString.setSpan(colorSpan1,0,fromName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+								spanString.setSpan(colorSpan2,fromName.length()+2,fromName.length()+2+toName.length(),Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+								textView.setText(spanString);
+								textView.setMaxEms(22);
 								LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 								layoutParams.setMargins(51,0,0,18);
 								textView.setLayoutParams(layoutParams);

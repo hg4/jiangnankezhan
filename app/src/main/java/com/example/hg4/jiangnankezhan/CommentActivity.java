@@ -30,6 +30,7 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.Adapter.PreviewAdapter;
@@ -61,6 +62,7 @@ public class CommentActivity extends BaseActivity {
     private static final int FROM_REQUEST=1;
     private static final int FROM_COMMENT=2;
     private static final int FROM_CONTENT=3;
+    private static final int FROM_REPLY=4;
     public static final int REQUEST_CODE = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +88,8 @@ public class CommentActivity extends BaseActivity {
         textnum=(TextView)findViewById(R.id.textnum);
         subCmt=(Button)findViewById(R.id.addcmt_comment);
         intent=getIntent();
-        type=intent.getIntExtra("type",0);
-        courseName=intent.getStringExtra("courseName");
-        teacher=intent.getStringExtra("teacher");
         from=intent.getIntExtra("from",0);
-        if(from==FROM_COMMENT){
+        if(from==FROM_COMMENT||from==FROM_REPLY){
             preview.setVisibility(View.INVISIBLE);
             addpic.setVisibility(View.INVISIBLE);
             pic_cmt.setVisibility(View.INVISIBLE);
@@ -131,32 +130,88 @@ public class CommentActivity extends BaseActivity {
             public void onClick(View v) {
                 if(from==FROM_COMMENT){
                     if(!"".equals(content.getText().toString())){
-                        AVObject comment=new AVObject("cscmt_commentlist");
+                        final AVObject comment=new AVObject("cscmt_commentlist");
                         comment.put("from", AVUser.getCurrentUser());
                         comment.put("content",content.getText());
-                        String cmtid=intent.getStringExtra("cmtid");
-                        if(cmtid!=null){
-                            AVObject toComment=AVObject.createWithoutData("Course_comment",cmtid);
-                            comment.put("to",toComment);
-                            comment.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(AVException e) {
-                                    if (e!=null){
-                                        Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
-                                        e.printStackTrace();
+                        try{
+                            final AVObject cmt=AVObject.parseAVObject(intent.getStringExtra("cmt"));
+                            if(cmt!=null){
+                                AVQuery<AVObject> query=new AVQuery<AVObject>("Course_comment");
+                                query.getInBackground(cmt.getObjectId(), new GetCallback<AVObject>() {
+                                    @Override
+                                    public void done(final AVObject avObject, AVException e) {
+                                        if(avObject!=null){
+                                            comment.put("talkGroup",avObject.getInt("maxTalkGroup")+1);//获取最新的maxtalkgroup
+                                            AVObject targetUser=cmt.getAVObject("from");
+                                            comment.put("targetUser",targetUser);
+                                            comment.put("to",cmt);
+                                            comment.saveInBackground(new SaveCallback() {
+                                                @Override
+                                                public void done(AVException e) {
+                                                    if (e!=null){
+                                                        Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                                        e.printStackTrace();
+                                                    }
+                                                    else {
+                                                        //子评论发表成功后，父评论最大talk组+1
+                                                        avObject.increment("maxTalkGroup");
+                                                        avObject.saveInBackground();
+                                                        Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                                        setResult(1);
+                                                        CommentActivity.this.finish();
+                                                    }
+                                                }
+                                            });
+                                        }
                                     }
-                                    else {
-                                        Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
-                                        setResult(1);
-                                        CommentActivity.this.finish();
-                                    }
-                                }
-                            });
+                                });
+
+                            }
                         }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+
 
                 }
                 }
+                if(from==FROM_REPLY){
+                    if(!"".equals(content.getText().toString())) {
+                        final AVObject comment = new AVObject("cscmt_commentlist");
+                        comment.put("from", AVUser.getCurrentUser());
+                        comment.put("content", content.getText());
+                        try{
+                            AVObject reply=AVObject.parseAVObject(intent.getStringExtra("reply"));
+                            if(reply!=null){
+                                AVObject targetUser=reply.getAVObject("from");
+                                comment.put("targetUser",targetUser);
+                                comment.put("talkGroup",reply.getInt("talkGroup"));
+                                comment.put("to",reply.getAVObject("to"));
+                                comment.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(AVException e) {
+                                            if (e!=null){
+                                                Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                                e.printStackTrace();
+                                            }
+                                            else {
+                                                Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                                setResult(1);
+                                                CommentActivity.this.finish();
+                                            }
+                                        }
+                                });
+                            }
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 if(from==FROM_REQUEST){
+                    type=intent.getIntExtra("type",0);
+                    courseName=intent.getStringExtra("courseName");
+                    teacher=intent.getStringExtra("teacher");
                     if(!"".equals(content.getText().toString())){
                         AVObject comment=new AVObject("Course_comment");
                         comment.put("from", AVUser.getCurrentUser());
@@ -200,6 +255,9 @@ public class CommentActivity extends BaseActivity {
                     }
                 }
                 if(from==FROM_CONTENT){
+                    type=intent.getIntExtra("type",0);
+                    courseName=intent.getStringExtra("courseName");
+                    teacher=intent.getStringExtra("teacher");
                     if(!"".equals(content.getText().toString())){
                         AVObject comment=new AVObject("Course_comment");
                         comment.put("from", AVUser.getCurrentUser());

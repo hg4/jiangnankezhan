@@ -91,7 +91,8 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 			displayCmtList.clear();
 			index=commentList.size();
 			displayCmtList.addAll(commentList.subList(0,index));
-			swipeToLoadLayout.setLoadMoreEnabled(false);
+			if(swipeToLoadLayout!=null)
+				swipeToLoadLayout.setLoadMoreEnabled(false);
 		}
 		adapter.notifyDataSetChanged();
 	}

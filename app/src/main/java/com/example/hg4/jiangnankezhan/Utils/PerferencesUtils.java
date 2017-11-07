@@ -9,15 +9,20 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import com.avos.avoscloud.AVUser;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by HG4 on 2017/9/6.
  */
 
 public class PerferencesUtils {
+
 	public static void saveFirstOp(Context context,boolean isFirstOp) {
 		SharedPreferences share= PreferenceManager.getDefaultSharedPreferences(context);
 		SharedPreferences.Editor editor = share.edit();
@@ -75,7 +80,55 @@ public class PerferencesUtils {
 		editor.putString(key,value);
 		editor.apply();
 	}
+	public static void saveUserIntData(Context context,String id,String key,int value){
+		SharedPreferences share=context.getSharedPreferences(id+"userdata1",Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor=share.edit();
+		editor.putInt(key,value);
+		editor.apply();
+	}
+	public static int getUserIntData(Context context,String id,String key){
+		SharedPreferences share=context.getSharedPreferences(id+"userdata1",Context.MODE_PRIVATE);
+		int value=share.getInt(key,0);
+		return value;
+	}
+	public static void saveUserLongData(Context context,String id,String key,long value){
+		SharedPreferences share=context.getSharedPreferences(id+"userdata1",Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor=share.edit();
+		editor.putLong(key,value);
+		editor.apply();
+	}
+	public static long getUserLongData(Context context,String id,String key){
+		SharedPreferences share=context.getSharedPreferences(id+"userdata1",Context.MODE_PRIVATE);
+		long value=share.getLong(key,0);
+		return value;
+	}
+	public static  void saveDataList(Context context,String id,String key,List<String> datalist) {
+		if (null == datalist || datalist.size() <= 0)
+			return;
+		Gson gson = new Gson();
+		//转换成json数据，再保存
+		String strJson = gson.toJson(datalist);
+		SharedPreferences share=context.getSharedPreferences(id+"userdata1",Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor=share.edit();
+		editor.clear();
+		editor.putString(key, strJson);
+		editor.commit();
 
+	}
+
+	public static List<String> getDataList(Context context,String id,String key) {
+		List<String> datalist=new ArrayList<>();
+		SharedPreferences share=context.getSharedPreferences(id+"userdata1",Context.MODE_PRIVATE);
+		String strJson = share.getString(key, null);
+		if (null == strJson) {
+			return datalist;
+		}
+		Gson gson = new Gson();
+		datalist = gson.fromJson(strJson, new TypeToken<List<String>>() {
+		}.getType());
+		return datalist;
+
+	}
 	public static String getUserStringData(Context context,String id,String key){
 		SharedPreferences share=context.getSharedPreferences(id+"userdata",Context.MODE_PRIVATE);
 		String value=share.getString(key,"");

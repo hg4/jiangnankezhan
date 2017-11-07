@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.hg4.jiangnankezhan.CosContentActivity"
     tools:showIn="@layout/activity_cos_content">
+
+    <LinearLayout
+        android:id="@+id/cos_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:orientation="vertical"></LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/cos_content_layout"></LinearLayout>
-    <Button
-        android:id="@+id/addcmt_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button1"
-        android:text="我有话说"
-        android:textColor="#fff"
-        android:textSize="17dp"
-        android:layout_gravity="bottom"/>
+        android:orientation="vertical">
 
-</FrameLayout>
+        <Button
+            android:id="@+id/addcmt_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/button1"
+            android:text="我有话说"
+            android:textColor="#fff"
+            android:textSize="17dp"/>
+    </LinearLayout>
+
+</LinearLayout>

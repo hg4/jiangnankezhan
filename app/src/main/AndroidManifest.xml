@@ -20,7 +20,6 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.noToolBar">
-
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -28,14 +27,15 @@
         <activity
             android:name=".RegisterOKActivity"
             android:theme="@style/AppTheme.noToolBar"/>
-        <activity android:name=".OpenActivity"
+        <activity
+            android:name=".OpenActivity"
             android:theme="@style/AppTheme.noToolBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-    </activity>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -121,20 +121,30 @@
         </activity>
         <activity
             android:name=".MaterialActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".UploadActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".DownloadActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".SuggestionActivity"
-                  android:theme="@style/AppTheme.NoActionBar"
-                  android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".ComquesListActivity"
-                  android:label="常见问题"
-                  android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".SuggestionActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".ComquesListActivity"
+            android:label="常见问题"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ReplyActivity"
+            android:label="我的回复"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <service android:name=".ReplyService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

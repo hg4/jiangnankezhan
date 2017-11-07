@@ -444,11 +444,11 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 	private void initBaseData(){
 			String top_nickname=pref.getString("昵称","");
 			String top_college=pref.getString("学院","");
-			if(top_nickname!=""){
+			if(!top_nickname.equals("")){
 				top_nicknameHolder.setText(top_nickname);
 			}
 			else top_nicknameHolder.setText("（请填写）");
-			if(top_college!=""){
+			if(!top_college.equals("")){
 				top_collegeHolder.setText(top_college);
 			}
 			else top_nicknameHolder.setText("（请填写）");

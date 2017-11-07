@@ -2,10 +2,10 @@ package com.example.hg4.jiangnankezhan;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -13,9 +13,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,52 +25,30 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
-import com.example.hg4.jiangnankezhan.Model.Course;
-import com.example.hg4.jiangnankezhan.Utils.Constants;
-import com.example.hg4.jiangnankezhan.Utils.HttpUtils;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
-import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
-import org.litepal.crud.DataSupport;
-
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
-import static android.R.attr.width;
-import static com.example.hg4.jiangnankezhan.R.id.week;
-import static org.litepal.LitePalApplication.getContext;
 
 
 public class MainActivity extends BaseActivity
@@ -91,7 +67,7 @@ public class MainActivity extends BaseActivity
 	private ImageView mainheadView;
     private RadioGroup rg_tab_bar;
     private RadioButton home;
-
+	private ArrayList<String> replyList=new ArrayList<>();
     //Fragment Object
     private FragmentOfhomepage fg1;
     private FragmentOfschedule fg2;
@@ -99,6 +75,19 @@ public class MainActivity extends BaseActivity
     private FragmentOfmy fg4;
     private FragmentManager fManager;
 	private DrawerLayout drawer;
+	private FrameLayout director;
+	private TextView directorNumber;
+	private ReplyService.ReplyBinder replyBinder;
+	private ServiceConnection connection=new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			replyBinder=(ReplyService.ReplyBinder) service;
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+		}
+	};
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -106,6 +95,14 @@ public class MainActivity extends BaseActivity
 			setPermissions();
 		}
 		setContentView(R.layout.activity_main);
+		director=(FrameLayout)findViewById(R.id.director);
+		directorNumber=(TextView)findViewById(R.id.director_number);
+	//	getNumber=PerferencesUtils.getUserIntData(this,id,"replynumber");
+	//	datalen=getNumber;
+	//	findReplyNew();
+		Intent intent=new Intent(this, ReplyService.class);
+		startService(intent);
+		bindService(intent,connection,BIND_AUTO_CREATE);
 		fg2 = new FragmentOfschedule();
         fManager=getSupportFragmentManager();
 		FragmentTransaction fTransaction = fManager.beginTransaction();
@@ -161,10 +158,31 @@ public class MainActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-				this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-		drawer.setDrawerListener(toggle);
-		toggle.syncState();
+//		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//				this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//		drawer.setDrawerListener(toggle);
+//		toggle.syncState();
+		drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+			@Override
+			public void onDrawerSlide(View drawerView, float slideOffset) {
+				checkNew();
+			}
+
+			@Override
+			public void onDrawerOpened(View drawerView) {
+
+			}
+
+			@Override
+			public void onDrawerClosed(View drawerView) {
+
+			}
+
+			@Override
+			public void onDrawerStateChanged(int newState) {
+
+			}
+		});
 		logout=(ImageButton)findViewById(R.id.logout);
 		setting=(ImageButton)findViewById(R.id.setting);
 		navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -210,8 +228,8 @@ public class MainActivity extends BaseActivity
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
 		// Handle navigation view item clicks here.
-		int id = item.getItemId();
-		switch (id){
+		int id1 = item.getItemId();
+		switch (id1){
 			case R.id.nav_home:
 
 				break;
@@ -224,6 +242,12 @@ public class MainActivity extends BaseActivity
 				startActivity(new Intent(MainActivity.this,PersonInfoActivity.class));
 				break;
 			case R.id.nav_message:
+				Intent intent=new Intent(MainActivity.this,ReplyActivity.class);
+		//		intent.putStringArrayListExtra("reply",replyList);
+				PerferencesUtils.saveUserIntData(this,id,"newcount",0);
+				if(director.getVisibility()==View.VISIBLE)
+					director.setVisibility(View.INVISIBLE);
+				startActivity(intent);
 				break;
 		}
 
@@ -282,6 +306,7 @@ public class MainActivity extends BaseActivity
 		navigationView.getMenu().getItem(0).setChecked(true);
 		getusername();
 		getmainhead();
+
 	}
 	private Bitmap getBitmapFromSharedPreferences(){
 		SharedPreferences sharedPreferences=getSharedPreferences(id+"userdata", MODE_PRIVATE);
@@ -319,6 +344,25 @@ public class MainActivity extends BaseActivity
 		}
 	}
 
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		replyBinder.executeFind();
+		//findReplyNew();
+	}
+
+	private void checkNew(){
+		int newCount=PerferencesUtils.getUserIntData(this,id,"newcount");
+		Log.e("new",newCount+"");
+		if(newCount>0){
+			director.setVisibility(View.VISIBLE);
+			if(newCount<=99){
+				directorNumber.setText(""+newCount);
+			}
+			else directorNumber.setText("99+");
+		}
+		else director.setVisibility(View.INVISIBLE);
+	}
     private void hideAllFragment(FragmentTransaction fragmentTransaction){
         if(fg1 != null)fragmentTransaction.hide(fg1);
         if(fg2 != null)fragmentTransaction.hide(fg2);
@@ -340,4 +384,9 @@ public class MainActivity extends BaseActivity
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		stopService(new Intent(this,ReplyService.class));
+	}
 }
