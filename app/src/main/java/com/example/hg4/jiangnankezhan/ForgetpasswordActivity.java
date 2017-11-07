@@ -32,6 +32,7 @@ public class ForgetpasswordActivity extends AppCompatActivity {
         phonefind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 Intent intent=new Intent(ForgetpasswordActivity.this,PhoneFindActivity.class);
                 startActivity(intent);
 
@@ -40,6 +41,7 @@ public class ForgetpasswordActivity extends AppCompatActivity {
         emailfind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 Intent intent=new Intent(ForgetpasswordActivity.this,EmailfindActivity.class);
                 startActivity(intent);
             }

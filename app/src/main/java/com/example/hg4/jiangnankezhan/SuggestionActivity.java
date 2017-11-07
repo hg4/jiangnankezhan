@@ -42,6 +42,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static com.example.hg4.jiangnankezhan.CommentActivity.REQUEST_CODE;
 import static com.example.hg4.jiangnankezhan.R.id.head;
 import static com.example.hg4.jiangnankezhan.R.id.picpreview;
@@ -120,37 +121,42 @@ public class SuggestionActivity extends AppCompatActivity {
         suggsubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!"".equals(suggtext.getText().toString())){
-                    AVObject Suggestion=new AVObject("Suggestions");
-                    Suggestion.put("content",suggtext.getText());
-                    Suggestion.put("from", AVUser.getCurrentUser());
-                    Suggestion.saveInBackground();
-                }
-                if(path.size()!=0){
-                    int index=adapter.getItemCount();
-                    for(int i=0;i<index;i++){
-                        picpreview.getChildAt(i);
-                        AVObject pic=new AVObject("SuggestionPics");
-                        pic.put("from", AVUser.getCurrentUser());
-                        Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
-                        byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
-                        AVFile file=new AVFile("image",bytes);
-                        pic.put("picture",file);
-                        pic.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                if (e!=null){
-                                    Toast.makeText(SuggestionActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
-                                    e.printStackTrace();
-                                }
-                                else {
-                                    Toast.makeText(SuggestionActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
-                                    SuggestionActivity.this.finish();
-                                }
-                            }
-                        });
+                if(!suggtext.getText().toString().equals("")){
+                    if(!"".equals(suggtext.getText().toString())){
+                        AVObject Suggestion=new AVObject("Suggestions");
+                        Suggestion.put("content",suggtext.getText());
+                        Suggestion.put("from", AVUser.getCurrentUser());
+                        Suggestion.saveInBackground();
                     }
+                    if(path.size()!=0){
+                        int index=adapter.getItemCount();
+                        for(int i=0;i<index;i++){
+                            picpreview.getChildAt(i);
+                            AVObject pic=new AVObject("SuggestionPics");
+                            pic.put("from", AVUser.getCurrentUser());
+                            Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
+                            byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
+                            AVFile file=new AVFile("image",bytes);
+                            pic.put("picture",file);
+                            pic.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if (e!=null){
+                                        Toast.makeText(SuggestionActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                        e.printStackTrace();
+                                    }
+                                    else {
+                                        Toast.makeText(SuggestionActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                        SuggestionActivity.this.finish();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }else{
+                   Toast.makeText(SuggestionActivity.this,"请简单描述您的意见哦！",Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }
@@ -159,7 +165,7 @@ public class SuggestionActivity extends AppCompatActivity {
             switch (requestCode){
                 case 1:
                     String question=data.getStringExtra("question");
-                    suggtext.setText(suggtext.getText().toString()+question+"\n");
+                    suggtext.setText(suggtext.getText().toString()+question+"、");
                     break;
                 case 2:
                     if (data != null) {

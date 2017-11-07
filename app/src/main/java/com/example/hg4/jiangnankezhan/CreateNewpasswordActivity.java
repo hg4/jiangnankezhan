@@ -49,6 +49,7 @@ public class CreateNewpasswordActivity extends AppCompatActivity {
                                     @Override
                                     public void done(AVException e) {
                                         if (e==null){
+                                            finish();
                                             Intent intent = new Intent(CreateNewpasswordActivity.this, NewpasswordOKActivity.class);
                                             intent.putExtra("newpswd",newpassword.getText().toString());
                                             intent.putExtra("number",getIntent().getStringExtra("number"));

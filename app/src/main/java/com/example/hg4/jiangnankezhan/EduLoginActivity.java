@@ -50,6 +50,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static com.example.hg4.jiangnankezhan.R.id.code;
+
 public class EduLoginActivity extends BaseActivity implements View.OnClickListener{
 	private EditText username;
 	private EditText password;
@@ -504,9 +506,16 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 				initVerCode();
 				break;
 			case R.id.edulogin_login:
-				addRequestBody();
-				dialog=new LoadingDialog(this);
-				dialog.setMessage("获取课表中").show();
+				if((!username.getText().toString().equals(""))
+						&&(!password.getText().toString().equals(""))
+						&&(!username.getText().toString().equals(""))){
+					addRequestBody();
+					dialog=new LoadingDialog(this);
+					dialog.setMessage("获取课表中").show();
+				}else{
+					Toast.makeText(EduLoginActivity.this,"请完整填写信息哦",Toast.LENGTH_SHORT).show();
+				}
+
 				break;
 			case R.id.edu_back_home:
 				EduLoginActivity.this.finish();

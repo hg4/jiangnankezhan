@@ -55,6 +55,7 @@
         android:layout_marginTop="23dp"
         android:background="@null"
         android:maxLength="100"
+        android:maxLines="5"
         android:hint="请向老板娘描述您所遇到的问题或建议噢..."
         android:textAlignment="viewStart"
         android:textSize="15dp"

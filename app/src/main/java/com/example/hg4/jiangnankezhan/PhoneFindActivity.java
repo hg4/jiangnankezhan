@@ -48,6 +48,7 @@ public class PhoneFindActivity extends AppCompatActivity {
                         @Override
                         public void done(AVException e) {
                             if (e==null) {
+                                finish();
                                 Intent intent=new Intent(PhoneFindActivity.this,InputPhoneCodeActivity.class);
                                 intent.putExtra("number",phonenumber);
                                 startActivity(intent);

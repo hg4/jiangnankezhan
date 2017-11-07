@@ -38,6 +38,7 @@ public class InputPhoneCodeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                  String code = vertifycode.getText().toString();
+                finish();
    /* 验证成功 */            Intent intent=new Intent(InputPhoneCodeActivity.this,CreateNewpasswordActivity.class);
                              intent.putExtra("string_code",code);
                              intent.putExtra("number",getIntent().getStringExtra("number"));
