@@ -1,8 +1,5 @@
 package com.example.hg4.jiangnankezhan;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,13 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import android.widget.ImageView;
-import android.widget.Toast;
 
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.GetCallback;
 import com.example.hg4.jiangnankezhan.Adapter.SettingAdapter;
 
 import java.util.ArrayList;
@@ -62,32 +54,6 @@ public class SettingActivity extends AppCompatActivity {
                     Intent intent1 = new Intent(SettingActivity.this,SuggestionActivity.class);
                     startActivity(intent1);
                     break;
-                case 2:
-                    AVQuery<AVObject> query = new AVQuery<>("AppVersion");
-                    query.getFirstInBackground(new GetCallback<AVObject>() {
-                        @Override
-                        public void done(AVObject avObject, AVException e) {
-                            {
-                                if (e == null) {
-                                    if (avObject!=null){
-                                        if(getVersion()<avObject.getNumber("VersionCode").intValue()){
-                                            Toast.makeText(SettingActivity.this,"若安装失败请先把原应用卸载再尝试哦！",Toast.LENGTH_LONG).show();
-                                            Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                            startActivity(intent);
-                                        }else{
-                                            Toast.makeText(SettingActivity.this,"当前已是最新版本啦！",Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                } else {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        }
-                    });
-                    break;
             }
         }
     }
@@ -97,21 +63,10 @@ public class SettingActivity extends AppCompatActivity {
         settingList.add(changepswd);
         Setting suggestion=new Setting("意见反馈");
         settingList.add(suggestion);
-        Setting update = new Setting("版本更新");
+        /*Setting update = new Setting("版本更新");
         settingList.add(update);
-        /*Setting clear = new Setting("清理缓存");
+        Setting clear = new Setting("清理缓存");
         settingList.add(clear);*/
 
-    }
-    private int getVersion() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(
-                    getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
     }
 }
