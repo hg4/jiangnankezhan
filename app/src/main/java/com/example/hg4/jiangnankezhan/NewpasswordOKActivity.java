@@ -1,8 +1,6 @@
 package com.example.hg4.jiangnankezhan;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +11,6 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.gyf.barlibrary.ImmersionBar;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 public class NewpasswordOKActivity extends AppCompatActivity {
     private Button enter;

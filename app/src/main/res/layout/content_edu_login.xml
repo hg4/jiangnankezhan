@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:background="#E3CDD3"
+        android:background="#fff"
         android:entries="@array/school_year_labels"
         app:layout_constraintLeft_toLeftOf="@+id/textView16"
         app:layout_constraintTop_toBottomOf="@+id/textView16"/>
@@ -144,7 +144,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:background="#E3CDD3"
+        android:background="#fff"
         android:entries="@array/term_labels"
         app:layout_constraintBottom_toBottomOf="@+id/year_spinner"
         app:layout_constraintLeft_toRightOf="@+id/textView11"

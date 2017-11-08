@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,21 +28,12 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.example.hg4.jiangnankezhan.Adapter.PreviewAdapter;
 import com.example.hg4.jiangnankezhan.Utils.GlideLoader;
-import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 import com.yancy.imageselector.ImageConfig;
 import com.yancy.imageselector.ImageSelector;
 import com.yancy.imageselector.ImageSelectorActivity;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-import static com.example.hg4.jiangnankezhan.CommentActivity.REQUEST_CODE;
-import static com.example.hg4.jiangnankezhan.R.id.head;
-import static com.example.hg4.jiangnankezhan.R.id.picpreview;
-import static com.example.hg4.jiangnankezhan.R.id.textnum;
 
 public class SuggestionActivity extends AppCompatActivity {
   private ImageView back;
@@ -166,6 +153,7 @@ public class SuggestionActivity extends AppCompatActivity {
                 case 1:
                     String question=data.getStringExtra("question");
                     suggtext.setText(suggtext.getText().toString()+question+"、");
+                    suggtext.setSelection(suggtext.getText().length());
                     break;
                 case 2:
                     if (data != null) {
