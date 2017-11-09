@@ -112,38 +112,38 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 
 	@Override
 	public void onBindViewHolder(final ViewHolder holder, final int position) {
-		AVObject replyItem=mReplyList.get(position);
-		holder.head.setImageResource(R.drawable.def_ava_round);
-		holder.contentImg.setImageResource(0);
-		holder.replyItem=replyItem;
-		holder.commentObject=replyItem.getAVObject("to");
-		holder.fromUser=replyItem.getAVObject("from");
-		holder.content.setText(replyItem.getString("content"));
-		if(!holder.fromUser.getString("nickname").equals("（请填写）"))
-			holder.fromUserName.setText(holder.fromUser.getString("nickname"));
-		AVFile file=holder.fromUser.getAVFile("head");
+			AVObject replyItem=mReplyList.get(position);
+			holder.head.setImageResource(R.drawable.def_ava_round);
+			holder.contentImg.setImageResource(0);
+			holder.replyItem=replyItem;
+			holder.commentObject=replyItem.getAVObject("to");
+			holder.fromUser=replyItem.getAVObject("from");
+			holder.content.setText(replyItem.getString("content"));
+			if(!holder.fromUser.getString("nickname").equals("（请填写）"))
+				holder.fromUserName.setText(holder.fromUser.getString("nickname"));
+			AVFile file=holder.fromUser.getAVFile("head");
 
-		if(file!=null){
-			holder.head.setTag(R.id.tag_img,file.getUrl());
-			Log.e("test1",holder.head.getTag(R.id.tag_img)+" "+file.getUrl());
-			if((holder.head.getTag(R.id.tag_img))!=null&&(holder.head.getTag(R.id.tag_img)).equals(file.getUrl()))
-				Glide.with(mContext).load(file.getUrl()).into(holder.head);
-		}
-		holder.from.setText(holder.commentObject.getString("courseName"));
-		holder.date.setText(TimeUtils.dateToString(replyItem.getCreatedAt()));
-		AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
-		imgQuery.whereEqualTo("from",holder.commentObject);
-		imgQuery.getFirstInBackground(new GetCallback<AVObject>() {
-			@Override
-			public void done(AVObject avObject, AVException e) {
-				if(avObject!=null){
-					holder.contentImg.setTag(R.id.tag_img,avObject.getAVFile("image").getUrl());
-					Log.e("test2",holder.contentImg.getTag(R.id.tag_img)+" "+avObject.getAVFile("image").getUrl());
-					if((holder.contentImg.getTag(R.id.tag_img))!=null&&(holder.contentImg.getTag(R.id.tag_img)).equals(avObject.getAVFile("image").getUrl()))
-						Glide.with(mContext).load(avObject.getAVFile("image").getUrl()).into(holder.contentImg);
-				}
+			if(file!=null){
+				holder.head.setTag(R.id.tag_img,file.getUrl());
+				Log.e("test1",holder.head.getTag(R.id.tag_img)+" "+file.getUrl());
+				if((holder.head.getTag(R.id.tag_img))!=null&&(holder.head.getTag(R.id.tag_img)).equals(file.getUrl()))
+					Glide.with(mContext).load(file.getUrl()).into(holder.head);
 			}
-		});
+			holder.from.setText(holder.commentObject.getString("courseName"));
+			holder.date.setText(TimeUtils.dateToString(replyItem.getCreatedAt()));
+			AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
+			imgQuery.whereEqualTo("from",holder.commentObject);
+			imgQuery.getFirstInBackground(new GetCallback<AVObject>() {
+				@Override
+				public void done(AVObject avObject, AVException e) {
+					if(avObject!=null){
+						holder.contentImg.setTag(R.id.tag_img,avObject.getAVFile("image").getUrl());
+						Log.e("test2",holder.contentImg.getTag(R.id.tag_img)+" "+avObject.getAVFile("image").getUrl());
+						if((holder.contentImg.getTag(R.id.tag_img))!=null&&(holder.contentImg.getTag(R.id.tag_img)).equals(avObject.getAVFile("image").getUrl()))
+							Glide.with(mContext).load(avObject.getAVFile("image").getUrl()).into(holder.contentImg);
+					}
+				}
+			});
 	}
 
 	@Override

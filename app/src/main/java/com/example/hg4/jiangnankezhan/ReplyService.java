@@ -75,20 +75,21 @@ public class ReplyService extends Service {
 			@Override
 			public void done(List<AVObject> list, AVException e) {
 				if(list!=null){
+					mReplyList.clear();
+					PerferencesUtils.saveDataList(ReplyService.this,id,"replylist",mReplyList);
 					if(list.size()!=0){
 						datalen=list.size();
 						Log.e("test",datalen+"");
 						long newTime=list.get(0).getCreatedAt().getTime();
-						mReplyList.clear();
 						Log.e("test2",""+list.get(0).getCreatedAt().getTime());
 						count=0;
 						for(AVObject avObject:list){
 							mReplyList.add(avObject.toString());
-							PerferencesUtils.saveDataList(ReplyService.this,id,"replylist",mReplyList);
 							if(avObject.getCreatedAt().getTime()>saveRecentTime){
 								count++;
 							}
 						}
+						PerferencesUtils.saveDataList(ReplyService.this,id,"replylist",mReplyList);
 						if(newTime>saveRecentTime)
 							saveRecentTime=newTime;
 						if(count!=0)

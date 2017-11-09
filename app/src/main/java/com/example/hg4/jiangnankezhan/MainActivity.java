@@ -98,9 +98,6 @@ public class MainActivity extends BaseActivity
 		setContentView(R.layout.activity_main);
 		director=(FrameLayout)findViewById(R.id.director);
 		directorNumber=(TextView)findViewById(R.id.director_number);
-	//	getNumber=PerferencesUtils.getUserIntData(this,id,"replynumber");
-	//	datalen=getNumber;
-	//	findReplyNew();
 		Intent intent=new Intent(this, ReplyService.class);
 		startService(intent);
 		bindService(intent,connection,BIND_AUTO_CREATE);

@@ -103,13 +103,18 @@ public class PerferencesUtils {
 		return value;
 	}
 	public static  void saveDataList(Context context,String id,String key,List<String> datalist) {
-		if (null == datalist || datalist.size() <= 0)
-			return;
+
 		Gson gson = new Gson();
 		//转换成json数据，再保存
 		String strJson = gson.toJson(datalist);
 		SharedPreferences share=context.getSharedPreferences(id+"userdata1",Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor=share.edit();
+		if (null == datalist || datalist.size() <= 0){
+			editor.clear();
+			editor.commit();
+			return;
+		}
+
 		editor.clear();
 		editor.putString(key, strJson);
 		editor.commit();
