@@ -1,4 +1,6 @@
 package com.example.hg4.jiangnankezhan;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
@@ -66,15 +69,28 @@ public class SettingActivity extends BaseActivity {
                     AVQuery<AVObject> query = new AVQuery<>("AppVersion");
                     query.getFirstInBackground(new GetCallback<AVObject>() {
                         @Override
-                        public void done(AVObject avObject, AVException e) {
+                        public void done(final AVObject avObject, AVException e) {
                             {
                                 if (e == null) {
                                     if (avObject!=null){
                                         if(getVersion()<avObject.getNumber("VersionCode").intValue()){
-                                            Toast.makeText(SettingActivity.this,"若安装失败请先把原应用卸载再尝试哦！",Toast.LENGTH_LONG).show();
-                                            Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                            startActivity(intent);
+                                            LinearLayout dialogForm=(LinearLayout)getLayoutInflater().inflate(R.layout.version_dialog,null);
+                                            final AlertDialog.Builder builder=new AlertDialog.Builder(SettingActivity.this);
+                                            builder.setView(dialogForm)
+                                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
+                                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                            startActivity(intent);
+                                                        }
+                                                    })
+                                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                        }
+                                                    });
+                                            builder.create().show();
                                         }else{
                                             Toast.makeText(SettingActivity.this,"当前已是最新版本啦！",Toast.LENGTH_SHORT).show();
                                         }
