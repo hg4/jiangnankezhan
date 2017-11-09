@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
@@ -96,6 +98,7 @@ public class MainActivity extends BaseActivity
 			setPermissions();
 		}
 		setContentView(R.layout.activity_main);
+        ifnewVersion();
 		director=(FrameLayout)findViewById(R.id.director);
 		directorNumber=(TextView)findViewById(R.id.director_number);
 	//	getNumber=PerferencesUtils.getUserIntData(this,id,"replynumber");
@@ -277,6 +280,50 @@ public class MainActivity extends BaseActivity
 				});
 		builder.create().show();
 	}
+    private void ifnewVersion(){
+        try {
+            PackageManager packageManager = getPackageManager();
+            final PackageInfo packageInfo = packageManager.getPackageInfo(
+                    getPackageName(), 0);
+            AVQuery<AVObject> query = new AVQuery<>("AppVersion");
+            query.getFirstInBackground(new GetCallback<AVObject>() {
+                @Override
+                public void done(final AVObject avObject, AVException e) {
+                    {
+                        if (e == null) {
+                            if (avObject!=null){
+                                if(packageInfo.versionCode<avObject.getNumber("VersionCode").intValue()){
+                                    LinearLayout dialogForm=(LinearLayout)getLayoutInflater().inflate(R.layout.version_dialog,null);
+                                    final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+                                    builder.setView(dialogForm)
+                                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
+                                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                    startActivity(intent);
+                                                }
+                                            })
+                                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                }
+                                            });
+                                    builder.create().show();
+                                }
+                            }
+                        } else {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 	private void getusername(){
 		SharedPreferences pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
 		getusername=pref.getString("昵称","");

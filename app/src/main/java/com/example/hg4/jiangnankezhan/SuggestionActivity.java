@@ -1,6 +1,8 @@
 package com.example.hg4.jiangnankezhan;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -46,6 +48,7 @@ public class SuggestionActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private ArrayList<String> path = new ArrayList<>();
     private Button suggsubmit;
+    private Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,37 +112,42 @@ public class SuggestionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!suggtext.getText().toString().equals("")){
-                    if(!"".equals(suggtext.getText().toString())){
+                    dialog = Utilty.createDiaglog(SuggestionActivity.this, "正在提交您的反馈");
                         AVObject Suggestion=new AVObject("Suggestions");
                         Suggestion.put("content",suggtext.getText());
                         Suggestion.put("from", AVUser.getCurrentUser());
                         Suggestion.saveInBackground();
-                    }
-                    if(path.size()!=0){
-                        int index=adapter.getItemCount();
-                        for(int i=0;i<index;i++){
-                            picpreview.getChildAt(i);
-                            AVObject pic=new AVObject("SuggestionPics");
-                            pic.put("from", AVUser.getCurrentUser());
-                            Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
-                            byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
-                            AVFile file=new AVFile("image",bytes);
-                            pic.put("picture",file);
-                            pic.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(AVException e) {
-                                    if (e!=null){
-                                        Toast.makeText(SuggestionActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
-                                        e.printStackTrace();
+                        if(path.size()!=0){
+                            int index=adapter.getItemCount();
+                            for(int i=0;i<index;i++){
+                                picpreview.getChildAt(i);
+                                AVObject pic=new AVObject("SuggestionPics");
+                                pic.put("from", AVUser.getCurrentUser());
+                                Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
+                                byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
+                                AVFile file=new AVFile("image",bytes);
+                                pic.put("picture",file);
+                                pic.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if (e!=null){
+                                            e.printStackTrace();
+                                        }
+                                        else {
+                                            Utilty.dismissDiaglog(dialog, 1000);
+                                            Toast.makeText(SuggestionActivity.this,"提交成功",Toast.LENGTH_SHORT).show();
+                                            SuggestionActivity.this.finish();
+                                        }
                                     }
-                                    else {
-                                        Toast.makeText(SuggestionActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
-                                        SuggestionActivity.this.finish();
-                                    }
-                                }
-                            });
+                                });
+                            }
+                        }else{
+                            Utilty.dismissDiaglog(dialog, 1000);
+                            Toast.makeText(SuggestionActivity.this,"提交成功",Toast.LENGTH_SHORT).show();
+                            SuggestionActivity.this.finish();
                         }
-                    }
+
+
                 }else{
                    Toast.makeText(SuggestionActivity.this,"请简单描述您的意见哦！",Toast.LENGTH_SHORT).show();
                 }
