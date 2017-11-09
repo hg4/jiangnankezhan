@@ -142,9 +142,16 @@
             android:label="我的回复"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <service android:name=".ReplyService"
+
+        <service
+            android:name=".ReplyService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
+        <service
+            android:name=".EduService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>

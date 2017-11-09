@@ -21,7 +21,9 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CommentActivity;
+import com.example.hg4.jiangnankezhan.CosContentActivity;
 import com.example.hg4.jiangnankezhan.R;
+import com.example.hg4.jiangnankezhan.RequirementsActivity;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
@@ -77,6 +79,20 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 			@Override
 			public void onClick(View v) {
 				//跳转
+				int type=viewHolder.commentObject.getInt("type");
+				if(type==3){
+					Intent intent=new Intent(mContext, CosContentActivity.class);
+					intent.putExtra("courseName",viewHolder.commentObject.getString("courseName"));
+					intent.putExtra("teacher",viewHolder.commentObject.getString("teacher"));
+					mContext.startActivity(intent);
+				}
+				else {
+					Intent intent=new Intent(mContext, RequirementsActivity.class);
+					intent.putExtra("courseName",viewHolder.commentObject.getString("courseName"));
+					intent.putExtra("teacher",viewHolder.commentObject.getString("teacher"));
+					intent.putExtra("type",viewHolder.commentObject.getInt("type"));
+					mContext.startActivity(intent);
+				}
 			}
 		});
 		viewHolder.reply.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +123,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 			holder.fromUserName.setText(holder.fromUser.getString("nickname"));
 		AVFile file=holder.fromUser.getAVFile("head");
 
-
 		if(file!=null){
 			holder.head.setTag(R.id.tag_img,file.getUrl());
 			Log.e("test1",holder.head.getTag(R.id.tag_img)+" "+file.getUrl());
@@ -121,7 +136,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 		imgQuery.getFirstInBackground(new GetCallback<AVObject>() {
 			@Override
 			public void done(AVObject avObject, AVException e) {
-
 				if(avObject!=null){
 					holder.contentImg.setTag(R.id.tag_img,avObject.getAVFile("image").getUrl());
 					Log.e("test2",holder.contentImg.getTag(R.id.tag_img)+" "+avObject.getAVFile("image").getUrl());

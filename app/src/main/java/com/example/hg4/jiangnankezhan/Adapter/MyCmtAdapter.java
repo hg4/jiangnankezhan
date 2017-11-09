@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.LogUtil;
 import com.example.hg4.jiangnankezhan.CosContentActivity;
@@ -92,17 +93,27 @@ public class MyCmtAdapter extends RecyclerView.Adapter<MyCmtAdapter.ViewHolder> 
 					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 						switch (position){
 							case 0:
-								viewHolder.cmtData.deleteInBackground(new DeleteCallback() {
+								AVQuery<AVObject> query=new AVQuery<AVObject>("cscmt_commentlist");
+								query.whereEqualTo("to",viewHolder.cmtData);
+								query.deleteAllInBackground(new DeleteCallback() {
 									@Override
 									public void done(AVException e) {
 										if(e==null){
-											Log.e("delete","ok");
-											mCommentList.remove(viewHolder.position);
-											MyCmtAdapter.this.notifyDataSetChanged();
-											popupWindow.dismiss();
+											viewHolder.cmtData.deleteInBackground(new DeleteCallback() {
+												@Override
+												public void done(AVException e) {
+													if(e==null){
+														Log.e("delete","ok");
+														mCommentList.remove(viewHolder.position);
+														MyCmtAdapter.this.notifyDataSetChanged();
+														popupWindow.dismiss();
+													}
+												}
+											});
 										}
 									}
 								});
+
 						}
 					}
 				};

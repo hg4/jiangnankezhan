@@ -79,7 +79,6 @@ public class ReplyService extends Service {
 						datalen=list.size();
 						Log.e("test",datalen+"");
 						long newTime=list.get(0).getCreatedAt().getTime();
-
 						mReplyList.clear();
 						Log.e("test2",""+list.get(0).getCreatedAt().getTime());
 						count=0;

@@ -63,13 +63,13 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
     private ImageView content_button;
     private ConstraintLayout content_layout;
     private ConstraintLayout material_layout;
-
+    private int courseBeginNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cos_details);
         rootview=(ConstraintLayout)findViewById(R.id.rootview);
-
+        courseBeginNumber=getIntent().getIntExtra("courseBeginNumber",0);
         Name = getIntent().getStringExtra("name");
         weekday = getIntent().getStringExtra("date");
         teacher = getIntent().getStringExtra("teacher");
@@ -94,7 +94,7 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
         coscredit = (TextView) findViewById(R.id.coscredit);
         cosexamtype=(TextView)findViewById(R.id.cosexamtype);
         costeacher = (TextView) findViewById(R.id.costeacher);
-        List<Course> courses = DataSupport.where("courseName=? and teacher=? and date=?", Name, teacher, weekday).find(Course.class);
+        List<Course> courses = DataSupport.where("courseName=? and teacher=? and date=? and courseBeginNumber=?", Name, teacher, weekday,courseBeginNumber+"").find(Course.class);
         if (courses.size()!=0&&courses!=null){
             for (final Course course : courses) {
                 classroom = course.getClassroom();

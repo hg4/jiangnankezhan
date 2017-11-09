@@ -160,21 +160,24 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 				if(e==null&&list.size()!=0){
 					for(AVObject image:list){
 						AVFile pic=image.getAVFile("image");
-						final String url=pic.getUrl();
-						ImageView imageView=new ImageView(mContext);
-						imageView.setTag(R.id.tag_img,url);
-						LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(200,200);
-						layoutParams.setMargins(45,10,0,0);
-						imageView.setLayoutParams(layoutParams);
-						imageView.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View v) {
-										Utilty.imgDetailDialog(mContext,url);
+						if(pic!=null){
+							final String url=pic.getUrl();
+							ImageView imageView=new ImageView(mContext);
+							imageView.setTag(R.id.tag_img,url);
+							LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(200,200);
+							layoutParams.setMargins(45,10,0,0);
+							imageView.setLayoutParams(layoutParams);
+							imageView.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Utilty.imgDetailDialog(mContext,url);
+								}
+							});
+							if ((int)holder.cardView.getTag()==position&&imageView.getTag(R.id.tag_img) != null && imageView.getTag(R.id.tag_img).equals(url)){
+								Glide.with(mContext).load(url).centerCrop().placeholder(R.drawable.placeholder).into(imageView);
+								holder.imageList.addView(imageView);
 							}
-						});
-						if ((int)holder.cardView.getTag()==position&&imageView.getTag(R.id.tag_img) != null && imageView.getTag(R.id.tag_img).equals(url)){
-							Glide.with(mContext).load(url).centerCrop().placeholder(R.drawable.placeholder).into(imageView);
-							holder.imageList.addView(imageView);
+
 						}
 
 					}

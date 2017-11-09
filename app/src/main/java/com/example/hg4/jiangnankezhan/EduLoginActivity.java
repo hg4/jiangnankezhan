@@ -321,7 +321,6 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 								//查询新课表时，删除本地原有课表
 								DataSupport.deleteAll(Course.class);
 								//查询本地数据库，不存在则存入数据库
-								boolean finished=false;
 								for(String date:time){
 
 									for(Map<String,Course[]> temp:courseList){
@@ -330,18 +329,26 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 											for(Course course:courseArray){
 												if (DaoUtil.courseQueryByCourseData(course.getCoursedata())==null){
 													boolean flag=course.save();
-													if(!flag)
-														Toast.makeText(EduLoginActivity.this,"存储课表失败",Toast.LENGTH_SHORT).show();
+
 												}
-
 											}
-
 										}
 									}
-									finished=true;
 								}
-								if(finished)
-									searchPyjhOperation();
+									//searchPyjhOperation();
+									Intent intent=new Intent(EduLoginActivity.this,EduService.class);
+									intent.putExtra("studentName",urlEncodeStudentName);
+									startService(intent);
+									runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										Toast.makeText(EduLoginActivity.this, outputInfo, Toast.LENGTH_SHORT).show();
+										setResult(1);
+										dialog.dismiss();
+										EduLoginActivity.this.finish();
+
+									}
+								});
 							} else {
 								outputInfo = "获取课表失败,请重试!";
 							}

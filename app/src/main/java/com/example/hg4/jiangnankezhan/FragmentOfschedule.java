@@ -256,34 +256,66 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 				int length=0;
 				if(!course.getLength().equals(""))
 					length=Integer.parseInt(course.getLength());
-				courseButton.setText(course.getCourseName()+"\n"+course.getClassroom());
-				courseButton.setTextSize(12);
-				courseButton.setMaxLines(3*length);
-				courseButton.setEllipsize(TextUtils.TruncateAt.END);
-
-				courseButton.setBackgroundResource(R.drawable.shape);
-				courseButton.setHeight(PERLENGTH*length);
-				courseButton.setWidth(PERWIDTH);
-				RelativeLayout.LayoutParams btParams=new RelativeLayout.LayoutParams(PERWIDTH,length*PERLENGTH);
-				final String date=course.getDate();
-				final int courseBeginNumber=course.getCourseBeginNumber();
-				int i=parseDate(date);
-				btParams.leftMargin=(i-1)*PERWIDTH;
-				btParams.topMargin=(courseBeginNumber-2)*PERLENGTH;
-				courseLayout.addView(courseButton,btParams);
-				courseButton.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						Intent intent=new Intent(getActivity(),CosDetailsActivity.class);
-						intent.putExtra("date",date);
-						intent.putExtra("name",course.getCourseName());
-                        intent.putExtra("teacher",course.getTeacher());
-						startActivity(intent);
+				if(length==1){
+					Integer csbgnb=course.getCourseBeginNumber()-2;
+					final Course lastCourse=DataSupport.where("courseBeginNumber=? and date=? and courseName=?",csbgnb.toString(),course.getDate(),course.getCourseName())
+							.findFirst(Course.class);
+					if(lastCourse!=null){
+						courseButton.setText(lastCourse.getCourseName()+"\n"+lastCourse.getClassroom());
+						courseButton.setTextSize(12);
+						courseButton.setMaxLines(3*3);
+						courseButton.setEllipsize(TextUtils.TruncateAt.END);
+						courseButton.setBackgroundResource(R.drawable.shape);
+						courseButton.setHeight(PERLENGTH*3);
+						courseButton.setWidth(PERWIDTH);
+						RelativeLayout.LayoutParams btParams=new RelativeLayout.LayoutParams(PERWIDTH,3*PERLENGTH);
+						final String date=lastCourse.getDate();
+						final int courseBeginNumber=lastCourse.getCourseBeginNumber();
+						int i=parseDate(date);
+						btParams.leftMargin=(i-1)*PERWIDTH;
+						btParams.topMargin=(courseBeginNumber-2)*PERLENGTH;
+						courseLayout.addView(courseButton,btParams);
+						courseButton.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								Intent intent=new Intent(getActivity(),CosDetailsActivity.class);
+								intent.putExtra("date",date);
+								intent.putExtra("name",lastCourse.getCourseName());
+								intent.putExtra("teacher",lastCourse.getTeacher());
+								intent.putExtra("courseBeginNumber",lastCourse.getCourseBeginNumber());
+								startActivity(intent);
+							}
+						});
 					}
-				});
+				}
+				else {
+					courseButton.setText(course.getCourseName()+"\n"+course.getClassroom());
+					courseButton.setTextSize(12);
+					courseButton.setMaxLines(3*length);
+					courseButton.setEllipsize(TextUtils.TruncateAt.END);
+					courseButton.setBackgroundResource(R.drawable.shape);
+					courseButton.setHeight(PERLENGTH*length);
+					courseButton.setWidth(PERWIDTH);
+					RelativeLayout.LayoutParams btParams=new RelativeLayout.LayoutParams(PERWIDTH,length*PERLENGTH);
+					final String date=course.getDate();
+					final int courseBeginNumber=course.getCourseBeginNumber();
+					int i=parseDate(date);
+					btParams.leftMargin=(i-1)*PERWIDTH;
+					btParams.topMargin=(courseBeginNumber-2)*PERLENGTH;
+					courseLayout.addView(courseButton,btParams);
+					courseButton.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							Intent intent=new Intent(getActivity(),CosDetailsActivity.class);
+							intent.putExtra("date",date);
+							intent.putExtra("name",course.getCourseName());
+							intent.putExtra("teacher",course.getTeacher());
+							intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+							startActivity(intent);
+						}
+					});
+				}
 			}
 		}
-
 	}
-
 }

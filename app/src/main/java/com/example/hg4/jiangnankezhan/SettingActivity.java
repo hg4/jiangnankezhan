@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends BaseActivity {
     private RecyclerView settingView;
     private List<Setting> settingList=new ArrayList<>();
     private ImageView back;

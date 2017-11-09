@@ -24,9 +24,6 @@ public class Course extends DataSupport{
 	private String coursedata;
 	private String date;
 	private String length;
-
-
-
 	private String testType;
 	private String courseName;
 	private String duration;

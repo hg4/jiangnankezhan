@@ -2,6 +2,7 @@ package com.example.hg4.jiangnankezhan;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -64,6 +65,7 @@ public class CommentActivity extends BaseActivity {
     private static final int FROM_CONTENT=3;
     private static final int FROM_REPLY=4;
     public static final int REQUEST_CODE = 1000;
+    private Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +130,7 @@ public class CommentActivity extends BaseActivity {
         subCmt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utilty.createDiaglog(CommentActivity.this,"发表中...");
                 if(from==FROM_COMMENT){
                     if(!"".equals(content.getText().toString())){
                         final AVObject comment=new AVObject("cscmt_commentlist");
@@ -150,12 +153,14 @@ public class CommentActivity extends BaseActivity {
                                                 public void done(AVException e) {
                                                     if (e!=null){
                                                         Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                                        Utilty.dismissDiaglog(dialog,1000);
                                                         e.printStackTrace();
                                                     }
                                                     else {
                                                         //子评论发表成功后，父评论最大talk组+1
                                                         avObject.increment("maxTalkGroup");
                                                         avObject.saveInBackground();
+                                                        Utilty.dismissDiaglog(dialog,1000);
                                                         Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                                         setResult(1);
                                                         CommentActivity.this.finish();
@@ -169,6 +174,7 @@ public class CommentActivity extends BaseActivity {
                             }
                         }
                         catch (Exception e){
+                            Utilty.dismissDiaglog(dialog,1000);
                             e.printStackTrace();
                         }
 
@@ -192,11 +198,13 @@ public class CommentActivity extends BaseActivity {
                                         public void done(AVException e) {
                                             if (e!=null){
                                                 Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                                Utilty.dismissDiaglog(dialog,1000);
                                                 e.printStackTrace();
                                             }
                                             else {
                                                 Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                                 setResult(1);
+                                                Utilty.dismissDiaglog(dialog,1000);
                                                 CommentActivity.this.finish();
                                             }
                                         }
@@ -204,6 +212,7 @@ public class CommentActivity extends BaseActivity {
                             }
                         }
                         catch (Exception e){
+                            Utilty.dismissDiaglog(dialog,1000);
                             e.printStackTrace();
                         }
                     }
@@ -228,10 +237,12 @@ public class CommentActivity extends BaseActivity {
                             @Override
                             public void done(AVException e) {
                                 if (e!=null){
+                                    Utilty.dismissDiaglog(dialog,1000);
                                     Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
                                 }
                                 else {
+                                    Utilty.dismissDiaglog(dialog,1000);
                                     Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                     setResult(1);
                                     CommentActivity.this.finish();
@@ -271,11 +282,13 @@ public class CommentActivity extends BaseActivity {
                             public void done(AVException e) {
                                 if (e!=null){
                                     Toast.makeText(CommentActivity.this,"发表失败",Toast.LENGTH_SHORT).show();
+                                    Utilty.dismissDiaglog(dialog,1000);
                                     e.printStackTrace();
                                 }
                                 else {
                                     Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                     setResult(1);
+                                    Utilty.dismissDiaglog(dialog,1000);
                                     CommentActivity.this.finish();
 
                                 }

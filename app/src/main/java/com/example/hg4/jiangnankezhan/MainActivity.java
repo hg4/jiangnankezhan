@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
@@ -237,6 +238,7 @@ public class MainActivity extends BaseActivity
 				startActivity(new Intent(MainActivity.this,MyCommentActivity.class));
 				break;
 			case R.id.nav_collect:
+				Toast.makeText(this,"功能待开发中...",Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.nav_info:
 				startActivity(new Intent(MainActivity.this,PersonInfoActivity.class));
