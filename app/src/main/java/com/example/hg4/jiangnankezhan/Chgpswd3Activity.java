@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class Chgpswd3Activity extends AppCompatActivity {
+public class Chgpswd3Activity extends BaseActivity {
          private ImageView back;
          private Button finish;
     @Override

@@ -83,7 +83,9 @@ public class DownloadActivity extends BaseActivity {
             public void done(AVObject avObject, AVException e) {
                 {
                     if (e == null) {
-                        content.setText(avObject.getString("Introduce"));
+                        if(!avObject.getString("Introduce").equals("")){
+                            content.setText(avObject.getString("Introduce"));
+                        }
                         date.setText(TimeUtils.dateToString(avObject.getCreatedAt()));
                         AVObject user = avObject.getAVObject("owner");
                         owner.setText(user.getString("nickname"));

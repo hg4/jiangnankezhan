@@ -99,7 +99,7 @@ public class UploadActivity extends BaseActivity {
             public void onClick(View view) {
                 if (TextUtils.isEmpty(title.getText().toString())){
                     Toast.makeText(UploadActivity.this, "标题不能为空哦！", Toast.LENGTH_SHORT).show();
-                }else if(addfile.getDrawable().getConstantState().equals(getResources().getDrawable(R.drawable.shangchuanok1).getConstantState())){
+                }else if(addfile.getDrawable().getCurrent().getConstantState().equals(ContextCompat.getDrawable(UploadActivity.this,R.drawable.shangchuanok1).getConstantState())){
                         final AVObject coursefile = new AVObject("Course_file");
                                     coursefile.put("resource", file);
                                     coursefile.put("Title", title.getText().toString());

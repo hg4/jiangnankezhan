@@ -18,7 +18,7 @@ import com.avos.avoscloud.UpdatePasswordCallback;
 import static com.avos.avoscloud.LogUtil.avlog.i;
 import static com.example.hg4.jiangnankezhan.R.id.newpassword;
 
-public class Chgpswd2Activity extends AppCompatActivity {
+public class Chgpswd2Activity extends BaseActivity {
     private Button cancel;
     private ImageView back;
     private Button confirm;
