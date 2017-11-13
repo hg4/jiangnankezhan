@@ -37,7 +37,7 @@ import com.yancy.imageselector.ImageSelectorActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuggestionActivity extends AppCompatActivity {
+public class SuggestionActivity extends BaseActivity {
   private ImageView back;
     private EditText suggtext;
     private int maxNum = 100;

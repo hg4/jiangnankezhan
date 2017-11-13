@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class Chgpswd1Activity extends AppCompatActivity {
+public class Chgpswd1Activity extends BaseActivity {
     private Button cancel;
     private ImageView back;
     private Button confirm;
