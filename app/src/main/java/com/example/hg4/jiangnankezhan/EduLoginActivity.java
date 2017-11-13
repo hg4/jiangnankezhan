@@ -263,44 +263,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		// 这里的请求地址和Referer一样，不过这里学生姓名直接用中文也没问题。就和之前的Referer保持一致了，也用那个使用率url编码的地址
 		setAndSaveSchedule(context,newScheduleUrl);
 	}
-	private void searchPyjhOperation(){
-		final String pyjhScheduleUrl=Constants.EDU_PYJH_URL.replace("studentName", urlEncodeStudentName)
-				.replace("user",Constants.LOGIN_BODY_USERNAME_VALUE);
 
-		try{
-			Response response=HttpUtils.postSync(pyjhScheduleUrl,pyjhRequestBodyMap,requestHeadersMap);
-			String result = new String(response.body().bytes(), "gb2312");
-			JsoupUtils.setViewStateValue(result);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
-		requestHeadersMap.put(Constants.HEAD_REFERER_KEY, pyjhScheduleUrl);
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_EVENTARGUMENT_KEY,Constants.PYJH_BODY_EVENTARGUMENT_VALUE);
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_EVENTTARGET_KEY,Constants.PYJH_BODY_EVENTTARGET_VALUE);
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_XQ_KEY,Constants.PYJH_BODY_XQ_VALUE);
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_KCXZ_KEY,Constants.PYJH_BODY_KCXZ_VALUE);
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_BUTTON_KEY,Constants.PYJH_BODY_BUTTON_VALUE);
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_VIEWSTATE_KEY,Constants.LOGIN_BODY_VIEWSTATE_VALUE);
-
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_PAGE_KEY,Constants.PYJH_BODY_PAGE_VALUE);
-		pyjhRequestBodyMap.put(Constants.PYJH_BODY_SIZE_KEY,Constants.PYJH_BODY_SIZE_VALUE);
-		HttpUtils.sendPostRequest(pyjhScheduleUrl, new Callback() {
-			@Override
-			public void onFailure(Call call, IOException e) {
-				e.printStackTrace();
-			}
-
-			@Override
-			public void onResponse(Call call, Response response) throws IOException {
-				response=HttpUtils.postSync(pyjhScheduleUrl,pyjhRequestBodyMap,requestHeadersMap);
-				String result = new String(response.body().bytes(), "gb2312");
-				JsoupUtils.finishCourseData(result);
-					// 云端查询课程名，不存在则存到云端
-				saveCourseInCloud();
-			}
-		},pyjhRequestBodyMap,requestHeadersMap);
-	}
 	private void setAndSaveSchedule(final Context context,String newScheduleUrl){
 			HttpUtils.sendPostRequest(newScheduleUrl, new Callback() {
 				@Override
@@ -335,20 +298,8 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 										}
 									}
 								}
-									//searchPyjhOperation();
-									Intent intent=new Intent(EduLoginActivity.this,EduService.class);
-									intent.putExtra("studentName",urlEncodeStudentName);
-									startService(intent);
-									runOnUiThread(new Runnable() {
-									@Override
-									public void run() {
-										Toast.makeText(EduLoginActivity.this, outputInfo, Toast.LENGTH_SHORT).show();
-										setResult(1);
-										dialog.dismiss();
-										EduLoginActivity.this.finish();
+									saveCourseInCloud();
 
-									}
-								});
 							} else {
 								outputInfo = "获取课表失败,请重试!";
 							}
@@ -480,13 +431,15 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 							AVcourse.put("duration",courses[0].getDuration());
 							AVcourse.put("classroom",courses[0].getClassroom());
 							AVcourse.put("courseBeginNumber",courses[0].getCourseBeginNumber());
-							AVcourse.put("testType",courses[0].getTestType());
-							AVcourse.put("point",courses[0].getPoint());
 							AVcourse.saveInBackground(new SaveCallback() {
 								@Override
 								public void done(AVException e) {
 									if(e==null){
 										Log.e("test","ok");
+
+									}
+									else {
+										outputInfo="保存课程到云端失败";
 									}
 								}
 							});
@@ -498,6 +451,9 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
+				Intent intent=new Intent(EduLoginActivity.this,EduService.class);
+				intent.putExtra("studentName",urlEncodeStudentName);
+				startService(intent);
 				Toast.makeText(EduLoginActivity.this, outputInfo, Toast.LENGTH_SHORT).show();
 				setResult(1);
 				dialog.dismiss();

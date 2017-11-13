@@ -262,7 +262,7 @@ public class MainActivity extends BaseActivity
 		LinearLayout dialogForm=(LinearLayout)getLayoutInflater().inflate(R.layout.dialogform,null);
 		final AlertDialog.Builder builder=new AlertDialog.Builder(this);
 		builder.setView(dialogForm)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+				.setPositiveButton("注销", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						AVUser.getCurrentUser().logOut();

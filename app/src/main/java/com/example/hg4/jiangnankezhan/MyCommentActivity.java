@@ -22,6 +22,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.example.hg4.jiangnankezhan.Adapter.AdapterFragment;
 import com.example.hg4.jiangnankezhan.Adapter.MyCmtAdapter;
+import com.example.hg4.jiangnankezhan.Adapter.MyMaterialAdapter;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.util.ArrayList;
@@ -31,12 +32,16 @@ public class MyCommentActivity  extends BaseActivity implements ViewPager.OnPage
 	private TabLayout layoutTab;
 	private ViewPager viewpagerTab;
 	private List<AVObject> myCmtList=new ArrayList<>();
-	private String[] stringList = new String[]{"评价","宝贝"};
+	private List<AVObject> myMaterList=new ArrayList<>();
+	private String[] stringList = new String[]{"评价","资料"};
 	private List<Fragment> fragmentList=new ArrayList<>();
 	private AdapterFragment adapterFragment;
 	private ImageButton search;
 	private RecyclerFragment recyclerFragment;
+	private RecyclerFragment recyclerFragment1;
 	private List<AVObject> displayList=new ArrayList<>();
+	private List<AVObject> MdisplayList=new ArrayList<>();
+	private MyMaterialAdapter myMaterialAdapter=new MyMaterialAdapter(MdisplayList);
 	private MyCmtAdapter cmtAdapter=new MyCmtAdapter(displayList);
 	private Dialog dialog;
 	@Override
@@ -53,7 +58,7 @@ public class MyCommentActivity  extends BaseActivity implements ViewPager.OnPage
 		getCommentData();
 	}
 	private void getCommentData(){
-		AVObject user=AVObject.createWithoutData("_User",id);
+		final AVObject user=AVObject.createWithoutData("_User",id);
 		AVQuery<AVObject> query=new AVQuery<>("Course_comment");
 		query.whereEqualTo("from",user);
 		query.orderByDescending("createdAt");
@@ -65,10 +70,27 @@ public class MyCommentActivity  extends BaseActivity implements ViewPager.OnPage
 					myCmtList.addAll(list);
 					recyclerFragment.commentList=myCmtList;
 					recyclerFragment.loadMoreComment();
+
+				}
+			}
+		});
+		AVQuery<AVObject> mQuery=new AVQuery<>("Course_file");
+		mQuery.whereEqualTo("owner",user);
+		mQuery.include("owner");
+		mQuery.orderByDescending("createdAt");
+		mQuery.findInBackground(new FindCallback<AVObject>() {
+			@Override
+			public void done(List<AVObject> list, AVException e) {
+				if(list!=null){
+					myMaterList.clear();
+					myMaterList.addAll(list);
+					recyclerFragment1.commentList=myMaterList;
+					recyclerFragment1.loadMoreComment();
 					Utilty.dismissDiaglog(dialog,1000);
 				}
 			}
 		});
+
 
 	}
 	private void initView() {
@@ -93,7 +115,7 @@ public class MyCommentActivity  extends BaseActivity implements ViewPager.OnPage
 		bundle1.putInt("close",1);
 		recyclerFragment=RecyclerFragment.newInstance(cmtAdapter,displayList,bundle1);
 		fragmentList.add(recyclerFragment);
-		RecyclerFragment recyclerFragment1=new RecyclerFragment();
+		recyclerFragment1=RecyclerFragment.newInstance(myMaterialAdapter,MdisplayList,bundle1);
 		fragmentList.add(recyclerFragment1);
 		if(!Utilty.isNetworkAvailable(this)){
 			Utilty.dismissDiaglog(dialog,1000);

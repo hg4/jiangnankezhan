@@ -82,6 +82,9 @@ public class JsoupUtils {
 				String courseName=td.get(1).text();
 				String point=td.get(2).text();
 				String testType=td.get(4).text();
+				if(!RegexUtil.regexMatches(courseName,".+（\\S）").get(0).equals("0")){
+					courseName=courseName.split("（")[0]+"("+courseName.split("（")[1].substring(0,1)+")";
+				}
 				List<Course> courseList=DaoUtil.courseQueryByName(courseName);
 				if(courseList.size()!=0&&courseList!=null){
 					for(int j=0;j<courseList.size();j++){
@@ -133,10 +136,21 @@ public class JsoupUtils {
 		if (data.length > 5) {
 			String coursedata1=data[0]+" "+data[1]+" "+data[2]+" "+data[3]+" "+data[4];
 			String coursedata2=data[5]+" "+data[6]+" "+data[7]+" "+data[8]+" "+data[9];
+			if(!RegexUtil.regexMatches(data[0],".+（\\S）").get(0).equals("0")){
+				data[0]=data[0].split("（")[0]+"("+data[0].split("（")[1].substring(0,1)+")";
+			}
+			if(!RegexUtil.regexMatches(data[5],".+（\\S）").get(0).equals("0")){
+				data[5]=data[5].split("（")[0]+"("+data[5].split("（")[1].substring(0,1)+")";
+			}
 			return new Course[]{new Course(coursedata1,length,courseBeginNumber,data[0],data[1],RegexUtil.regexMatches(data[2],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[2],"\\{.+\\}").get(0),data[3],data[4],date),
 								new Course(coursedata2,length,courseBeginNumber,data[5],data[6],RegexUtil.regexMatches(data[7],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[7],"\\{.+\\}").get(0),data[8],data[9],date)};
 		}
-		else return new Course[]{new Course(content,length,courseBeginNumber,data[0],data[1],RegexUtil.regexMatches(data[2],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[2],"\\{.+\\}").get(0),data[3],data[4],date)};
+		else{
+			if(!RegexUtil.regexMatches(data[0],".+（\\S）").get(0).equals("0")){
+				data[0]=data[0].split("（")[0]+"("+data[0].split("（")[1].substring(0,1)+")";
+			}
+			return new Course[]{new Course(content,length,courseBeginNumber,data[0],data[1],RegexUtil.regexMatches(data[2],"周[一二三四五]第\\S+节").get(0),RegexUtil.regexMatches(data[2],"\\{.+\\}").get(0),data[3],data[4],date)};
+		}
 	}
 
 	/************************ 以下为外部可以调用的方法 ************************/

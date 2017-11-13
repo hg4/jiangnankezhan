@@ -115,26 +115,7 @@ public class EduService extends Service {
 				@Override
 				public void done(List<AVObject> list, AVException e) {
 					if(list!=null&&e==null){
-						if(list.size()!=0){
-							Log.e("test","existed");
-						}
-						else {
-							AVObject AVcourse=new AVObject("Course");
-							AVcourse.put("coursedata",courses[0].getCoursedata());
-							AVcourse.put("teacher",courses[0].getTeacher());
-							AVcourse.put("courseName",courses[0].getCourseName());
-							AVcourse.put("courseType",courses[0].getCourseType());
-							AVcourse.put("isSingle",courses[0].getIsSingle());
-							AVcourse.put("isDouble",courses[0].getIsDouble());
-							AVcourse.put("start",courses[0].getStart());
-							AVcourse.put("end",courses[0].getEnd());
-							if(!courses[0].getLength().equals(""))
-								AVcourse.put("length",Integer.parseInt(courses[0].getLength()));
-							AVcourse.put("weekLength",courses[0].getWeekLength());
-							AVcourse.put("date",courses[0].getDate());
-							AVcourse.put("duration",courses[0].getDuration());
-							AVcourse.put("classroom",courses[0].getClassroom());
-							AVcourse.put("courseBeginNumber",courses[0].getCourseBeginNumber());
+						for(AVObject AVcourse:list){
 							AVcourse.put("testType",courses[0].getTestType());
 							AVcourse.put("point",courses[0].getPoint());
 							AVcourse.saveInBackground(new SaveCallback() {

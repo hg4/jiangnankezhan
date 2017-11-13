@@ -2,6 +2,9 @@ package com.example.hg4.jiangnankezhan;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,19 +29,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.GetDataCallback;
 import com.example.hg4.jiangnankezhan.Model.Course;
 import com.example.hg4.jiangnankezhan.Utils.Constants;
 import com.example.hg4.jiangnankezhan.Utils.HttpUtils;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
+import com.example.hg4.jiangnankezhan.Utils.RegexUtil;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +63,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 public class FragmentOfschedule extends Fragment implements View.OnClickListener {
     private String[] data={"1","2","3","4","5","6","7","8","9","10","11","12"};
     private Button addCourse;
-	private Button openDrawer;
+	private ImageView openDrawer;
 	private DrawerLayout drawer;
 	private TextView week;
 	private Button lastWeek;
@@ -84,7 +92,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
         listView.setDivider(null);
 		courseLayout=(RelativeLayout)getView().findViewById(R.id.table_schedule);
 		addCourse=(Button)getView().findViewById(R.id.schedule_add_course);
-		openDrawer=(Button)getView().findViewById(R.id.open_drawer);
+		openDrawer=(ImageView)getView().findViewById(R.id.open_drawer);
 		drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer_layout);
 		week=(TextView)getView().findViewById(R.id.schedule_week);
 		lastWeek=(Button)getView().findViewById(R.id.week_last);
@@ -106,6 +114,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 			PerferencesUtils.saveState(getContext(),id,addCourse.getId(),false);
 		}
 		initEvent();
+		getmainhead();
 		updateTime();
 		createschedule();
 		Log.e("test", TimeUtils.getTimeOfWeekStart().toString());
@@ -187,6 +196,33 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 				" width: "+displayMetrics.widthPixels);
 	}
 
+	private void getmainhead(){
+		if(PerferencesUtils.getBitmapFromSharedPreferences(id,getContext())!=null)
+			openDrawer.setImageBitmap(PerferencesUtils.getBitmapFromSharedPreferences(id,getContext()));
+		else {
+			AVQuery<AVObject> query=new AVQuery<>("_User");
+			query.getInBackground(id, new GetCallback<AVObject>() {
+				@Override
+				public void done(AVObject avObject, AVException e) {
+					if(avObject!=null){
+						AVFile file=avObject.getAVFile("head");
+						if(file!=null){
+							file.getDataInBackground(new GetDataCallback() {
+								@Override
+								public void done(byte[] bytes, AVException e) {
+									if(e==null){
+										openDrawer.setImageBitmap(Utilty.Bytes2Bimap(bytes));
+									}
+									else e.printStackTrace();
+								}
+							});
+						}
+					}
+				}
+			});
+
+		}
+	}
 	private void initEvent(){
 		addCourse.setOnClickListener(this);
 		openDrawer.setOnClickListener(this);
@@ -261,7 +297,13 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 					final Course lastCourse=DataSupport.where("courseBeginNumber=? and date=? and courseName=?",csbgnb.toString(),course.getDate(),course.getCourseName())
 							.findFirst(Course.class);
 					if(lastCourse!=null){
-						courseButton.setText(lastCourse.getCourseName()+"\n"+lastCourse.getClassroom());
+						String name=lastCourse.getCourseName();
+						if(!RegexUtil.regexMatches(name,".+（\\S）").get(0).equals("0")){
+							name=name.split("（")[0]+"("+name.split("（")[1].substring(0,1)+")";
+							lastCourse.setCourseName(name);
+							lastCourse.save();
+						}
+						courseButton.setText(name+"\n"+lastCourse.getClassroom());
 						courseButton.setTextSize(12);
 						courseButton.setMaxLines(3*3);
 						courseButton.setEllipsize(TextUtils.TruncateAt.END);
@@ -289,7 +331,14 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 					}
 				}
 				else {
-					courseButton.setText(course.getCourseName()+"\n"+course.getClassroom());
+					String name=course.getCourseName();
+					if(!RegexUtil.regexMatches(name,".+（\\S）").get(0).equals("0")){
+						name=name.split("（")[0]+"("+name.split("（")[1].substring(0,1)+")";
+						course.setCourseName(name);
+						course.save();
+					}
+
+					courseButton.setText(name+"\n"+course.getClassroom());
 					courseButton.setTextSize(12);
 					courseButton.setMaxLines(3*length);
 					courseButton.setEllipsize(TextUtils.TruncateAt.END);

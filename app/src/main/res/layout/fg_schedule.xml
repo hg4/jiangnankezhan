@@ -5,208 +5,208 @@
                android:layout_height="match_parent">
 
     <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#fff"
-              android:baselineAligned="false"
-              android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="#fff"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/open_drawer"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="22dp"
-            android:background="@drawable/curri_apps"/>
-
-        <Button
-            android:id="@+id/week_last"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="90dp"
-            android:background="@drawable/left_circle"/>
-
-        <TextView
-            android:id="@+id/schedule_week"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:text="第1周"
-            android:textColor="#222D43"
-            android:textSize="20sp"/>
-
-        <Button
-            android:id="@+id/week_next"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/right_circle"/>
-
-        <Button
-            android:id="@+id/schedule_search"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="45dp"
-            android:background="@drawable/curri_search"/>
-
-        <Button
-            android:id="@+id/schedule_add_course"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="28dp"
-            android:background="@drawable/curri_add"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/sche_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#fff"
+        android:baselineAligned="false"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="55dp"
+            android:background="#fff"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/schedule_solid"
-                android:layout_width="22dp"
-                android:layout_height="match_parent"
-                android:background="#AC7281"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/open_drawer"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="14dp"
+                android:src="@drawable/meitoux"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#222D43"
-                android:weightSum="8">
+            <Button
+                android:id="@+id/week_last"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="80dp"
+                android:background="@drawable/left_circle"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="19dp"
-                    android:layout_weight="1"
-                    android:ems="1"
-                    android:gravity="center"
-                    android:text="周一"
-                    android:textColor="#fff"
-                    android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/schedule_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="第1周"
+                android:textColor="#222D43"
+                android:textSize="20sp"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:ems="1"
-                    android:gravity="center"
-                    android:text="周二"
-                    android:textColor="#fff"
-                    android:textSize="15dp"/>
+            <Button
+                android:id="@+id/week_next"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/right_circle"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:ems="1"
-                    android:gravity="center"
-                    android:text="周三"
-                    android:textColor="#fff"
-                    android:textSize="15dp"/>
+            <Button
+                android:id="@+id/schedule_search"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="45dp"
+                android:background="@drawable/curri_search"/>
 
-                <TextView
-                    android:id="@+id/textView17"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:ems="1"
-                    android:gravity="center"
-                    android:text="周四"
-                    android:textColor="#fff"
-                    android:textSize="15dp"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:ems="1"
-                    android:gravity="center"
-                    android:text="周五"
-                    android:textColor="#fff"
-                    android:textSize="15dp"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:ems="1"
-                    android:gravity="center"
-                    android:text="周六"
-                    android:textColor="#fff"
-                    android:textSize="15dp"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:ems="1"
-                    android:gravity="center"
-                    android:text="周日"
-                    android:textColor="#fff"
-                    android:textSize="15dp"/>
-            </LinearLayout>
+            <Button
+                android:id="@+id/schedule_add_course"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="22dp"
+                android:background="@drawable/curri_add"/>
 
         </LinearLayout>
 
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/sche_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/table"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:id="@+id/schedule_solid"
+                    android:layout_width="22dp"
+                    android:layout_height="match_parent"
+                    android:background="#AC7281"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#222D43"
+                    android:weightSum="8">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="19dp"
+                        android:layout_weight="1"
+                        android:ems="1"
+                        android:gravity="center"
+                        android:text="周一"
+                        android:textColor="#fff"
+                        android:textSize="15dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
+                        android:ems="1"
+                        android:gravity="center"
+                        android:text="周二"
+                        android:textColor="#fff"
+                        android:textSize="15dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
+                        android:ems="1"
+                        android:gravity="center"
+                        android:text="周三"
+                        android:textColor="#fff"
+                        android:textSize="15dp"/>
+
+                    <TextView
+                        android:id="@+id/textView17"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
+                        android:ems="1"
+                        android:gravity="center"
+                        android:text="周四"
+                        android:textColor="#fff"
+                        android:textSize="15dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
+                        android:ems="1"
+                        android:gravity="center"
+                        android:text="周五"
+                        android:textColor="#fff"
+                        android:textSize="15dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
+                        android:ems="1"
+                        android:gravity="center"
+                        android:text="周六"
+                        android:textColor="#fff"
+                        android:textSize="15dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
+                        android:ems="1"
+                        android:gravity="center"
+                        android:text="周日"
+                        android:textColor="#fff"
+                        android:textSize="15dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ListView
-                    android:id="@+id/listView"
-                    android:layout_width="22dp"
-                    android:layout_height="600dp"
-                    android:background="#222D43">
-
-                </ListView>
-
-                <RelativeLayout
-                    android:id="@+id/table_schedule"
+                <LinearLayout
+                    android:id="@+id/table"
                     android:layout_width="match_parent"
-                    android:layout_height="600dp"
-                    android:background="#494E6B">
+                    android:layout_height="match_parent">
+
+                    <ListView
+                        android:id="@+id/listView"
+                        android:layout_width="22dp"
+                        android:layout_height="600dp"
+                        android:background="#222D43">
+
+                    </ListView>
+
+                    <RelativeLayout
+                        android:id="@+id/table_schedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="600dp"
+                        android:background="#494E6B">
 
 
-                </RelativeLayout>
+                    </RelativeLayout>
 
 
-            </LinearLayout>
-        </ScrollView>
+                </LinearLayout>
+            </ScrollView>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
 
 </FrameLayout>
