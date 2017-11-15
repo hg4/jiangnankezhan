@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +21,14 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.example.hg4.jiangnankezhan.Adapter.MaterialCommentAdapter;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.hg4.jiangnankezhan.R.id.teacher;
 
 public class DownloadActivity extends BaseActivity {
     private TextView materialname;
@@ -29,7 +39,17 @@ public class DownloadActivity extends BaseActivity {
     private ImageView back;
     private Button download;
     private ImageView like;
+    private ImageView comment;
     private TextView likenumber;
+    private TextView commentnumber;
+    private List<AVObject> matercomlist=new ArrayList<>();
+    private RecyclerView commentlist;
+    private MaterialCommentAdapter adapter;
+    private AVObject user;
+    private String courseName;
+    private String teacher;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +64,15 @@ public class DownloadActivity extends BaseActivity {
         download = (Button) findViewById(R.id.download);
         like=(ImageView)findViewById(R.id.like);
         likenumber=(TextView)findViewById(R.id.likenumber);
+        comment=(ImageView)findViewById(R.id.comment);
+        commentnumber=(TextView)findViewById(R.id.commentnumber);
+
+        commentlist=(RecyclerView)findViewById(R.id.commentlist);
+        adapter=new MaterialCommentAdapter(matercomlist);
+        commentlist.setAdapter(adapter);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+        commentlist.setLayoutManager(layoutManager);
+
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +95,15 @@ public class DownloadActivity extends BaseActivity {
                         }
                     }
                 });
+            }
+        });
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(DownloadActivity.this,CommentActivity.class);
+                intent.putExtra("materialName",getIntent().getStringExtra("content"));
+                intent.putExtra("from",5);
+                startActivityForResult(intent,1);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +129,7 @@ public class DownloadActivity extends BaseActivity {
                         owner.setText(user.getString("nickname"));
                         AVFile file = user.getAVFile("head");
                         likenumber.setText(avObject.getNumber("likeCount").toString());
+                        commentnumber.setText(avObject.getNumber("commentCount").toString());
                         file.getDataInBackground(new GetDataCallback() {
                             @Override
                             public void done(byte[] bytes, AVException e) {
@@ -111,25 +150,65 @@ public class DownloadActivity extends BaseActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AVQuery<AVObject> query = new AVQuery<>("Course_file");
-                query.whereEqualTo("Title", getIntent().getStringExtra("content"));
-                query.getFirstInBackground(new GetCallback<AVObject>() {
-                    @Override
-                    public void done(AVObject avObject, AVException e) {
-                        {
-                            if (e == null) {
-                                Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
-                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                startActivity(intent);
-                            } else {
-                                e.printStackTrace();
-                            }
+                if(user!=null){
+                    if(user.getBoolean("permissionD")){
+                        AVQuery<AVObject> query = new AVQuery<>("Course_file");
+                        query.whereEqualTo("Title", getIntent().getStringExtra("content"));
+                        query.getFirstInBackground(new GetCallback<AVObject>() {
+                            @Override
+                            public void done(AVObject avObject, AVException e) {
+                                {
+                                    if (e == null) {
+                                        Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                        startActivity(intent);
+                                    } else {
+                                        e.printStackTrace();
+                                    }
 
-                        }
+                                }
+                            }
+                        });
                     }
-                });
+                    else {
+                        final FrameLayout downLimit=(FrameLayout) getLayoutInflater().inflate(R.layout.limit_dialog, null);
+                        AlertDialog.Builder limitBuilder=new AlertDialog.Builder(DownloadActivity.this);
+                        limitBuilder.setView(downLimit);
+                        final AlertDialog limitDialog=limitBuilder.create();
+                        limitDialog.show();
+                        Button jump=(Button)downLimit.findViewById(R.id.jump);
+                        jump.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent=new Intent(DownloadActivity.this,RequirementsActivity.class);
+                                intent.putExtra("teacher",teacher);
+                                intent.putExtra("courseName",courseName);
+                                limitDialog.dismiss();
+                                startActivity(intent);
+                            }
+                        });
+                        Button cancel=(Button)downLimit.findViewById(R.id.cancel);
+                        cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                limitDialog.dismiss();
+                            }
+                        });
+                    }
+                }
+
             }
         });
 
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode!=0){
+            switch (requestCode){
+                case 1:
+                    break;
+            }
+        }
     }
 }
