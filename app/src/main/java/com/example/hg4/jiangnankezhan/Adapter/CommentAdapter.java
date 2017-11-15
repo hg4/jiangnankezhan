@@ -221,9 +221,9 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 								spanString.setSpan(colorSpan1,0,fromName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 								spanString.setSpan(colorSpan2,fromName.length()+2,fromName.length()+2+toName.length(),Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 								textView.setText(spanString);
-								textView.setMaxEms(22);
+								textView.setMaxEms(20);
 								LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-								layoutParams.setMargins(51,0,0,18);
+								layoutParams.setMargins(51,0,15,18);
 								textView.setLayoutParams(layoutParams);
 								holder.commentList.addView(textView);
 							}
@@ -231,7 +231,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 
 					}
 					else {
-						Log.e("test",((Integer)list.size()).toString());
+						e.printStackTrace();
 					}
 				}
 			});

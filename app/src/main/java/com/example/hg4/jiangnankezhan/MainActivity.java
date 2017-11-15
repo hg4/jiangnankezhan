@@ -283,6 +283,7 @@ public class MainActivity extends BaseActivity
             final PackageInfo packageInfo = packageManager.getPackageInfo(
                     getPackageName(), 0);
             AVQuery<AVObject> query = new AVQuery<>("AppVersion");
+			query.orderByDescending("createdAt");
             query.getFirstInBackground(new GetCallback<AVObject>() {
                 @Override
                 public void done(final AVObject avObject, AVException e) {

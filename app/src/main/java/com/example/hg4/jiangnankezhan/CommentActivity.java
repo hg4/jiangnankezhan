@@ -36,6 +36,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.Adapter.PreviewAdapter;
 import com.example.hg4.jiangnankezhan.Utils.GlideLoader;
+import com.example.hg4.jiangnankezhan.Utils.RegexUtil;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 import com.yancy.imageselector.ImageConfig;
 import com.yancy.imageselector.ImageSelector;
@@ -66,6 +67,7 @@ public class CommentActivity extends BaseActivity {
     private static final int FROM_REPLY=4;
     public static final int REQUEST_CODE = 1000;
     private Dialog dialog;
+    private AVObject user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,9 +132,9 @@ public class CommentActivity extends BaseActivity {
         subCmt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilty.createDiaglog(CommentActivity.this,"发表中...");
+                dialog=Utilty.createDiaglog(CommentActivity.this,"发表中...");
                 if(from==FROM_COMMENT){
-                    if(!"".equals(content.getText().toString())){
+                    if(commentCheck(content.getText().toString())){
                         final AVObject comment=new AVObject("cscmt_commentlist");
                         comment.put("from", AVUser.getCurrentUser());
                         comment.put("content",content.getText());
@@ -160,6 +162,7 @@ public class CommentActivity extends BaseActivity {
                                                         //子评论发表成功后，父评论最大talk组+1
                                                         avObject.increment("maxTalkGroup");
                                                         avObject.saveInBackground();
+                                                        savePermission();
                                                         Utilty.dismissDiaglog(dialog,1000);
                                                         Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                                         setResult(1);
@@ -180,9 +183,13 @@ public class CommentActivity extends BaseActivity {
 
 
                 }
+                else {
+                        Toast.makeText(CommentActivity.this,"黄牌警告 请不要发表辣鸡评论！",Toast.LENGTH_SHORT).show();
+                        Utilty.dismissDiaglog(dialog,0);
+                    }
                 }
                 if(from==FROM_REPLY){
-                    if(!"".equals(content.getText().toString())) {
+                    if(commentCheck(content.getText().toString())) {
                         final AVObject comment = new AVObject("cscmt_commentlist");
                         comment.put("from", AVUser.getCurrentUser());
                         comment.put("content", content.getText());
@@ -216,12 +223,16 @@ public class CommentActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
+                    else {
+                        Toast.makeText(CommentActivity.this,"黄牌警告 请不要发表辣鸡评论！",Toast.LENGTH_SHORT).show();
+                        Utilty.dismissDiaglog(dialog,0);
+                    }
                 }
                 if(from==FROM_REQUEST){
                     type=intent.getIntExtra("type",0);
                     courseName=intent.getStringExtra("courseName");
                     teacher=intent.getStringExtra("teacher");
-                    if(!"".equals(content.getText().toString())){
+                    if(commentCheck(content.getText().toString())){
                         AVObject comment=new AVObject("Course_comment");
                         comment.put("from", AVUser.getCurrentUser());
                         comment.put("type",type);
@@ -243,6 +254,7 @@ public class CommentActivity extends BaseActivity {
                                 }
                                 else {
                                     Utilty.dismissDiaglog(dialog,1000);
+                                    savePermission();
                                     Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                     setResult(1);
                                     CommentActivity.this.finish();
@@ -264,12 +276,16 @@ public class CommentActivity extends BaseActivity {
                             }
                         }
                     }
+                    else {
+                        Toast.makeText(CommentActivity.this,"黄牌警告 请不要发表辣鸡评论！",Toast.LENGTH_SHORT).show();
+                        Utilty.dismissDiaglog(dialog,0);
+                    }
                 }
                 if(from==FROM_CONTENT){
                     type=intent.getIntExtra("type",0);
                     courseName=intent.getStringExtra("courseName");
                     teacher=intent.getStringExtra("teacher");
-                    if(!"".equals(content.getText().toString())){
+                    if(commentCheck(content.getText().toString())){
                         AVObject comment=new AVObject("Course_comment");
                         comment.put("from", AVUser.getCurrentUser());
                         comment.put("type",type);
@@ -287,10 +303,10 @@ public class CommentActivity extends BaseActivity {
                                 }
                                 else {
                                     Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                    savePermission();
                                     setResult(1);
                                     Utilty.dismissDiaglog(dialog,1000);
                                     CommentActivity.this.finish();
-
                                 }
                             }
                         });
@@ -308,11 +324,24 @@ public class CommentActivity extends BaseActivity {
                             }
                         }
                     }
+                    else {
+                        Toast.makeText(CommentActivity.this,"黄牌警告 请不要发表辣鸡评论！",Toast.LENGTH_SHORT).show();
+                        Utilty.dismissDiaglog(dialog,0);
+                    }
                 }
             }
         });
     }
-
+    private void savePermission(){
+        user=AVObject.createWithoutData("_User",id);
+        user.put("permissionD",true);
+        user.saveInBackground();
+    }
+    private boolean commentCheck(String content){
+        boolean isWordorNumber=content.matches("^[A-Za-z0-9 ]+$");
+        boolean isNull="".equals(content);
+        return !isNull&&!isWordorNumber;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

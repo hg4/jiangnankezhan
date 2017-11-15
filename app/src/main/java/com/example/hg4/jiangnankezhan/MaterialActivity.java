@@ -15,6 +15,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.example.hg4.jiangnankezhan.Adapter.MaterialAdapter;
+import com.example.hg4.jiangnankezhan.Model.Course;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class MaterialActivity extends BaseActivity {
     private List<String> materialList=new ArrayList<>();
     private MaterialAdapter adapter;
     private Button search;
+    private String courseName;
+    private String teacher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,10 @@ public class MaterialActivity extends BaseActivity {
         adapter=new MaterialAdapter(MaterialActivity.this, R.layout.setting_item,materialList);
         material.setAdapter(adapter);
         material.setDivider(null);
+        if(getIntent()!=null){
+            courseName=getIntent().getStringExtra("courseName");
+            teacher=getIntent().getStringExtra("teacher");
+        }
         AVQuery<AVObject> query = new AVQuery<>("Course_file");
         query.whereEqualTo("Course",getIntent().getStringExtra("courseName"));
         query.findInBackground(new FindCallback<AVObject>() {
@@ -61,6 +68,8 @@ public class MaterialActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent=new Intent(MaterialActivity.this,DownloadActivity.class);
                 intent.putExtra("content",materialList.get(i));
+                intent.putExtra("courseName",courseName);
+                intent.putExtra("teacher",teacher);
                 startActivity(intent);
             }
         });

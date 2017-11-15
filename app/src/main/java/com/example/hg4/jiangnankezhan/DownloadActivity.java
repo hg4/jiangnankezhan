@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +33,17 @@ public class DownloadActivity extends BaseActivity {
     private Button download;
     private ImageView like;
     private TextView likenumber;
-
+    private AVObject user;
+	private String courseName;
+	private String teacher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
+		if(getIntent()!=null){
+			courseName=getIntent().getStringExtra("courseName");
+			teacher=getIntent().getStringExtra("teacher");
+		}
         materialname = (TextView) findViewById(R.id.materialname);
         back = (ImageView) findViewById(R.id.back);
         owner = (TextView) findViewById(R.id.owner);
@@ -107,27 +116,65 @@ public class DownloadActivity extends BaseActivity {
                 }
             }
         });
-
+        AVQuery<AVObject> userQuery=new AVQuery<>("_User");
+        userQuery.getInBackground(id, new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if(avObject!=null){
+                    user=avObject;
+                }
+            }
+        });
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AVQuery<AVObject> query = new AVQuery<>("Course_file");
-                query.whereEqualTo("Title", getIntent().getStringExtra("content"));
-                query.getFirstInBackground(new GetCallback<AVObject>() {
-                    @Override
-                    public void done(AVObject avObject, AVException e) {
-                        {
-                            if (e == null) {
-                                Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
-                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                startActivity(intent);
-                            } else {
-                                e.printStackTrace();
-                            }
+                if(user!=null){
+                    if(user.getBoolean("permissionD")){
+                        AVQuery<AVObject> query = new AVQuery<>("Course_file");
+                        query.whereEqualTo("Title", getIntent().getStringExtra("content"));
+                        query.getFirstInBackground(new GetCallback<AVObject>() {
+                            @Override
+                            public void done(AVObject avObject, AVException e) {
+                                {
+                                    if (e == null) {
+                                        Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                        startActivity(intent);
+                                    } else {
+                                        e.printStackTrace();
+                                    }
 
-                        }
+                                }
+                            }
+                        });
                     }
-                });
+                    else {
+                        final FrameLayout downLimit=(FrameLayout) getLayoutInflater().inflate(R.layout.limit_dialog, null);
+                        AlertDialog.Builder limitBuilder=new AlertDialog.Builder(DownloadActivity.this);
+                        limitBuilder.setView(downLimit);
+                        final AlertDialog limitDialog=limitBuilder.create();
+                        limitDialog.show();
+                        Button jump=(Button)downLimit.findViewById(R.id.jump);
+                        jump.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+								Intent intent=new Intent(DownloadActivity.this,RequirementsActivity.class);
+								intent.putExtra("teacher",teacher);
+								intent.putExtra("courseName",courseName);
+                                limitDialog.dismiss();
+								startActivity(intent);
+                            }
+                        });
+                        Button cancel=(Button)downLimit.findViewById(R.id.cancel);
+                        cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                limitDialog.dismiss();
+                            }
+                        });
+                    }
+                }
+
             }
         });
 

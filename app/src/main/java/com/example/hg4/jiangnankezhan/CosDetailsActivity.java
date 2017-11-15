@@ -237,6 +237,7 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
             case R.id.material:
                 Intent intent4= new Intent(CosDetailsActivity.this,MaterialActivity.class);
                 intent4.putExtra("courseName",Name);
+                intent4.putExtra("teacher",teacher);
                 startActivity(intent4);
                 break;
         }
