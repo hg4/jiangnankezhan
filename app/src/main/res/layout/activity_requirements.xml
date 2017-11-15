@@ -10,6 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:background="#fff"
+        android:elevation="3dp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -26,11 +27,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="36dp"
             android:layout_gravity="center_vertical"
-            android:text="课程要求"
+            android:layout_marginLeft="36dp"
+            android:text="上课攻略"
             android:textColor="#222D43"
-            android:textSize="22dp" />
+            android:textSize="22dp"/>
 
     </LinearLayout>
 
@@ -39,6 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="42dp"
         android:background="#ffffff"
+        android:elevation="3dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
@@ -104,7 +106,7 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="392dp"
         android:layout_above="@+id/addcmt_comment"
         app:layout_constraintBottom_toTopOf="@+id/addcmt_comment"
         app:layout_constraintHorizontal_bias="1.0"
