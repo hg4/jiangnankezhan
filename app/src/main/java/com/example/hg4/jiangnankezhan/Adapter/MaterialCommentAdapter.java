@@ -1,12 +1,18 @@
 package com.example.hg4.jiangnankezhan.Adapter;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.GetDataCallback;
 import com.example.hg4.jiangnankezhan.R;
+import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +29,13 @@ public class MaterialCommentAdapter extends RecyclerView.Adapter<MaterialComment
         TextView content;
         ImageView head;
         TextView date;
+        RecyclerView relylist;
         public ViewHolder(View view){
             super(view);
             head=(ImageView)view.findViewById(R.id.comment_head);
             date=(TextView)view.findViewById(R.id.comment_date);
             content=(TextView)view.findViewById(R.id.content);
+            relylist=(RecyclerView)view.findViewById(R.id.relylist);
         }
     }
 
@@ -43,6 +51,25 @@ public class MaterialCommentAdapter extends RecyclerView.Adapter<MaterialComment
     @Override
     public void onBindViewHolder(final ViewHolder holder,int position){
         AVObject comment=matercomlist.get(position);
+        if(comment.getAVUser("from").getAVFile("head")!=null){
+            AVFile file=comment.getAVUser("from").getAVFile("head");
+            if(file!=null&&file.getUrl()!=null){
+                file.getDataInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] bytes, AVException e) {
+                        if(e==null&&bytes!=null){
+                            Bitmap head= Utilty.Bytes2Bimap(bytes);
+                            holder.head.setImageBitmap(head);
+                        }
+                        else e.printStackTrace();
+                    }
+                });
+            }
+        }
+        holder.date.setText(comment.getUpdatedAt().toString());
+        if(!comment.getAVUser("from").getString("nickname").equals("（请填写）")) {
+            holder.content.setText(comment.getAVUser("from").getString("nickname") +":"+ comment.getString("content"));
+        }
 
 
     }

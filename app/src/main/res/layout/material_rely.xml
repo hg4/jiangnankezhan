@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -13,54 +14,74 @@
             android:id="@+id/head"
             android:layout_width="34dp"
             android:layout_height="34dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginLeft="45dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="2dp" />
+            android:layout_marginTop="12dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="哈哈哈哈"
             android:textColor="#BDBDBD"
             android:textSize="14dp"
-            android:maxEms="16"
+            android:maxEms="14"
             app:layout_constraintLeft_toRightOf="@+id/head"
-            android:layout_marginLeft="11dp"
+            android:layout_marginLeft="10dp"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="20dp"
             android:id="@+id/content"
             android:layout_marginStart="10dp" />
+
         <ImageView
             android:layout_width="10dp"
             android:layout_height="10dp"
             app:srcCompat="@drawable/comment_clock"
-            android:layout_marginTop="9dp"
-            app:layout_constraintTop_toBottomOf="@+id/content"
             android:id="@+id/imageView20"
-            app:layout_constraintLeft_toLeftOf="@+id/content" />
+            app:layout_constraintLeft_toLeftOf="@+id/content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/imagelist" />
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="YYYY-MM-DD"
             android:textSize="12dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@+id/imagelist"
+            app:layout_constraintTop_toRightOf="@+id/imageView20"
             app:layout_constraintLeft_toRightOf="@+id/imageView20"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp" />
+            android:layout_marginLeft="8dp" />
+
         <TextView
+            android:id="@+id/rely"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="18dp"
             android:text="回复"
             android:textColor="#AC7281"
             app:layout_constraintLeft_toRightOf="@+id/time"
-            android:layout_marginLeft="18dp"
-            android:layout_marginTop="7dp"
-            app:layout_constraintTop_toBottomOf="@+id/content" />
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@+id/imagelist" />
+
+        <LinearLayout
+            android:id="@+id/imagelist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="@+id/content"
+            app:layout_constraintTop_toBottomOf="@+id/content">
+
+        </LinearLayout>
 
 
     </android.support.constraint.ConstraintLayout>
+
+
 </LinearLayout>
