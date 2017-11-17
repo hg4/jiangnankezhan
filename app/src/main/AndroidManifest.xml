@@ -152,6 +152,9 @@
             android:enabled="true"
             android:exported="true">
         </service>
+
+        <activity android:name=".Utils.AddcsActivity">
+        </activity>
     </application>
 
 </manifest>

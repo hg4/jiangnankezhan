@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,16 +23,16 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
-import com.example.hg4.jiangnankezhan.Adapter.MaterialCommentAdapter;
+import com.example.hg4.jiangnankezhan.Adapter.UniCmtAdapter;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.hg4.jiangnankezhan.R.id.teacher;
 
 public class DownloadActivity extends BaseActivity {
     private TextView materialname;
@@ -42,14 +46,16 @@ public class DownloadActivity extends BaseActivity {
     private ImageView comment;
     private TextView likenumber;
     private TextView commentnumber;
-    private List<AVObject> matercomlist=new ArrayList<>();
-    private RecyclerView commentlist;
-    private MaterialCommentAdapter adapter;
+	private RecyclerFragment recyclerFragment;
+	private AVObject fileObject;
     private AVObject user;
+    private AVObject getOwner;
     private String courseName;
     private String teacher;
-
-
+	private LinearLayout fragHolder;
+	private List<AVObject> displayList=new ArrayList<>();
+	private List<AVObject> datalist=new ArrayList<>();
+	private UniCmtAdapter cmtAdapter=new UniCmtAdapter(displayList);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +72,14 @@ public class DownloadActivity extends BaseActivity {
         likenumber=(TextView)findViewById(R.id.likenumber);
         comment=(ImageView)findViewById(R.id.comment);
         commentnumber=(TextView)findViewById(R.id.commentnumber);
-
-        commentlist=(RecyclerView)findViewById(R.id.commentlist);
-        adapter=new MaterialCommentAdapter(matercomlist);
-        commentlist.setAdapter(adapter);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
-        commentlist.setLayoutManager(layoutManager);
-
+		fragHolder=(LinearLayout)findViewById(R.id.materielcomment);
+		Bundle bundle=new Bundle();
+		bundle.putInt("close",1);
+		recyclerFragment=RecyclerFragment.newInstance(cmtAdapter,displayList,bundle);
+		FragmentManager fManager=getSupportFragmentManager();
+		FragmentTransaction fTransaction = fManager.beginTransaction();
+		fTransaction.add(R.id.materielcomment,recyclerFragment);
+		fTransaction.commit();
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,15 +104,6 @@ public class DownloadActivity extends BaseActivity {
                 });
             }
         });
-        comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(DownloadActivity.this,CommentActivity.class);
-                intent.putExtra("materialName",getIntent().getStringExtra("content"));
-                intent.putExtra("from",5);
-                startActivityForResult(intent,1);
-            }
-        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,13 +119,16 @@ public class DownloadActivity extends BaseActivity {
             public void done(AVObject avObject, AVException e) {
                 {
                     if (e == null) {
+						if(avObject!=null)
+							fileObject=avObject;
                         if(!avObject.getString("Introduce").equals("")){
                             content.setText(avObject.getString("Introduce"));
                         }
                         date.setText(TimeUtils.dateToString(avObject.getCreatedAt()));
-                        AVObject user = avObject.getAVObject("owner");
-                        owner.setText(user.getString("nickname"));
-                        AVFile file = user.getAVFile("head");
+                        getOwner = avObject.getAVObject("owner");
+						if(!getOwner.getString("nickname").equals("（请填写）"))
+                        	owner.setText(getOwner.getString("nickname"));
+                        AVFile file = getOwner.getAVFile("head");
                         likenumber.setText(avObject.getNumber("likeCount").toString());
                         commentnumber.setText(avObject.getNumber("commentCount").toString());
                         file.getDataInBackground(new GetDataCallback() {
@@ -139,6 +140,7 @@ public class DownloadActivity extends BaseActivity {
                                 } else e.printStackTrace();
                             }
                         });
+						findData();
                     } else {
                         e.printStackTrace();
                         Toast.makeText(DownloadActivity.this, "查找失败", Toast.LENGTH_SHORT).show();
@@ -146,7 +148,16 @@ public class DownloadActivity extends BaseActivity {
                 }
             }
         });
-
+		comment.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(DownloadActivity.this,CommentActivity.class);
+				intent.putExtra("material",fileObject.toString());
+				intent.putExtra("to_User",getOwner.toString());
+				intent.putExtra("from",5);
+				startActivityForResult(intent,1);
+			}
+		});
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,11 +213,40 @@ public class DownloadActivity extends BaseActivity {
 
 
     }
+    private void findData(){
+		AVQuery<AVObject> avQuery=new AVQuery<>("Material_comment");
+		avQuery.whereEqualTo("material",fileObject);
+		avQuery.include("from_User");
+		avQuery.include("material");
+		avQuery.addAscendingOrder("createdAt");
+		avQuery.findInBackground(new FindCallback<AVObject>() {
+			@Override
+			public void done(List<AVObject> list, AVException e) {
+				if(list!=null){
+					if(list.size()!=0){
+						datalist.addAll(list);
+						recyclerFragment.commentList=datalist;
+						recyclerFragment.loadMoreComment();
+						commentnumber.setText(list.size()+"");
+					}
+				}
+			}
+		});
+	}
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode!=0){
             switch (requestCode){
                 case 1:
+                	try{
+						AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
+						recyclerFragment.commentList.add(newcmt);
+						commentnumber.setText(recyclerFragment.commentList.size()+"");
+
+					}
+					catch (Exception e){
+						e.printStackTrace();
+					}
                     break;
             }
         }
