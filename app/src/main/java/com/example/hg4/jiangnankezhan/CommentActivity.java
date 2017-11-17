@@ -66,6 +66,7 @@ public class CommentActivity extends BaseActivity {
     private static final int FROM_CONTENT=3;
     private static final int FROM_REPLY=4;
     private static final int FROM_MATERIAL=5;
+    private static final int FROM_MATERIALCHD=6;
     public static final int REQUEST_CODE = 1000;
     private Dialog dialog;
     private AVObject user;
@@ -331,7 +332,6 @@ public class CommentActivity extends BaseActivity {
                     }
                 }
                 if(from==FROM_MATERIAL){//从资料评论
-                    if(intent.getStringExtra("material")!=null){//评论资料
                         try{
                             AVObject material=AVObject.parseAVObject(intent.getStringExtra("material"));
                             AVObject toUser=AVObject.parseAVObject(intent.getStringExtra("to_User"));//download里的getowner
@@ -383,57 +383,56 @@ public class CommentActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
-                    else {//评论父评论
-                        try{
-                            AVObject to_comment=AVObject.parseAVObject(intent.getStringExtra("to_comment"));
-                            AVObject toUser=AVObject.parseAVObject(intent.getStringExtra("to_User"));
-                            if(commentCheck(content.getText().toString())){
-                                final AVObject comment=new AVObject("Material_comment");
-                                comment.put("to_comment",to_comment);
-                                comment.put("to_User",toUser);
-                                comment.put("from_User",AVUser.getCurrentUser());
-                                comment.put("content",content.getText());
-                                comment.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(AVException e) {
-                                        if(path.size()!=0){
-                                            int index=adapter.getItemCount();
-                                            for(int i=0;i<index;i++){
-                                                preview.getChildAt(i);
-                                                AVObject imageFile=new AVObject("cscmt_imagelist");
-                                                imageFile.put("from_material",comment);
-                                                Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
-                                                byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
-                                                AVFile file=new AVFile("image",bytes);
-                                                imageFile.put("image",file);
-                                                imageFile.saveInBackground(new SaveCallback() {
-                                                    @Override
-                                                    public void done(AVException e) {
-                                                        Intent intent=new Intent();
-                                                        intent.putExtra("newcmt",comment.toString());
-                                                        setResult(2,intent);
-                                                        CommentActivity.this.finish();
-                                                    }
-                                                });
-                                            }
-                                        }
-                                        else {
-                                            Intent intent=new Intent();
-                                            intent.putExtra("newcmt",comment.toString());
-                                            setResult(2,intent);
-                                            CommentActivity.this.finish();
+                if(from==FROM_MATERIALCHD){
+                    try{
+                        AVObject to_comment=AVObject.parseAVObject(intent.getStringExtra("to_comment"));
+                        AVObject toUser=AVObject.parseAVObject(intent.getStringExtra("to_User"));
+                        if(commentCheck(content.getText().toString())){
+                            final AVObject comment=new AVObject("Material_comment");
+                            comment.put("to_comment",to_comment);
+                            comment.put("to_User",toUser);
+                            comment.put("from_User",AVUser.getCurrentUser());
+                            comment.put("content",content.getText());
+                            comment.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if(path.size()!=0){
+                                        int index=adapter.getItemCount();
+                                        for(int i=0;i<index;i++){
+                                            preview.getChildAt(i);
+                                            AVObject imageFile=new AVObject("cscmt_imagelist");
+                                            imageFile.put("from_material",comment);
+                                            Bitmap bitmap=BitmapFactory.decodeFile(path.get(i));
+                                            byte[] bytes=Utilty.Bitmap2Bytes(bitmap);
+                                            AVFile file=new AVFile("image",bytes);
+                                            imageFile.put("image",file);
+                                            imageFile.saveInBackground(new SaveCallback() {
+                                                @Override
+                                                public void done(AVException e) {
+                                                    Intent intent=new Intent();
+                                                    intent.putExtra("newcmt",comment.toString());
+                                                    setResult(2,intent);
+                                                    CommentActivity.this.finish();
+                                                }
+                                            });
                                         }
                                     }
-                                });
-                            }
-                            else {
-                                Toast.makeText(CommentActivity.this,"黄牌警告 请不要发表辣鸡评论！",Toast.LENGTH_SHORT).show();
-                                Utilty.dismissDiaglog(dialog,0);
-                            }
+                                    else {
+                                        Intent intent=new Intent();
+                                        intent.putExtra("newcmt",comment.toString());
+                                        setResult(2,intent);
+                                        CommentActivity.this.finish();
+                                    }
+                                }
+                            });
                         }
-                        catch (Exception e){
-                            e.printStackTrace();
+                        else {
+                            Toast.makeText(CommentActivity.this,"黄牌警告 请不要发表辣鸡评论！",Toast.LENGTH_SHORT).show();
+                            Utilty.dismissDiaglog(dialog,0);
                         }
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
                     }
                 }
             }
