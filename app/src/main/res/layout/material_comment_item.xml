@@ -27,7 +27,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:maxEms="16"
+            android:maxEms="15"
             android:text="哈哈哈哈嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻喜爱嘻嘻嘻 "
             android:textColor="#BDBDBD"
             android:textSize="14sp"
@@ -92,6 +92,10 @@
 
 
     </android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"/>
 
 
 </LinearLayout>

@@ -241,6 +241,7 @@ public class DownloadActivity extends BaseActivity {
                 	try{
 						AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
 						recyclerFragment.commentList.add(newcmt);
+                        cmtAdapter.notifyDataSetChanged();
 						commentnumber.setText(recyclerFragment.commentList.size()+"");
 
 					}

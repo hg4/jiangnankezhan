@@ -40,6 +40,7 @@ public class CommentFragment extends RecyclerFragment {
 	private int type;
 	private String courseName;
 	private String teacher;
+	private RecyclerView swipe_target;
 	public CommentFragment() {
 		// Required empty public constructor
 
@@ -96,6 +97,8 @@ public class CommentFragment extends RecyclerFragment {
 								if(list.size()!=0){
 									commentList=list;
 									loadMoreComment();
+								}else{
+									swipeToLoadLayout.setBackgroundResource(R.drawable.nocmt);
 								}
 							}
 						}
@@ -119,6 +122,8 @@ public class CommentFragment extends RecyclerFragment {
 								if(list.size()!=0){
 									commentList=list;
 									loadMoreComment();
+								}else{
+									commentView.setBackgroundResource(R.drawable.nocom2);
 								}
 							}
 						}
@@ -141,6 +146,8 @@ public class CommentFragment extends RecyclerFragment {
 								if(list.size()!=0){
 									commentList=list;
 									loadMoreComment();
+								}else{
+									commentView.setBackgroundResource(R.drawable.nocom3);
 								}
 							}
 						}
@@ -162,6 +169,8 @@ public class CommentFragment extends RecyclerFragment {
 								if(list.size()!=0){
 									commentList=list;
 									loadMoreComment();
+								}else{
+									commentView.setBackgroundResource(R.drawable.nocom4);
 								}
 							}
 						}
