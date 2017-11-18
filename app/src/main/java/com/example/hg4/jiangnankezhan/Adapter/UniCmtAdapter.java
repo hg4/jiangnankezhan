@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -83,10 +86,10 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
 			@Override
 			public void onClick(View v) {
 				Intent intent=new Intent(mContext,CommentActivity.class);
-				intent.putExtra("material",holder.toMaterial.toString());
+				intent.putExtra("to_comment",holder.cmtObject.toString());
 				intent.putExtra("to_User",holder.fromUser.toString());
-				intent.putExtra("from",5);
-				((Activity) mContext).startActivityForResult(intent,1);
+				intent.putExtra("from",6);
+				((Activity) mContext).startActivityForResult(intent,2);
 			}
 		});
 		return holder;
@@ -98,7 +101,6 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
 		holder.toMaterial=holder.cmtObject.getAVObject("material");
 		holder.fromUser=holder.cmtObject.getAVObject("from_User");
 		holder.toUser=holder.cmtObject.getAVObject("to_User");
-
 			AVQuery<AVObject> query = new AVQuery<>("Material_comment");
 		    query.include("to_comment");
 		    query.include("to_User");
@@ -148,9 +150,17 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
 				});
 			}
 		}
-		if(!user.getString("nickname").equals("（请填写）"))
-		holder.date.setText(TimeUtils.dateToString(holder.cmtObject.getUpdatedAt()));
-		holder.content.setText(user.getString("nickname")+":"+holder.cmtObject.getString("content"));
+		if(!user.getString("nickname").equals("（请填写）")) {
+			String str=user.getString("nickname")+ ":" + holder.cmtObject.getString("content");
+			SpannableStringBuilder style;	//定义一个SpannableStringBuilder对象
+			style = new SpannableStringBuilder(str);
+			int start = str.indexOf(user.getString("nickname"));  //单词第一次出现的索引
+			int end = start + user.getString("nickname").length();
+			style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.content.setText(str);
+			holder.content.setText(style);
+        }
+        holder.date.setText(TimeUtils.dateToString(holder.cmtObject.getUpdatedAt()));
 		AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
 		imgQuery.whereEqualTo("from_material",holder.cmtObject);
 		imgQuery.findInBackground(new FindCallback<AVObject>() {

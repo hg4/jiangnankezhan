@@ -3,8 +3,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,10 +73,10 @@ public class UniChildCmtAdapter extends RecyclerView.Adapter<UniChildCmtAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(mContext,CommentActivity.class);
-                intent.putExtra("to_comment",holder.to_comment.toString());
-                intent.putExtra("to_User",holder.to_User.toString());
+                intent.putExtra("to_comment",holder.cmtObject.toString());
+                intent.putExtra("to_User",holder.from_User.toString());
                 intent.putExtra("from",6);
-                ((Activity) mContext).startActivityForResult(intent,1);
+                ((Activity) mContext).startActivityForResult(intent,3);
             }
         });
         return holder;
@@ -100,8 +104,18 @@ public class UniChildCmtAdapter extends RecyclerView.Adapter<UniChildCmtAdapter.
                 });
             }
         }
-        if(!holder.from_User.getString("nickname").equals("（请填写）"))
-            holder.content.setText(holder.from_User.getString("nickname") +"@"+holder.to_User.getString("nickname")+holder.cmtObject.getString("content"));
+        if(!holder.from_User.getString("nickname").equals("（请填写）")){
+            String str=holder.from_User.getString("nickname")
+                    +"回复@"+holder.to_User.getString("nickname")+":"+holder.cmtObject.getString("content");
+            SpannableStringBuilder style;
+            style = new SpannableStringBuilder(str);
+            int start = str.indexOf(holder.from_User.getString("nickname"));
+            int end = start + holder.from_User.getString("nickname").length();
+            style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.content.setText(str);
+            holder.content.setText(style);
+        }
+
         holder.date.setText(TimeUtils.dateToString(holder.cmtObject.getUpdatedAt()));
         AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
         imgQuery.whereEqualTo("from_material",holder.cmtObject);

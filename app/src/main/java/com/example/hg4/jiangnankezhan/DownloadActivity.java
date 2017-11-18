@@ -241,13 +241,34 @@ public class DownloadActivity extends BaseActivity {
                 	try{
 						AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
 						recyclerFragment.commentList.add(newcmt);
-                        cmtAdapter.notifyDataSetChanged();
+                        recyclerFragment.loadMoreComment();
 						commentnumber.setText(recyclerFragment.commentList.size()+"");
 
 					}
 					catch (Exception e){
 						e.printStackTrace();
 					}
+                    break;
+                case 2:
+                    try{
+                        AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
+                        recyclerFragment.commentList.add(newcmt);
+                        recyclerFragment.loadMoreComment();
+
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+                case 3:
+                    try{
+                        AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
+                        recyclerFragment.commentList.add(newcmt);
+                        recyclerFragment.loadMoreComment();
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
                     break;
             }
         }
