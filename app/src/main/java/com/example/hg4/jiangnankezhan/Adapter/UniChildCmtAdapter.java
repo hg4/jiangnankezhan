@@ -73,7 +73,8 @@ public class UniChildCmtAdapter extends RecyclerView.Adapter<UniChildCmtAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(mContext,CommentActivity.class);
-                intent.putExtra("to_comment",holder.cmtObject.toString());
+                intent.putExtra("to_comment",holder.to_comment.toString());
+                intent.putExtra("to_childcmt",holder.cmtObject.toString());
                 intent.putExtra("to_User",holder.from_User.toString());
                 intent.putExtra("from",6);
                 ((Activity) mContext).startActivityForResult(intent,3);
@@ -116,7 +117,7 @@ public class UniChildCmtAdapter extends RecyclerView.Adapter<UniChildCmtAdapter.
             holder.content.setText(style);
         }
 
-        holder.date.setText(TimeUtils.dateToString(holder.cmtObject.getUpdatedAt()));
+        holder.date.setText(TimeUtils.dateToHMSString(holder.cmtObject.getCreatedAt()));
         AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
         imgQuery.whereEqualTo("from_material",holder.cmtObject);
         imgQuery.findInBackground(new FindCallback<AVObject>() {

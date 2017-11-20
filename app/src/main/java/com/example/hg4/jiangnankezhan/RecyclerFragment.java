@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
@@ -26,6 +27,7 @@ import java.util.List;
 public class RecyclerFragment extends Fragment implements OnRefreshListener, OnLoadMoreListener {
 	protected RecyclerView commentView;
 	protected SwipeToLoadLayout swipeToLoadLayout;
+	protected ImageView noholder;
 	//继承对象获取完数据后将数据list赋给commentlist并调用loadmorecomment（）
 	protected List<AVObject> commentList=new ArrayList<>();
 	protected Bundle mArguments;
@@ -54,6 +56,7 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 		View view=inflater.inflate(R.layout.fragment_comment, container, false);
 		commentView=(RecyclerView)view.findViewById(R.id.swipe_target);
 		swipeToLoadLayout=(SwipeToLoadLayout) view.findViewById(R.id.cmt_swipeLayout);
+		noholder=(ImageView)view.findViewById(R.id.no_holder);
 		swipeToLoadLayout.setOnLoadMoreListener(this);
 		swipeToLoadLayout.setOnRefreshListener(this);
 		setswipeType();

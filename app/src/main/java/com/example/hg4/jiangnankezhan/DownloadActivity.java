@@ -74,7 +74,7 @@ public class DownloadActivity extends BaseActivity {
         commentnumber=(TextView)findViewById(R.id.commentnumber);
 		fragHolder=(LinearLayout)findViewById(R.id.materielcomment);
 		Bundle bundle=new Bundle();
-		bundle.putInt("close",1);
+		bundle.putInt("close",0);
 		recyclerFragment=RecyclerFragment.newInstance(cmtAdapter,displayList,bundle);
 		FragmentManager fManager=getSupportFragmentManager();
 		FragmentTransaction fTransaction = fManager.beginTransaction();
@@ -241,7 +241,7 @@ public class DownloadActivity extends BaseActivity {
                 	try{
 						AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
 						recyclerFragment.commentList.add(newcmt);
-                        recyclerFragment.loadMoreComment();
+						recyclerFragment.autoRefresh();
 						commentnumber.setText(recyclerFragment.commentList.size()+"");
 
 					}
@@ -251,9 +251,7 @@ public class DownloadActivity extends BaseActivity {
                     break;
                 case 2:
                     try{
-                        AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
-                        recyclerFragment.commentList.add(newcmt);
-                        recyclerFragment.loadMoreComment();
+                        recyclerFragment.autoRefresh();
 
                     }
                     catch (Exception e){
@@ -262,9 +260,7 @@ public class DownloadActivity extends BaseActivity {
                     break;
                 case 3:
                     try{
-                        AVObject newcmt=AVObject.parseAVObject(data.getStringExtra("newcmt"));
-                        recyclerFragment.commentList.add(newcmt);
-                        recyclerFragment.loadMoreComment();
+						recyclerFragment.autoRefresh();
                     }
                     catch (Exception e){
                         e.printStackTrace();

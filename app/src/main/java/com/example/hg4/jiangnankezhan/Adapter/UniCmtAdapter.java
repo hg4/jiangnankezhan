@@ -82,6 +82,10 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
 		}
 		View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.material_comment_item,parent,false);
 		final ViewHolder holder=new ViewHolder(view);
+		LinearLayoutManager layoutManager=new LinearLayoutManager(mContext);
+		holder.childCmtList.setLayoutManager(layoutManager);
+		holder.adapter=new UniChildCmtAdapter(holder.childlist);
+		holder.childCmtList.setAdapter(holder.adapter);
 		holder.reply.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -112,18 +116,11 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
 					{
 						if (e == null) {
 							if(list.size()!=0){
-								LinearLayoutManager layoutManager=new LinearLayoutManager(mContext);
-								holder.childCmtList.setLayoutManager(layoutManager);
-								holder.adapter=new UniChildCmtAdapter(holder.childlist);
-								holder.childCmtList.setAdapter(holder.adapter);
-								int i;
-								for(i=0;i<list.size();i++){
-									AVObject m=list.get(i);
-									holder.childlist.add(m);
-									holder.adapter.notifyDataSetChanged();
-								}
-							}else{
-                               holder.childCmtList.setVisibility(View.INVISIBLE);
+								holder.childlist.clear();
+								holder.childlist.addAll(list);
+
+								holder.adapter.notifyDataSetChanged();
+
 							}
 						} else {
 							e.printStackTrace();
@@ -160,7 +157,7 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
             holder.content.setText(str);
 			holder.content.setText(style);
         }
-        holder.date.setText(TimeUtils.dateToString(holder.cmtObject.getUpdatedAt()));
+        holder.date.setText(TimeUtils.dateToHMSString(holder.cmtObject.getCreatedAt()));
 		AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
 		imgQuery.whereEqualTo("from_material",holder.cmtObject);
 		imgQuery.findInBackground(new FindCallback<AVObject>() {

@@ -386,9 +386,15 @@ public class CommentActivity extends BaseActivity {
                 if(from==FROM_MATERIALCHD){
                     try{
                         AVObject to_comment=AVObject.parseAVObject(intent.getStringExtra("to_comment"));
+                        AVObject to_childcmt=null;
+                        if(intent.getStringExtra("to_childcmt")!=null){
+                            to_childcmt=AVObject.parseAVObject(intent.getStringExtra("to_childcmt"));
+                        }
                         AVObject toUser=AVObject.parseAVObject(intent.getStringExtra("to_User"));
                         if(commentCheck(content.getText().toString())){
                             final AVObject comment=new AVObject("Material_comment");
+                            if(intent.getStringExtra("to_childcmt")!=null)
+                                comment.put("to_childcmt",to_childcmt);
                             comment.put("to_comment",to_comment);
                             comment.put("to_User",toUser);
                             comment.put("from_User",AVUser.getCurrentUser());

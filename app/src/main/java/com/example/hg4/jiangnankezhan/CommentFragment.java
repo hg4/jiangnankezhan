@@ -91,14 +91,16 @@ public class CommentFragment extends RecyclerFragment {
 						public void done(List<AVObject> list, AVException e) {
 							if(e==null){
 								if(commentList.size()!=0){
+
 									commentList.clear();
 									index=ORI;
 								}
 								if(list.size()!=0){
+									noholder.setImageResource(0);
 									commentList=list;
 									loadMoreComment();
 								}else{
-									swipeToLoadLayout.setBackgroundResource(R.drawable.nocmt);
+									noholder.setImageResource(R.drawable.nocmt);
 								}
 							}
 						}
@@ -120,10 +122,11 @@ public class CommentFragment extends RecyclerFragment {
 									index=ORI;
 								}
 								if(list.size()!=0){
+									noholder.setImageResource(0);
 									commentList=list;
 									loadMoreComment();
 								}else{
-									commentView.setBackgroundResource(R.drawable.nocom2);
+									noholder.setImageResource(R.drawable.nocom2);
 								}
 							}
 						}
@@ -141,13 +144,15 @@ public class CommentFragment extends RecyclerFragment {
 						public void done(List<AVObject> list, AVException e) {
 							if(e==null){
 								if(commentList.size()!=0){
+
 									commentList.clear();
 								}
 								if(list.size()!=0){
+									noholder.setImageResource(0);
 									commentList=list;
 									loadMoreComment();
 								}else{
-									commentView.setBackgroundResource(R.drawable.nocom3);
+									noholder.setImageResource(R.drawable.nocom3);
 								}
 							}
 						}
@@ -164,13 +169,15 @@ public class CommentFragment extends RecyclerFragment {
 						public void done(List<AVObject> list, AVException e) {
 							if(e==null){
 								if(commentList.size()!=0){
+
 									commentList.clear();
 								}
 								if(list.size()!=0){
+									noholder.setImageResource(0);
 									commentList=list;
 									loadMoreComment();
 								}else{
-									commentView.setBackgroundResource(R.drawable.nocom4);
+									noholder.setImageResource(R.drawable.nocom4);
 								}
 							}
 						}
