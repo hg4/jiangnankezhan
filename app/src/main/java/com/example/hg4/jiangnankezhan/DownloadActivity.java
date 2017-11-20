@@ -126,8 +126,12 @@ public class DownloadActivity extends BaseActivity {
                         }
                         date.setText(TimeUtils.dateToString(avObject.getCreatedAt()));
                         getOwner = avObject.getAVObject("owner");
-						if(!getOwner.getString("nickname").equals("（请填写）"))
-                        	owner.setText(getOwner.getString("nickname"));
+						if(!getOwner.getString("nickname").equals("（请填写）")){
+                            owner.setText(getOwner.getString("nickname"));
+                        }else{
+                            owner.setText("匿名用户");
+                        }
+
                         AVFile file = getOwner.getAVFile("head");
                         likenumber.setText(avObject.getNumber("likeCount").toString());
                         commentnumber.setText(avObject.getNumber("commentCount").toString());

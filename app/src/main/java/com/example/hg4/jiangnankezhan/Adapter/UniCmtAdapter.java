@@ -148,15 +148,25 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
 			}
 		}
 		if(!user.getString("nickname").equals("（请填写）")) {
-			String str=user.getString("nickname")+ ":" + holder.cmtObject.getString("content");
+			String str=user.getString("nickname")+ " " + holder.cmtObject.getString("content");
 			SpannableStringBuilder style;	//定义一个SpannableStringBuilder对象
 			style = new SpannableStringBuilder(str);
 			int start = str.indexOf(user.getString("nickname"));  //单词第一次出现的索引
 			int end = start + user.getString("nickname").length();
 			style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            holder.content.setText(str);
+			holder.content.setText(str);
 			holder.content.setText(style);
-        }
+		}else{
+			String str="匿名用户"+ " " + holder.cmtObject.getString("content");
+			SpannableStringBuilder style;
+			style = new SpannableStringBuilder(str);
+			int start = str.indexOf("匿名用户");
+			int end = start + "匿名用户".length();
+			style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+			holder.content.setText(str);
+			holder.content.setText(style);
+		}
+
         holder.date.setText(TimeUtils.dateToHMSString(holder.cmtObject.getCreatedAt()));
 		AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
 		imgQuery.whereEqualTo("from_material",holder.cmtObject);

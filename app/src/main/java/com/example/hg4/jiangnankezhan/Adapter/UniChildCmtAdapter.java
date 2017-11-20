@@ -105,7 +105,8 @@ public class UniChildCmtAdapter extends RecyclerView.Adapter<UniChildCmtAdapter.
                 });
             }
         }
-        if(!holder.from_User.getString("nickname").equals("（请填写）")){
+        if(!holder.from_User.getString("nickname").equals("（请填写）")&&
+                !holder.to_User.getString("nickname").equals("（请填写）")){
             String str=holder.from_User.getString("nickname")
                     +"回复@"+holder.to_User.getString("nickname")+":"+holder.cmtObject.getString("content");
             SpannableStringBuilder style;
@@ -115,7 +116,37 @@ public class UniChildCmtAdapter extends RecyclerView.Adapter<UniChildCmtAdapter.
             style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             holder.content.setText(str);
             holder.content.setText(style);
+        }else if(holder.from_User.getString("nickname").equals("（请填写）")&&
+                !holder.to_User.getString("nickname").equals("（请填写）")){
+            String str="匿名用户" +"回复@"+holder.to_User.getString("nickname")+":"+holder.cmtObject.getString("content");
+            SpannableStringBuilder style;
+            style = new SpannableStringBuilder(str);
+            int start = str.indexOf("匿名用户");
+            int end = start + "匿名用户".length();
+            style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.content.setText(str);
+            holder.content.setText(style);
+        }else if (!holder.from_User.getString("nickname").equals("（请填写）")&&
+                holder.to_User.getString("nickname").equals("（请填写）")){
+            String str=holder.from_User.getString("nickname") +"回复@"+"匿名用户"+":"+holder.cmtObject.getString("content");
+            SpannableStringBuilder style;
+            style = new SpannableStringBuilder(str);
+            int start = str.indexOf("匿名用户");
+            int end = start + "匿名用户".length();
+            style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.content.setText(str);
+            holder.content.setText(style);
+        }else{
+            String str="匿名用户"+"回复@"+"匿名用户"+":"+holder.cmtObject.getString("content");
+            SpannableStringBuilder style;
+            style = new SpannableStringBuilder(str);
+            int start = str.indexOf("匿名用户");
+            int end = start + "匿名用户".length();
+            style.setSpan(new ForegroundColorSpan(Color.parseColor("#616161")), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.content.setText(str);
+            holder.content.setText(style);
         }
+
 
         holder.date.setText(TimeUtils.dateToHMSString(holder.cmtObject.getCreatedAt()));
         AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");

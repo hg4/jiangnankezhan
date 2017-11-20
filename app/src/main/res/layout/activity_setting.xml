@@ -10,6 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:background="#fff"
+        android:elevation="3dp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
