@@ -73,6 +73,8 @@ public class DownloadActivity extends BaseActivity {
         comment=(ImageView)findViewById(R.id.comment);
         commentnumber=(TextView)findViewById(R.id.commentnumber);
 		fragHolder=(LinearLayout)findViewById(R.id.materielcomment);
+		courseName=getIntent().getStringExtra("courseName");
+		teacher=getIntent().getStringExtra("teacher");
 		AVQuery<AVObject> avQuery=new AVQuery<>("_User");
 		avQuery.getInBackground(id, new GetCallback<AVObject>() {
 			@Override
