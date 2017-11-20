@@ -73,6 +73,15 @@ public class DownloadActivity extends BaseActivity {
         comment=(ImageView)findViewById(R.id.comment);
         commentnumber=(TextView)findViewById(R.id.commentnumber);
 		fragHolder=(LinearLayout)findViewById(R.id.materielcomment);
+		AVQuery<AVObject> avQuery=new AVQuery<>("_User");
+		avQuery.getInBackground(id, new GetCallback<AVObject>() {
+			@Override
+			public void done(AVObject avObject, AVException e) {
+				if(avObject!=null){
+					user=avObject;
+				}
+			}
+		});
 		Bundle bundle=new Bundle();
 		bundle.putInt("close",0);
 		recyclerFragment=RecyclerFragment.newInstance(cmtAdapter,displayList,bundle);
