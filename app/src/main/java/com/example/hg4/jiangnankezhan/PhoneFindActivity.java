@@ -53,6 +53,7 @@ public class PhoneFindActivity extends AppCompatActivity {
                                 intent.putExtra("number",phonenumber);
                                 startActivity(intent);
                             } else {
+                                e.printStackTrace();
                                 Toast.makeText(PhoneFindActivity.this, "该手机号还没被注册过，请先去注册哦", Toast.LENGTH_SHORT).show();
                             }
                         }

@@ -103,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity {
 	}
 
 	private void attemptRegister() {
-		String phone = phoneView.getText().toString();
+		final String phone = phoneView.getText().toString();
 		final String identify = identifyInput.getText().toString();
 		final String password = passwordView.getText().toString();
 
@@ -146,7 +146,7 @@ public class RegisterActivity extends AppCompatActivity {
 				} else {
 					showProgress(true);
 
-					AVUser user = new AVUser();// 新建 AVUser 对象实例
+					final AVUser user = new AVUser();// 新建 AVUser 对象实例
 					user.setUsername(phone);// 设置用户名
 					user.setPassword(password);// 设置密码
 
@@ -157,6 +157,8 @@ public class RegisterActivity extends AppCompatActivity {
 								// 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
 								progressDialog.dismiss();
 								startActivity(new Intent(RegisterActivity.this, RegisterOKActivity.class));
+								user.setMobilePhoneNumber(phone);
+								user.saveInBackground();
 								RegisterActivity.this.finish();
 							} else {
 								// 失败的原因可能有多种，常见的是用户名已经存在。
