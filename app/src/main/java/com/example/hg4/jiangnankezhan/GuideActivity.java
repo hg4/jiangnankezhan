@@ -32,12 +32,12 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guide);
 		ImmersionBar.with(this).transparentBar().init();
+		PerferencesUtils.saveFirstOp(GuideActivity.this,false);
 		start=(Button)findViewById(R.id.firstopen_next);
 		start.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(GuideActivity.this,LoginActivity.class));
-				PerferencesUtils.saveFirstOp(GuideActivity.this,false);
 				GuideActivity.this.finish();
 			}
 		});

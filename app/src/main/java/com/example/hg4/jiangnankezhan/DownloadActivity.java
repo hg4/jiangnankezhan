@@ -8,9 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -75,15 +73,7 @@ public class DownloadActivity extends BaseActivity {
 		fragHolder=(LinearLayout)findViewById(R.id.materielcomment);
 		courseName=getIntent().getStringExtra("courseName");
 		teacher=getIntent().getStringExtra("teacher");
-		AVQuery<AVObject> avQuery=new AVQuery<>("_User");
-		avQuery.getInBackground(id, new GetCallback<AVObject>() {
-			@Override
-			public void done(AVObject avObject, AVException e) {
-				if(avObject!=null){
-					user=avObject;
-				}
-			}
-		});
+
 		Bundle bundle=new Bundle();
 		bundle.putInt("close",0);
 		recyclerFragment=RecyclerFragment.newInstance(cmtAdapter,displayList,bundle);
@@ -132,7 +122,7 @@ public class DownloadActivity extends BaseActivity {
                     if (e == null) {
 						if(avObject!=null)
 							fileObject=avObject;
-                        if(!avObject.getString("Introduce").equals("")){
+                        if(!"".equals(avObject.getString("Introduce"))){
                             content.setText(avObject.getString("Introduce"));
                         }
                         date.setText(TimeUtils.dateToString(avObject.getCreatedAt()));
@@ -176,53 +166,61 @@ public class DownloadActivity extends BaseActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(user!=null){
-                    if(user.getBoolean("permissionD")){
-                        AVQuery<AVObject> query = new AVQuery<>("Course_file");
-                        query.whereEqualTo("Title", getIntent().getStringExtra("content"));
-                        query.getFirstInBackground(new GetCallback<AVObject>() {
-                            @Override
-                            public void done(AVObject avObject, AVException e) {
-                                {
-                                    if (e == null) {
-                                        Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
-                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                        startActivity(intent);
-                                    } else {
-                                        e.printStackTrace();
-                                    }
+				AVQuery<AVObject> avQuery=new AVQuery<>("_User");
+				avQuery.getInBackground(id, new GetCallback<AVObject>() {
+					@Override
+					public void done(AVObject avObject, AVException e) {
+						if(avObject!=null){
+							user=avObject;
+						if(user!=null){
+							if(user.getBoolean("permissionD")){
+								AVQuery<AVObject> query = new AVQuery<>("Course_file");
+								query.whereEqualTo("Title", getIntent().getStringExtra("content"));
+								query.getFirstInBackground(new GetCallback<AVObject>() {
+									@Override
+									public void done(AVObject avObject, AVException e) {
+										{
+											if (e == null) {
+												Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
+												Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+												startActivity(intent);
+											} else {
+												e.printStackTrace();
+											}
 
-                                }
-                            }
-                        });
-                    }
-                    else {
-                        final FrameLayout downLimit=(FrameLayout) getLayoutInflater().inflate(R.layout.limit_dialog, null);
-                        AlertDialog.Builder limitBuilder=new AlertDialog.Builder(DownloadActivity.this);
-                        limitBuilder.setView(downLimit);
-                        final AlertDialog limitDialog=limitBuilder.create();
-                        limitDialog.show();
-                        Button jump=(Button)downLimit.findViewById(R.id.jump);
-                        jump.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent=new Intent(DownloadActivity.this,RequirementsActivity.class);
-                                intent.putExtra("teacher",teacher);
-                                intent.putExtra("courseName",courseName);
-                                limitDialog.dismiss();
-                                startActivity(intent);
-                            }
-                        });
-                        Button cancel=(Button)downLimit.findViewById(R.id.cancel);
-                        cancel.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                limitDialog.dismiss();
-                            }
-                        });
-                    }
-                }
-
+										}
+									}
+								});
+							}
+							else {
+								final FrameLayout downLimit=(FrameLayout) getLayoutInflater().inflate(R.layout.limit_dialog, null);
+								AlertDialog.Builder limitBuilder=new AlertDialog.Builder(DownloadActivity.this);
+								limitBuilder.setView(downLimit);
+								final AlertDialog limitDialog=limitBuilder.create();
+								limitDialog.show();
+								Button jump=(Button)downLimit.findViewById(R.id.jump);
+								jump.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										Intent intent=new Intent(DownloadActivity.this,RequirementsActivity.class);
+										intent.putExtra("teacher",teacher);
+										intent.putExtra("courseName",courseName);
+										limitDialog.dismiss();
+										startActivity(intent);
+									}
+								});
+								Button cancel=(Button)downLimit.findViewById(R.id.cancel);
+								cancel.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										limitDialog.dismiss();
+									}
+								});
+								}
+							}
+						}
+					}
+				});
             }
         });
 

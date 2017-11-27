@@ -99,6 +99,7 @@ public class MainActivity extends BaseActivity
 		}
 		setContentView(R.layout.activity_main);
         ifnewVersion();
+		savePhone();
 		director=(FrameLayout)findViewById(R.id.director);
 		directorNumber=(TextView)findViewById(R.id.director_number);
 		Intent intent=new Intent(this, ReplyService.class);
@@ -417,7 +418,24 @@ public class MainActivity extends BaseActivity
         if(fg4 != null)fragmentTransaction.hide(fg4);
     }
 
+	private void savePhone(){
+		AVQuery<AVUser> query = new AVQuery<>("_User");
+		query.getInBackground(id, new GetCallback<AVUser>() {
+			@Override
+			public void done(AVUser avUser, AVException e) {
+				if(e==null){
+					if ("".equals(avUser.getMobilePhoneNumber())) {
+						avUser.setMobilePhoneNumber(avUser.getUsername());
+						avUser.saveInBackground();
+					}
+				}else{
+					e.printStackTrace();
+				}
 
+			}
+		});
+
+	}
 	/**
 	 * 设置Android6.0的权限申请
 	 */
@@ -434,6 +452,7 @@ public class MainActivity extends BaseActivity
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		unbindService(connection);
 		stopService(new Intent(this,ReplyService.class));
 	}
 }
