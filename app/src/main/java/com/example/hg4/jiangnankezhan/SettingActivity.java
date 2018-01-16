@@ -1,5 +1,6 @@
 package com.example.hg4.jiangnankezhan;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -10,10 +11,16 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -25,6 +32,8 @@ import com.example.hg4.jiangnankezhan.Adapter.SettingAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.hg4.jiangnankezhan.Utils.Utilty.getJsonToStringArray;
 
 
 public class SettingActivity extends BaseActivity {
@@ -66,43 +75,70 @@ public class SettingActivity extends BaseActivity {
                     startActivity(intent1);
                     break;
                 case 2:
-                    AVQuery<AVObject> query = new AVQuery<>("AppVersion");
-                    query.getFirstInBackground(new GetCallback<AVObject>() {
-                        @Override
-                        public void done(final AVObject avObject, AVException e) {
-                            {
-                                if (e == null) {
-                                    if (avObject!=null){
-                                        if(getVersion()<avObject.getNumber("VersionCode").intValue()){
-                                            LinearLayout dialogForm=(LinearLayout)getLayoutInflater().inflate(R.layout.version_dialog,null);
-                                            final AlertDialog.Builder builder=new AlertDialog.Builder(SettingActivity.this);
-                                            builder.setView(dialogForm)
-                                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
-                                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                                            startActivity(intent);
-                                                        }
-                                                    })
-                                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                        }
-                                                    });
-                                            builder.create().show();
-                                        }else{
-                                            Toast.makeText(SettingActivity.this,"当前已是最新版本啦！",Toast.LENGTH_SHORT).show();
+                    try {
+                        PackageManager packageManager = getPackageManager();
+                        final PackageInfo packageInfo = packageManager.getPackageInfo(
+                                getPackageName(), 0);
+                        AVQuery<AVObject> query = new AVQuery<>("AppVersion");
+                        query.orderByDescending("createdAt");
+                        query.getFirstInBackground(new GetCallback<AVObject>() {
+                            @Override
+                            public void done(final AVObject avObject, AVException e) {
+                                {
+                                    if (e == null) {
+                                        if (avObject!=null){
+                                            if(packageInfo.versionCode<avObject.getNumber("VersionCode").intValue()){
+                                                final AlertDialog.Builder builder=new AlertDialog.Builder(SettingActivity.this);
+                                                LayoutInflater inflater = LayoutInflater.from(SettingActivity.this);
+                                                View v = inflater.inflate(R.layout.version_dialog, null);
+                                                String[] data=getJsonToStringArray(avObject.getJSONArray("content"));
+                                                TextView currentver = (TextView) v.findViewById(R.id.currentver);
+                                                TextView newver=(TextView)v.findViewById(R.id.newver);
+                                                ListView content=(ListView) v.findViewById(R.id.vercontent);
+                                                ArrayAdapter<String> adapter=new ArrayAdapter<String>(SettingActivity.this,
+                                                        R.layout.vscontentlist,data);
+                                                content.setAdapter(adapter);
+                                                newver.setText("最新版本："+avObject.getString("VersionName"));
+                                                currentver.setText("当前版本："+packageInfo.versionName);
+                                                Button cancel = (Button) v.findViewById(R.id.cancel);
+                                                Button sure = (Button) v.findViewById(R.id.sure);
+                                                final Dialog dialog = builder.create();
+                                                dialog.show();
+                                                dialog.getWindow().setContentView(v);
+                                                dialog.getWindow().setGravity(Gravity.CENTER);
+                                                cancel.setOnClickListener(new View.OnClickListener() {
+
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+
+                                                sure.setOnClickListener(new View.OnClickListener() {
+
+                                                    @Override
+                                                    public void onClick(View arg0) {
+                                                        dialog.dismiss();
+                                                        Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
+                                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                        startActivity(intent);
+                                                    }
+                                                });
+                                                builder.create().show();
+                                            }else {
+                                                Toast.makeText(SettingActivity.this, "当前已是最新版本啦！", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
+                                    } else {
+                                        e.printStackTrace();
                                     }
 
-                                } else {
-                                    e.printStackTrace();
                                 }
-
                             }
-                        }
-                    });
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }

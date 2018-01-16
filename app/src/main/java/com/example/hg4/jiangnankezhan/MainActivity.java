@@ -2,6 +2,7 @@ package com.example.hg4.jiangnankezhan;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -29,10 +32,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -49,9 +55,16 @@ import com.avos.avoscloud.GetDataCallback;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
+import org.json.JSONArray;
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.hg4.jiangnankezhan.R.id.currentver;
+import static com.example.hg4.jiangnankezhan.R.id.listView;
+import static com.example.hg4.jiangnankezhan.Utils.Utilty.getJsonToStringArray;
 
 
 public class MainActivity extends BaseActivity
@@ -79,6 +92,7 @@ public class MainActivity extends BaseActivity
     private FragmentManager fManager;
 	private DrawerLayout drawer;
 	private FrameLayout director;
+	private AVUser user=AVUser.getCurrentUser();
 	private TextView directorNumber;
 	private ReplyService.ReplyBinder replyBinder;
 	private ServiceConnection connection=new ServiceConnection() {
@@ -282,6 +296,8 @@ public class MainActivity extends BaseActivity
             PackageManager packageManager = getPackageManager();
             final PackageInfo packageInfo = packageManager.getPackageInfo(
                     getPackageName(), 0);
+			user.put("versioncode",packageInfo.versionCode);
+			user.saveInBackground();
             AVQuery<AVObject> query = new AVQuery<>("AppVersion");
 			query.orderByDescending("createdAt");
             query.getFirstInBackground(new GetCallback<AVObject>() {
@@ -291,22 +307,43 @@ public class MainActivity extends BaseActivity
                         if (e == null) {
                             if (avObject!=null){
                                 if(packageInfo.versionCode<avObject.getNumber("VersionCode").intValue()){
-                                    LinearLayout dialogForm=(LinearLayout)getLayoutInflater().inflate(R.layout.version_dialog,null);
                                     final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-                                    builder.setView(dialogForm)
-                                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
-                                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                                    startActivity(intent);
-                                                }
-                                            })
-                                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                }
-                                            });
+									LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+									View v = inflater.inflate(R.layout.version_dialog, null);
+									String[] data=getJsonToStringArray(avObject.getJSONArray("content"));
+									TextView currentver = (TextView) v.findViewById(R.id.currentver);
+									TextView newver=(TextView)v.findViewById(R.id.newver);
+									ListView content=(ListView) v.findViewById(R.id.vercontent);
+									ArrayAdapter<String> adapter=new ArrayAdapter<String>(MainActivity.this,
+											R.layout.vscontentlist,data);
+									content.setAdapter(adapter);
+									newver.setText("最新版本："+avObject.getString("VersionName"));
+									currentver.setText("当前版本："+packageInfo.versionName);
+									Button cancel = (Button) v.findViewById(R.id.cancel);
+									Button sure = (Button) v.findViewById(R.id.sure);
+									final Dialog dialog = builder.create();
+									dialog.setCancelable(false);
+									dialog.show();
+									dialog.getWindow().setContentView(v);
+									dialog.getWindow().setGravity(Gravity.CENTER);
+									cancel.setOnClickListener(new View.OnClickListener() {
+
+										@Override
+										public void onClick(View v) {
+											dialog.dismiss();
+										}
+									});
+
+									sure.setOnClickListener(new View.OnClickListener() {
+
+										@Override
+										public void onClick(View arg0) {
+											dialog.dismiss();
+											Uri uri = Uri.parse(avObject.getAVFile("Appapk").getUrl());
+											Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+											startActivity(intent);
+										}
+									});
                                     builder.create().show();
                                 }
                             }
