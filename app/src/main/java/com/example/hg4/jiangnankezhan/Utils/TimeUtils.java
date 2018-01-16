@@ -16,7 +16,10 @@ public class TimeUtils {
 		ca.clear(Calendar.MINUTE);
 		ca.clear(Calendar.SECOND);
 		ca.clear(Calendar.MILLISECOND);
-		ca.set(Calendar.DAY_OF_WEEK, ca.getFirstDayOfWeek());
+		if(ca.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+			ca.add(Calendar.DATE, -1);
+		}
+		ca.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		return ca.getTimeInMillis();
 	}
 	public static long getTimeOfMonthStart(){

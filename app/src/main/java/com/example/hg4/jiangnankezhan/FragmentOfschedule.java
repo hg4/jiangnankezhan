@@ -197,9 +197,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 	}
 
 	private void getmainhead(){
-		if(PerferencesUtils.getBitmapFromSharedPreferences(id,getContext())!=null)
-			openDrawer.setImageBitmap(PerferencesUtils.getBitmapFromSharedPreferences(id,getContext()));
-		else {
+		if(Utilty.isNetworkAvailable(getContext())){
 			AVQuery<AVObject> query=new AVQuery<>("_User");
 			query.getInBackground(id, new GetCallback<AVObject>() {
 				@Override
@@ -212,6 +210,7 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 								public void done(byte[] bytes, AVException e) {
 									if(e==null){
 										openDrawer.setImageBitmap(Utilty.Bytes2Bimap(bytes));
+										PerferencesUtils.saveBitmapToSharedPreferences(Utilty.Bytes2Bimap(bytes),id,getContext());
 									}
 									else e.printStackTrace();
 								}
@@ -220,8 +219,9 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 					}
 				}
 			});
-
 		}
+		else if(PerferencesUtils.getBitmapFromSharedPreferences(id,getContext())!=null)
+				openDrawer.setImageBitmap(PerferencesUtils.getBitmapFromSharedPreferences(id,getContext()));
 	}
 	private void initEvent(){
 		addCourse.setOnClickListener(this);
@@ -234,6 +234,12 @@ public class FragmentOfschedule extends Fragment implements View.OnClickListener
 			curWeek=Integer.parseInt(savedWeek);
 			week.setText("第"+savedWeek+"周");
 		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		getmainhead();
 	}
 
 	private void updateTime(){
