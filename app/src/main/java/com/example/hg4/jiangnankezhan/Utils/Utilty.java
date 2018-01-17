@@ -34,6 +34,8 @@ import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.LoadingDialog;
 import com.example.hg4.jiangnankezhan.R;
 
+import org.json.JSONArray;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -228,4 +230,16 @@ public class Utilty {
 		 holder.removeAllViews();
 		 holder.addView(error);
 	}
+	public static String[] getJsonToStringArray(JSONArray str) {
+		String[] arr = new String[str.length()];
+		for (int i = 0; i < str.length(); i++) {
+			try {
+				arr[i] = str.getString(i);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return arr;
+	}
+
 }
