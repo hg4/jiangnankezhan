@@ -28,6 +28,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.example.hg4.jiangnankezhan.Model.Course;
 import com.example.hg4.jiangnankezhan.Utils.Constants;
@@ -63,6 +64,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 	private String studentName;
 	private byte[] byteCode;
 	private ImageView back;
+	private ArrayList<String> mList;
 	private LoadingDialog dialog;
 	private List<Map<String, Course[]>> courseList;
 	private static Spinner sp_school_year;
@@ -70,6 +72,8 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 	private static String outputInfo = null;
 	private static String urlEncodeStudentName = null;
 	private static Map<String, String> requestHeadersMap, loginRequestBodyMap, scheduleRequestBodyMap,pyjhRequestBodyMap;
+	private static String currentYear;
+	private static String currentTerm;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,7 +101,17 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 		back.setOnClickListener(this);
 		sp_school_year = (Spinner) this.findViewById(R.id.year_spinner);
 		sp_term = (Spinner) this.findViewById(R.id.term_spinner);
-
+		AVQuery<AVObject> query1=new AVQuery<>("Constant");
+		query1.whereEqualTo("name","currentYear");
+		query1.getFirstInBackground(new GetCallback<AVObject>() {
+			@Override
+			public void done(AVObject avObject, AVException e) {
+				if(avObject!=null){
+					currentYear=avObject.getString("value1");
+					currentTerm=avObject.getString("value2");
+				}
+			}
+		});
 	}
 	private void initVerCode(){
 		if(byteCode!=null){
@@ -249,13 +263,13 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 				.replace("user",Constants.LOGIN_BODY_USERNAME_VALUE);
 
 		// 这里需要注意，OkHttp这里设置requestHeader的Referer时，如果出现中文，会报错。所以之前就对学生姓名进行了url编码
-		requestHeadersMap.put(Constants.HEAD_REFERER_KEY, newScheduleUrl);
-		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_SCHOOLYEAR_KEY,EduLoginActivity.getSelectedSchoolYearValue());
-		scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_TERM_KEY, EduLoginActivity.getSelectedTermValue());
 		//有蜜汁bug，post参数正确不能访问当前学期的课表，其他时间正常，但是少提交一些参数可以访问当前学期，长期使用需要根据时间修正当前学期参数
-		boolean flag=EduLoginActivity.getSelectedSchoolYearValue().equals("2017-2018")&&EduLoginActivity.getSelectedTermValue().equals("1");
-		getViewState(newScheduleUrl,scheduleRequestBodyMap,requestHeadersMap);
+		boolean flag=EduLoginActivity.getSelectedSchoolYearValue().equals(currentYear)&&EduLoginActivity.getSelectedTermValue().equals(currentTerm);
 		if(!flag){
+			requestHeadersMap.put(Constants.HEAD_REFERER_KEY, newScheduleUrl);
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_SCHOOLYEAR_KEY,EduLoginActivity.getSelectedSchoolYearValue());
+			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_TERM_KEY, EduLoginActivity.getSelectedTermValue());
+			getViewState(newScheduleUrl,scheduleRequestBodyMap,requestHeadersMap);
 			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_VIEWSTATE_KEY,Constants.LOGIN_BODY_VIEWSTATE_VALUE);
 			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTARGUMENT_KEY,Constants.SCHEDULE_BODY_EVENTARGUMENT_VALUE);
 			scheduleRequestBodyMap.put(Constants.SCHEDULE_BODY_EVENTTARGET_KEY,Constants.SCHEDULE_BODY_EVENTTARGET_VALUE);
@@ -343,7 +357,7 @@ public class EduLoginActivity extends BaseActivity implements View.OnClickListen
 	}
 
 	private void setTimeAdapter() {
-		ArrayList<String> mList = new ArrayList<String>();
+		mList = new ArrayList<String>();
 		String strTime= PerferencesUtils.getUserStringData(this,id,"入学年份");
 		if("".equals(strTime)){
 			startActivityForResult(new Intent(EduLoginActivity.this,ListGradeActivity.class),1);

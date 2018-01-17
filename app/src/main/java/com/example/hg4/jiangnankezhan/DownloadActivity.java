@@ -21,9 +21,11 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.example.hg4.jiangnankezhan.Adapter.UniCmtAdapter;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
@@ -45,11 +47,18 @@ public class DownloadActivity extends BaseActivity {
     private TextView likenumber;
     private TextView commentnumber;
 	private RecyclerFragment recyclerFragment;
+	private TextView downNumber;
+	private TextView coinNumber;
 	private AVObject fileObject;
     private AVObject user;
     private AVObject getOwner;
     private String courseName;
     private String teacher;
+	private int userPoints;
+	private int needPoints;
+	private int ownerPoints;
+	private AVObject userPointObject;
+	private AVObject ownerPointsObject;
 	private LinearLayout fragHolder;
 	private List<AVObject> displayList=new ArrayList<>();
 	private List<AVObject> datalist=new ArrayList<>();
@@ -73,7 +82,8 @@ public class DownloadActivity extends BaseActivity {
 		fragHolder=(LinearLayout)findViewById(R.id.materielcomment);
 		courseName=getIntent().getStringExtra("courseName");
 		teacher=getIntent().getStringExtra("teacher");
-
+		downNumber=(TextView)findViewById(R.id.downloadnumber);
+		coinNumber=(TextView)findViewById(R.id.coinnumber);
 		Bundle bundle=new Bundle();
 		bundle.putInt("close",0);
 		recyclerFragment=RecyclerFragment.newInstance(cmtAdapter,displayList,bundle);
@@ -120,7 +130,7 @@ public class DownloadActivity extends BaseActivity {
             public void done(AVObject avObject, AVException e) {
                 {
                     if (e == null) {
-						if(avObject!=null)
+						if(avObject!=null){
 							fileObject=avObject;
                         if(!"".equals(avObject.getString("Introduce"))){
                             content.setText(avObject.getString("Introduce"));
@@ -132,7 +142,9 @@ public class DownloadActivity extends BaseActivity {
                         }else{
                             owner.setText("匿名用户");
                         }
-
+                        needPoints=avObject.getInt("points");
+						coinNumber.setText(avObject.getInt("points")+"积分");
+						downNumber.setText(avObject.getInt("download")+"");
                         AVFile file = getOwner.getAVFile("head");
                         likenumber.setText(avObject.getNumber("likeCount").toString());
                         commentnumber.setText(avObject.getNumber("commentCount").toString());
@@ -145,7 +157,30 @@ public class DownloadActivity extends BaseActivity {
                                 } else e.printStackTrace();
                             }
                         });
-						findData();
+							AVQuery<AVObject> avQuery=new AVQuery<AVObject>("UserPoints");
+							avQuery.whereEqualTo("User",getOwner);
+							avQuery.getFirstInBackground(new GetCallback<AVObject>() {
+								@Override
+								public void done(AVObject avObject, AVException e) {
+									if(avObject!=null){
+										ownerPointsObject=avObject;
+										ownerPoints=avObject.getInt("points");
+									}
+								}
+							});
+							AVQuery<AVObject> avQuery1=new AVQuery<>("UserPoints");
+							avQuery1.whereEqualTo("User", AVUser.getCurrentUser());
+							avQuery1.getFirstInBackground(new GetCallback<AVObject>() {
+								@Override
+								public void done(AVObject avObject, AVException e) {
+									if(avObject!=null){
+										userPointObject=avObject;
+										userPoints=avObject.getInt("points");
+									}
+								}
+							});
+							findData();
+						}
                     } else {
                         e.printStackTrace();
                         Toast.makeText(DownloadActivity.this, "查找失败", Toast.LENGTH_SHORT).show();
@@ -173,50 +208,73 @@ public class DownloadActivity extends BaseActivity {
 						if(avObject!=null){
 							user=avObject;
 						if(user!=null){
-							if(user.getBoolean("permissionD")){
-								AVQuery<AVObject> query = new AVQuery<>("Course_file");
-								query.whereEqualTo("Title", getIntent().getStringExtra("content"));
-								query.getFirstInBackground(new GetCallback<AVObject>() {
-									@Override
-									public void done(AVObject avObject, AVException e) {
-										{
-											if (e == null) {
-												Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
-												Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-												startActivity(intent);
-											} else {
-												e.printStackTrace();
-											}
+							AVQuery<AVObject> query = new AVQuery<>("Course_file");
+							query.whereEqualTo("Title", getIntent().getStringExtra("content"));
+							query.getFirstInBackground(new GetCallback<AVObject>() {
+								@Override
+								public void done(final AVObject avObject, AVException e) {
+									{
+										if (e == null) {
+											AVQuery<AVObject> avQuery=new AVQuery<>("UserDownloadMap");
+											avQuery.whereEqualTo("User",user);
+											avQuery.whereEqualTo("Course_file",avObject);
+											avQuery.findInBackground(new FindCallback<AVObject>() {
+												@Override
+												public void done(List<AVObject> list, AVException e) {
+													boolean flag=false;
+													if(!list.isEmpty()){
+														flag=true;
+													}
+													if(flag||user.getObjectId().equals(avObject.getAVObject("owner").getObjectId())||isPointEnough(avObject)){
+														avObject.increment("download");
+														avObject.saveInBackground(new SaveCallback() {
+															@Override
+															public void done(AVException e) {
+																if(e==null){
+																	Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
+																	Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+																	startActivity(intent);
+																}
+															}
+														});
 
+													}
+													else {
+														final FrameLayout downLimit=(FrameLayout) getLayoutInflater().inflate(R.layout.limit_dialog, null);
+														AlertDialog.Builder limitBuilder=new AlertDialog.Builder(DownloadActivity.this);
+														limitBuilder.setView(downLimit);
+														final AlertDialog limitDialog=limitBuilder.create();
+														limitDialog.show();
+														Button jump=(Button)downLimit.findViewById(R.id.jump);
+														jump.setOnClickListener(new View.OnClickListener() {
+															@Override
+															public void onClick(View v) {
+																Intent intent=new Intent(DownloadActivity.this,RequirementsActivity.class);
+																intent.putExtra("teacher",teacher);
+																intent.putExtra("courseName",courseName);
+																limitDialog.dismiss();
+																startActivity(intent);
+															}
+														});
+														Button cancel=(Button)downLimit.findViewById(R.id.cancel);
+														cancel.setOnClickListener(new View.OnClickListener() {
+															@Override
+															public void onClick(View v) {
+																limitDialog.dismiss();
+															}
+														});
+													}
+												}
+											});
+
+										} else {
+											e.printStackTrace();
 										}
+
 									}
-								});
-							}
-							else {
-								final FrameLayout downLimit=(FrameLayout) getLayoutInflater().inflate(R.layout.limit_dialog, null);
-								AlertDialog.Builder limitBuilder=new AlertDialog.Builder(DownloadActivity.this);
-								limitBuilder.setView(downLimit);
-								final AlertDialog limitDialog=limitBuilder.create();
-								limitDialog.show();
-								Button jump=(Button)downLimit.findViewById(R.id.jump);
-								jump.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										Intent intent=new Intent(DownloadActivity.this,RequirementsActivity.class);
-										intent.putExtra("teacher",teacher);
-										intent.putExtra("courseName",courseName);
-										limitDialog.dismiss();
-										startActivity(intent);
-									}
-								});
-								Button cancel=(Button)downLimit.findViewById(R.id.cancel);
-								cancel.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										limitDialog.dismiss();
-									}
-								});
 								}
+							});
+
 							}
 						}
 					}
@@ -246,6 +304,34 @@ public class DownloadActivity extends BaseActivity {
 			}
 		});
 	}
+	private boolean isPointEnough(final AVObject avObject){
+		needPoints=avObject.getInt("points");
+		if(userPoints>=needPoints){
+			userPoints=userPoints-needPoints;
+			userPointObject.put("points",userPoints);
+			userPointObject.saveInBackground(new SaveCallback() {
+				@Override
+				public void done(AVException e) {
+					if(e==null){
+						Toast.makeText(DownloadActivity.this,"积分-"+needPoints,Toast.LENGTH_SHORT);
+						AVObject downloadMap=new AVObject("UserDownloadMap");
+						downloadMap.put("User",user);
+						downloadMap.put("Course_file",avObject);
+						downloadMap.saveInBackground(new SaveCallback() {
+							@Override
+							public void done(AVException e) {
+								ownerPointsObject.increment("points",needPoints);
+								ownerPointsObject.saveInBackground();
+							}
+						});
+					}
+				}
+			});
+			return true;
+		}
+		else return false;
+	}
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode!=0){

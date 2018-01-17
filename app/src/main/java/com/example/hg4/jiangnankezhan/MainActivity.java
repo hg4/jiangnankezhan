@@ -70,6 +70,7 @@ public class MainActivity extends BaseActivity
 	private ImageView mainheadView;
     private RadioGroup rg_tab_bar;
     private RadioButton home;
+	private TextView userPoints;
 	private ArrayList<String> replyList=new ArrayList<>();
     //Fragment Object
     private FragmentOfhomepage fg1;
@@ -187,6 +188,7 @@ public class MainActivity extends BaseActivity
 		});
 		logout=(ImageButton)findViewById(R.id.logout);
 		setting=(ImageButton)findViewById(R.id.setting);
+		userPoints=(TextView)findViewById(R.id.havepoints);
 		navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
 		Resources resource=(Resources)getBaseContext().getResources();
@@ -203,6 +205,7 @@ public class MainActivity extends BaseActivity
 		username=(TextView) navigationView.getHeaderView(0).findViewById(R.id.main_username);
 		mainheadView = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.image);
 		getusername();
+		getuserPoints();
 		getmainhead();
 		setting.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -347,6 +350,32 @@ public class MainActivity extends BaseActivity
 				}
 			});
 		}
+	}
+	private void getuserPoints(){
+		AVQuery<AVObject> query=new AVQuery<>("UserPoints");
+		query.whereEqualTo("User",AVUser.getCurrentUser());
+		query.getFirstInBackground(new GetCallback<AVObject>() {
+			@Override
+			public void done(AVObject avObject, AVException e) {
+				if(e==null){
+					if(avObject!=null){
+						int points=avObject.getInt("points");
+						if(points<=99){
+							userPoints.setText(""+points);
+						}
+						else userPoints.setText("99+");
+					}
+					else {
+						userPoints.setText("0");
+						AVObject pointsRelation=new AVObject("UserPoints");
+						pointsRelation.put("User",AVUser.getCurrentUser());
+						pointsRelation.put("points",0);
+						pointsRelation.saveInBackground();
+					}
+				}
+				else userPoints.setText("0");
+			}
+		});
 	}
 	@Override
 	protected void onResume() {

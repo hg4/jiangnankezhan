@@ -19,17 +19,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.DeleteCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 public class UploadActivity extends BaseActivity {
     private Dialog dialog;
@@ -43,7 +47,8 @@ public class UploadActivity extends BaseActivity {
     private ImageView cha;
     private TextView textnum;
     private int maxNum = 90;
-
+    private ToggleButton[] buttons=new ToggleButton[4];
+    private Integer index;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +60,48 @@ public class UploadActivity extends BaseActivity {
         addfile=(ImageView)findViewById(R.id.addfile);
         cha=(ImageView)findViewById(R.id.cha);
         textnum=(TextView)findViewById(R.id.textnum1);
+        buttons[0]=(ToggleButton)findViewById(R.id.toggleButton1);
+        buttons[1]=(ToggleButton)findViewById(R.id.toggleButton2);
+        buttons[2]=(ToggleButton)findViewById(R.id.toggleButton3);
+        buttons[3]=(ToggleButton)findViewById(R.id.toggleButton4);
+        for(final ToggleButton button:buttons){
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()){
+                        case R.id.toggleButton1:
+                            setUnselected();
+                            button.setChecked(true);
+                            v.setBackgroundColor(getResources().getColor(R.color.colorRed));
+                            ((ToggleButton)v).setTextColor(getResources().getColor(R.color.white));
+                            index=0;
+                            break;
+                        case R.id.toggleButton2:
+                            setUnselected();
+                            button.setChecked(true);
+                            v.setBackgroundColor(getResources().getColor(R.color.colorRed));
+                            ((ToggleButton)v).setTextColor(getResources().getColor(R.color.white));
+                            index=1;
+                            break;
+                        case R.id.toggleButton3:
+                            setUnselected();
+                            button.setChecked(true);
+                            v.setBackgroundColor(getResources().getColor(R.color.colorRed));
+                            ((ToggleButton)v).setTextColor(getResources().getColor(R.color.white));
+                            index=2;
+                            break;
+                        case R.id.toggleButton4:
+                            setUnselected();
+                            button.setChecked(true);
+                            v.setBackgroundColor(getResources().getColor(R.color.colorRed));
+                            ((ToggleButton)v).setTextColor(getResources().getColor(R.color.white));
+                            index=3;
+                            break;
+                    }
+
+                }
+            });
+        }
         introduce.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -97,8 +144,8 @@ public class UploadActivity extends BaseActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(title.getText().toString())){
-                    Toast.makeText(UploadActivity.this, "标题不能为空哦！", Toast.LENGTH_SHORT).show();
+                if (index==null||TextUtils.isEmpty(title.getText().toString())){
+                    Toast.makeText(UploadActivity.this, "积分或标题不能为空哦！", Toast.LENGTH_SHORT).show();
                 }else if(addfile.getDrawable().getCurrent().getConstantState().equals(ContextCompat.getDrawable(UploadActivity.this,R.drawable.shangchuanok1).getConstantState())){
                         final AVObject coursefile = new AVObject("Course_file");
                                     coursefile.put("resource", file);
@@ -106,13 +153,26 @@ public class UploadActivity extends BaseActivity {
                                     coursefile.put("Introduce", introduce.getText().toString());
                                     coursefile.put("Course", getIntent().getStringExtra("courseName"));
                                     coursefile.put("owner", AVUser.getCurrentUser());
+                                    coursefile.put("points",index);
                                     coursefile.saveInBackground(new SaveCallback() {
                                         @Override
                                         public void done(AVException e) {
                                             if (e == null) {
                                                 setResult(RESULT_OK);
-                                                finish();
-                                                Toast.makeText(UploadActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+                                                AVQuery<AVObject> avQuery=new AVQuery<AVObject>("UserPoints");
+                                                avQuery.whereEqualTo("User",AVUser.getCurrentUser());
+                                                avQuery.getFirstInBackground(new GetCallback<AVObject>() {
+                                                    @Override
+                                                    public void done(AVObject avObject, AVException e) {
+                                                        if(avObject!=null){
+                                                            avObject.increment("points",2);
+                                                            avObject.saveInBackground();
+                                                            finish();
+                                                            Toast.makeText(UploadActivity.this, "上传成功,积分+2", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+
                                             } else {
                                                 e.printStackTrace();
                                                 Toast.makeText(UploadActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
@@ -128,6 +188,13 @@ public class UploadActivity extends BaseActivity {
         });
     }
 
+    private void setUnselected(){
+        for(ToggleButton button:buttons){
+            button.setChecked(false);
+            button.setBackgroundColor(getResources().getColor(R.color.white));
+            button.setTextColor(getResources().getColor(R.color.black));
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         switch (requestCode) {

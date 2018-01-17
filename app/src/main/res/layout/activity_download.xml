@@ -58,6 +58,58 @@
 
 
         <TextView
+            android:id="@+id/coinnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="0dp"
+            android:text="0积分"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/coin"
+            app:layout_constraintLeft_toRightOf="@+id/coin"
+            app:layout_constraintTop_toTopOf="@+id/coin"/>
+
+        <ImageView
+            android:id="@+id/coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="130dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/downloadnumber"
+            app:layout_constraintLeft_toRightOf="@+id/downloadnumber"
+            app:layout_constraintTop_toTopOf="@+id/downloadnumber"
+            app:srcCompat="@drawable/coin"
+            app:layout_constraintVertical_bias="1.0"/>
+
+        <TextView
+            android:id="@+id/downloadnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="0dp"
+            android:text="0"
+            android:textColor="#747474"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/down"
+            app:layout_constraintLeft_toRightOf="@+id/down"
+            app:layout_constraintTop_toTopOf="@+id/down"/>
+
+        <ImageView
+            android:id="@+id/down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/commentnumber"
+            app:layout_constraintLeft_toRightOf="@+id/commentnumber"
+            app:layout_constraintTop_toTopOf="@+id/commentnumber"
+            app:srcCompat="@drawable/download"/>
+
+        <TextView
             android:id="@+id/materialname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,6 +175,7 @@
             android:layout_marginTop="64dp"
             android:id="@+id/imageView14"
             android:layout_marginEnd="6dp" />
+
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
@@ -160,7 +213,7 @@
             android:layout_marginStart="8dp"
             android:text="0"
             android:textColor="#747474"
-            android:textSize="15sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/like"
             app:layout_constraintLeft_toRightOf="@+id/like"
             app:layout_constraintTop_toTopOf="@+id/like"/>
@@ -184,7 +237,7 @@
             android:layout_marginStart="8dp"
             android:text="0"
             android:textColor="#747474"
-            android:textSize="15sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/comment"
             app:layout_constraintLeft_toRightOf="@+id/comment"
             app:layout_constraintTop_toTopOf="@+id/comment"/>
@@ -206,7 +259,7 @@
     <LinearLayout
         android:id="@+id/materielcomment"
         android:layout_width="336dp"
-        android:layout_height="match_parent"
+        android:layout_height="227dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/download"
         app:layout_constraintLeft_toLeftOf="parent"

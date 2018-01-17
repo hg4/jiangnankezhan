@@ -77,6 +77,17 @@ public class CommentActivity extends BaseActivity {
         back=(ImageView)findViewById(R.id.back);
         preview=(RecyclerView)findViewById(R.id.addcmt_picpreview);
         pic_cmt=(ConstraintLayout)findViewById(R.id.pic_cmt);
+        AVQuery<AVObject> query=new AVQuery<>("_User");
+        query.getInBackground(id, new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if(e==null){
+                    if(avObject!=null){
+                        user=avObject;
+                    }
+                }
+            }
+        });
         LinearLayoutManager layoutManager=new LinearLayoutManager(CommentActivity.this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         preview.setLayoutManager(layoutManager);
@@ -164,9 +175,12 @@ public class CommentActivity extends BaseActivity {
                                                         //子评论发表成功后，父评论最大talk组+1
                                                         avObject.increment("maxTalkGroup");
                                                         avObject.saveInBackground();
-                                                        savePermission();
+                                                        if(content.getText().length()>=15){
+                                                            Toast.makeText(CommentActivity.this,"发表成功,积分+1",Toast.LENGTH_SHORT).show();
+                                                            addPoints();
+                                                        }
+                                                        else  Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                                         Utilty.dismissDiaglog(dialog,1000);
-                                                        Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                                         setResult(1);
                                                         CommentActivity.this.finish();
                                                     }
@@ -211,7 +225,11 @@ public class CommentActivity extends BaseActivity {
                                                 e.printStackTrace();
                                             }
                                             else {
-                                                Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                                if(content.getText().length()>=15){
+                                                    Toast.makeText(CommentActivity.this,"发表成功,积分+1",Toast.LENGTH_SHORT).show();
+                                                    addPoints();
+                                                }
+                                                else  Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                                 setResult(1);
                                                 Utilty.dismissDiaglog(dialog,1000);
                                                 CommentActivity.this.finish();
@@ -256,8 +274,11 @@ public class CommentActivity extends BaseActivity {
                                 }
                                 else {
                                     Utilty.dismissDiaglog(dialog,1000);
-                                    savePermission();
-                                    Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
+                                    if(content.getText().length()>=15){
+                                        Toast.makeText(CommentActivity.this,"发表成功,积分+1",Toast.LENGTH_SHORT).show();
+                                        addPoints();
+                                    }
+                                    else  Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                     setResult(1);
                                     CommentActivity.this.finish();
 
@@ -304,8 +325,11 @@ public class CommentActivity extends BaseActivity {
                                     e.printStackTrace();
                                 }
                                 else {
-                                    Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
-                                    savePermission();
+                                    if(content.getText().length()>=15){
+                                        Toast.makeText(CommentActivity.this,"发表成功,积分+1",Toast.LENGTH_SHORT).show();
+                                        addPoints();
+                                    }
+                                    else  Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                     setResult(1);
                                     Utilty.dismissDiaglog(dialog,1000);
                                     CommentActivity.this.finish();
@@ -368,6 +392,11 @@ public class CommentActivity extends BaseActivity {
                                         else {
                                             Intent intent=new Intent();
                                             intent.putExtra("newcmt",comment.toString());
+                                            if(content.getText().length()>=15){
+                                                Toast.makeText(CommentActivity.this,"发表成功,积分+1",Toast.LENGTH_SHORT).show();
+                                                addPoints();
+                                            }
+                                            else  Toast.makeText(CommentActivity.this,"发表成功",Toast.LENGTH_SHORT).show();
                                             setResult(1,intent);
                                             CommentActivity.this.finish();
                                         }
@@ -444,23 +473,40 @@ public class CommentActivity extends BaseActivity {
             }
         });
     }
-    private void savePermission(){
+ /*  private void savePermission(){
         user=AVObject.createWithoutData("_User",id);
         user.put("permissionD",true);
         user.saveInBackground();
-    }
+    }*/
     private boolean commentCheck(String content){
         boolean isWordorNumber=content.matches("^[A-Za-z0-9 ]+$");
         boolean isNull="".equals(content);
         return !isNull&&!isWordorNumber;
+    }
+    private void addPoints(){
+        if(user!=null){
+            AVQuery avQuery=new AVQuery("UserPoints");
+            avQuery.whereEqualTo("User",user);
+            avQuery.getFirstInBackground(new GetCallback() {
+                @Override
+                public void done(AVObject avObject, AVException e) {
+                    if(avObject!=null){
+                        avObject.increment("points");
+                        avObject.saveInBackground();
+                    }
+                }
+            });
+        }
+
+
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             List<String> pathList = data.getStringArrayListExtra(ImageSelectorActivity.EXTRA_RESULT);
-
-            for (String path : pathList) {
+      for (String path : pathList) {
                 Log.i("ImagePathList", path);
             }
             path.clear();
