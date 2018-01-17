@@ -187,7 +187,7 @@ public class MainActivity extends BaseActivity
 
 			@Override
 			public void onDrawerOpened(View drawerView) {
-
+				getuserPoints();
 			}
 
 			@Override
@@ -219,7 +219,7 @@ public class MainActivity extends BaseActivity
 		username=(TextView) navigationView.getHeaderView(0).findViewById(R.id.main_username);
 		mainheadView = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.image);
 		getusername();
-		getuserPoints();
+
 		getmainhead();
 		setting.setOnClickListener(new View.OnClickListener() {
 			@Override

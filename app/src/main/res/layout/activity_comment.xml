@@ -52,7 +52,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="23dp"
         android:background="@null"
-        android:hint="分享一下你的感受吧!认真评论即可获取积分哦！"
+        android:hint="分享一下你的感受吧!认真评论（15字以上）即可获取积分哦！"
         android:maxLength="100"
         android:textAlignment="viewStart"
         android:textSize="15dp"
