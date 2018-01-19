@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -104,8 +107,13 @@ public class SettingActivity extends BaseActivity {
                                                 Button sure = (Button) v.findViewById(R.id.sure);
                                                 final Dialog dialog = builder.create();
                                                 dialog.show();
+                                                Window dialogWindow = dialog.getWindow();
+                                                WindowManager m = getWindowManager();
+                                                Display d = m.getDefaultDisplay();
+                                                WindowManager.LayoutParams p = dialogWindow.getAttributes();
+                                                p.width = (int) (d.getWidth() * 0.9);
+                                                dialogWindow.setAttributes(p);
                                                 dialog.getWindow().setContentView(v);
-                                                dialog.getWindow().setGravity(Gravity.CENTER);
                                                 cancel.setOnClickListener(new View.OnClickListener() {
 
                                                     @Override
