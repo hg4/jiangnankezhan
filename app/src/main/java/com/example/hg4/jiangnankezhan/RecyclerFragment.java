@@ -32,11 +32,12 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 	protected List<AVObject> commentList=new ArrayList<>();
 	protected Bundle mArguments;
 	//继承后adapter一定要幅值,adapter.notify要有效，必须其自身和数据源的list指向的对象没有改变，故后面两个不能是protected，若为protected继承后产生新的对象和父类不指向同一个
-	private RecyclerView.Adapter adapter;
-	private List<AVObject> displayCmtList;
+	protected RecyclerView.Adapter adapter;
+	protected List<AVObject> displayCmtList=new ArrayList<>();
 	protected int index=ORI;
 	protected static final int INCREMENT=4;
 	protected static final int ORI=4;
+	protected TextView info;
 	public RecyclerFragment() {
 		// Required empty public constructor
 	}
@@ -57,6 +58,7 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 		commentView=(RecyclerView)view.findViewById(R.id.swipe_target);
 		swipeToLoadLayout=(SwipeToLoadLayout) view.findViewById(R.id.cmt_swipeLayout);
 		noholder=(ImageView)view.findViewById(R.id.no_holder);
+		info=(TextView)view.findViewById(R.id.infotext);
 		swipeToLoadLayout.setOnLoadMoreListener(this);
 		swipeToLoadLayout.setOnRefreshListener(this);
 		setswipeType();
@@ -138,11 +140,9 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 	public void setAdapter(RecyclerView.Adapter adapter){
 		this.adapter=adapter;
 	}
-	public void setRecyclerAdapter(RecyclerView.Adapter adapter){
-		commentView.setAdapter(adapter);
-	}
 	public void setDisplayCmtList(List<AVObject> list){
 		this.displayCmtList=list;
 	}
+	public List<AVObject> getDisplayCmtList(){return this.displayCmtList;}
 
 }

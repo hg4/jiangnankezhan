@@ -8,11 +8,8 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,22 +21,16 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CommentActivity;
-import com.example.hg4.jiangnankezhan.DownloadActivity;
 import com.example.hg4.jiangnankezhan.R;
-import com.example.hg4.jiangnankezhan.SettingActivity;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.hg4.jiangnankezhan.R.id.comment;
-import static com.example.hg4.jiangnankezhan.R.id.holder;
 
 /**
  * Created by HG4 on 2017/11/16.
@@ -64,7 +55,7 @@ public class UniCmtAdapter extends RecyclerView.Adapter<UniCmtAdapter.ViewHolder
 		public ViewHolder(View view){
 			super(view);
 			head=(ImageView)view.findViewById(R.id.head);
-			date=(TextView)view.findViewById(R.id.time);
+			date=(TextView)view.findViewById(R.id.date);
 			content=(TextView)view.findViewById(R.id.content);
 			reply=(TextView)view.findViewById(R.id.reply);
 			childCmtList=(RecyclerView)view.findViewById(R.id.relylist);

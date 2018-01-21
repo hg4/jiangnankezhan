@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -52,7 +51,7 @@ public class UniChildCmtAdapter extends RecyclerView.Adapter<UniChildCmtAdapter.
         public ViewHolder(View view){
             super(view);
             head=(ImageView)view.findViewById(R.id.head);
-            date=(TextView)view.findViewById(R.id.time);
+            date=(TextView)view.findViewById(R.id.date);
             content=(TextView)view.findViewById(R.id.content);
             reply=(TextView)view.findViewById(R.id.reply);
             imageList=(LinearLayout)view.findViewById(R.id.imagelist);

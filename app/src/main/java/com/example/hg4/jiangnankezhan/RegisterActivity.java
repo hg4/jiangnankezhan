@@ -19,10 +19,13 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVSMS;
 import com.avos.avoscloud.AVSMSOption;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.RequestMobileCodeCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.gyf.barlibrary.ImmersionBar;
 
@@ -158,7 +161,15 @@ public class RegisterActivity extends AppCompatActivity {
 								progressDialog.dismiss();
 								startActivity(new Intent(RegisterActivity.this, RegisterOKActivity.class));
 								user.setMobilePhoneNumber(phone);
-								user.saveInBackground();
+								user.saveInBackground(new SaveCallback() {
+									@Override
+									public void done(AVException e) {
+										AVObject userPoints=new AVObject("UserPoints");
+										userPoints.put("User",user);
+										userPoints.put("points",0);
+										userPoints.saveInBackground();//注册成功，创建积分对象
+									}
+								});
 								RegisterActivity.this.finish();
 							} else {
 								// 失败的原因可能有多种，常见的是用户名已经存在。

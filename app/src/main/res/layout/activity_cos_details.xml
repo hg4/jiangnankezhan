@@ -82,7 +82,7 @@
 
 
         <TextView
-            android:id="@+id/time"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="36dp"
@@ -118,7 +118,7 @@
             android:textColor="#222D43"
             android:textSize="15dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/time"/>
+            app:layout_constraintTop_toBottomOf="@+id/date"/>
 
         <TextView
             android:id="@+id/cosnumber"

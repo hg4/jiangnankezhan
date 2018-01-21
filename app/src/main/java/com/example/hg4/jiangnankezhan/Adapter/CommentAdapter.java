@@ -58,6 +58,8 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 		TextView commentCount;
 		TextView likeText;
 		TextView commentText;
+		ImageView mostnew;
+		ImageView hot;
 		Button like;
 		Button comment_comment;
 		LinearLayout imageList;
@@ -79,6 +81,8 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			commentText=(TextView)view.findViewById(R.id.comment_commenttext);
 			imageList=(LinearLayout)view.findViewById(R.id.comment_image_list);
 			commentList=(LinearLayout)view.findViewById(R.id.comment_comment_list);
+			hot=(ImageView)view.findViewById(R.id.hotdoor);
+			mostnew=(ImageView)view.findViewById(R.id.mostnew);
 		}
 	}
 
@@ -124,6 +128,12 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 
 	@Override
 	public void onBindViewHolder(final CommentAdapter.ViewHolder holder, final int position) {
+		if(position==0){
+			holder.hot.setVisibility(View.VISIBLE);
+		}
+		if(position==1){
+			holder.mostnew.setVisibility(View.VISIBLE);
+		}
 			AVObject comment=mCommentList.get(position);
 			holder.AvComment=comment;
 			holder.head.setImageResource(R.drawable.def_ava_round);
@@ -131,16 +141,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			if(user.getAVFile("head")!=null){
 				AVFile file=user.getAVFile("head");
 				if(file!=null&&file.getUrl()!=null){
-					file.getDataInBackground(new GetDataCallback() {
-						@Override
-						public void done(byte[] bytes, AVException e) {
-							if(e==null&&bytes!=null){
-								Bitmap head= Utilty.Bytes2Bimap(bytes);
-								holder.head.setImageBitmap(head);
-							}
-							else e.printStackTrace();
-						}
-					});
+					Glide.with(mContext).load(file.getUrl()).into(holder.head);
 				}
 			}
 			if(!user.getString("nickname").equals("（请填写）"))

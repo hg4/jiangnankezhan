@@ -20,6 +20,24 @@
             >
 
 
+            <ImageView
+                android:id="@+id/mostnew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/mostnew"/>
+
+            <ImageView
+                android:id="@+id/hotdoor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/hotdoor"/>
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/comment_head"
                 android:layout_width="41dp"

@@ -22,7 +22,6 @@ import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * Created by HG4 on 2017/11/13.
@@ -47,7 +46,7 @@ public class MyMaterialAdapter extends RecyclerView.Adapter<MyMaterialAdapter.Vi
 			head=(ImageView)view.findViewById(R.id.head);
 			username=(TextView)view.findViewById(R.id.owner);
 			materialName=(TextView)view.findViewById(R.id.materialname);
-			date=(TextView)view.findViewById(R.id.time);
+			date=(TextView)view.findViewById(R.id.date);
 			content=(TextView)view.findViewById(R.id.content);
 			likeCount=(TextView)view.findViewById(R.id.likenumber);
 			editPop=(ImageButton)view.findViewById(R.id.mycomment_pop);

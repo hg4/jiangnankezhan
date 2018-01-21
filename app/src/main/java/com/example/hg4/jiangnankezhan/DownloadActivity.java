@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -71,7 +70,7 @@ public class DownloadActivity extends BaseActivity {
         materialname = (TextView) findViewById(R.id.materialname);
         back = (ImageView) findViewById(R.id.back);
         owner = (TextView) findViewById(R.id.owner);
-        date = (TextView) findViewById(R.id.time);
+        date = (TextView) findViewById(R.id.date);
         content = (TextView) findViewById(R.id.content);
         head = (ImageView) findViewById(R.id.head);
         download = (Button) findViewById(R.id.download);
@@ -165,6 +164,11 @@ public class DownloadActivity extends BaseActivity {
 									if(avObject!=null){
 										ownerPointsObject=avObject;
 										ownerPoints=avObject.getInt("points");
+									}
+									else {
+										AVObject pointsObject=new AVObject("UserPoints");
+										pointsObject.put("User",getOwner);
+										pointsObject.saveInBackground();
 									}
 								}
 							});

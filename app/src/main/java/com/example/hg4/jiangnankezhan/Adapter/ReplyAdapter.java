@@ -2,7 +2,6 @@ package com.example.hg4.jiangnankezhan.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.tv.TvContentRating;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,14 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CommentActivity;
@@ -25,9 +22,7 @@ import com.example.hg4.jiangnankezhan.CosContentActivity;
 import com.example.hg4.jiangnankezhan.R;
 import com.example.hg4.jiangnankezhan.RequirementsActivity;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
-import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,7 +52,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 			holderView=(ConstraintLayout) view;
 			fromUserName=(TextView)view.findViewById(R.id.fromUser);
 			content=(TextView)view.findViewById(R.id.content);
-			date=(TextView)view.findViewById(R.id.time);
+			date=(TextView)view.findViewById(R.id.date);
 			from=(TextView)view.findViewById(R.id.from);
 			head=(ImageView) view.findViewById(R.id.circleImageView);
 			contentImg=(ImageView)view.findViewById(R.id.content_img);
