@@ -12,6 +12,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -52,19 +56,26 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.example.hg4.jiangnankezhan.Model.Course;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import org.json.JSONArray;
+import org.litepal.crud.DataSupport;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.name;
+import static android.view.View.Y;
 import static com.example.hg4.jiangnankezhan.R.id.currentver;
 import static com.example.hg4.jiangnankezhan.R.id.listView;
+import static com.example.hg4.jiangnankezhan.R.id.select;
+import static com.example.hg4.jiangnankezhan.R.id.teacher;
 import static com.example.hg4.jiangnankezhan.Utils.Utilty.getJsonToStringArray;
+import static com.example.hg4.jiangnankezhan.Utils.Utilty.nameIsValid;
 
 
 public class MainActivity extends BaseActivity
@@ -114,6 +125,7 @@ public class MainActivity extends BaseActivity
 		}
 		setContentView(R.layout.activity_main);
         ifnewVersion();
+        showCommentDialog();
 		savePhone();
 		director=(FrameLayout)findViewById(R.id.director);
 		directorNumber=(TextView)findViewById(R.id.director_number);
@@ -275,6 +287,109 @@ public class MainActivity extends BaseActivity
 		return true;
 	}
 
+	private void showCommentDialog() {
+		final SharedPreferences.Editor editor=getSharedPreferences(user.getObjectId(),MODE_PRIVATE).edit();
+		AVQuery<AVObject> query = new AVQuery<>("Constant");
+		query.whereEqualTo("name","ifShowCommentDialog");
+		query.getFirstInBackground(new GetCallback<AVObject>() {
+			@Override
+			public void done(final AVObject avObject, AVException e) {
+				{
+					if (e == null) {
+						if(avObject.getString("value1").equals("Y")){
+							SharedPreferences pref=getSharedPreferences(user.getObjectId(),MODE_PRIVATE);
+							int ifscd=pref.getInt("ifscd",0);
+							if(ifscd==0){
+								final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+								LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+								View v = inflater.inflate(R.layout.comment_dialog, null);
+								TextView content=(TextView)v.findViewById(R.id.content);
+								Button cancel = (Button) v.findViewById(R.id.cancel);
+								Button sure = (Button) v.findViewById(R.id.sure);
+								content.setText(avObject.getString("value2"));
+								final Dialog dialog = builder.create();
+								dialog.setCancelable(false);
+								dialog.show();
+								Window dialogWindow = dialog.getWindow();
+								WindowManager m = getWindowManager();
+								Display d = m.getDefaultDisplay();
+								WindowManager.LayoutParams p = dialogWindow.getAttributes();
+								p.width = (int) (d.getWidth() * 0.75);
+								dialogWindow.setAttributes(p);
+								dialog.setContentView(v);
+
+								editor.putInt("ifscd",1);
+								editor.apply();
+								cancel.setOnClickListener(new View.OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										dialog.dismiss();
+									}
+								});
+								sure.setOnClickListener(new View.OnClickListener() {
+
+									@Override
+									public void onClick(View arg0) {
+										dialog.dismiss();
+										List<Course> list=DataSupport.findAll(Course.class);
+										if (list.size()!=0&&list!=null){
+											if(avObject.getString("value3").equals("公选课")) {
+												List<Course> courses= DataSupport.where("start=?",4+"").find(Course.class);
+												if (courses.size()!=0&&courses!=null){
+													for (final Course course : courses){
+														Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
+														intent.putExtra("date",course.getDate());
+														intent.putExtra("name",course.getCourseName());
+														intent.putExtra("teacher",course.getTeacher());
+														intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+														startActivity(intent);
+													}
+												}else{
+													int index=(int)(Math.random()*list.size());
+													Course course = list.get(index);
+													Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
+													intent.putExtra("date",course.getDate());
+													intent.putExtra("name",course.getCourseName());
+													intent.putExtra("teacher",course.getTeacher());
+													intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+													startActivity(intent);
+												}
+
+
+											}else if(avObject.getString("value3").equals("随机课")){
+												int index=(int)(Math.random()*list.size());
+												Course course = list.get(index);
+												Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
+												intent.putExtra("date",course.getDate());
+												intent.putExtra("name",course.getCourseName());
+												intent.putExtra("teacher",course.getTeacher());
+												intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+												startActivity(intent);
+											}
+										}else{
+											Toast.makeText(MainActivity.this,"客官您还没有课程表哦，先点击右上角的加号获取课表吧！",Toast.LENGTH_SHORT).show();
+										}
+
+									}
+								});
+								builder.create().show();
+							}
+
+						}else{
+							editor.putInt("ifscd",0);
+							editor.apply();
+						}
+					}else{
+						e.printStackTrace();
+					}
+
+				}
+
+			}
+		});
+	}
+
 	private void showAlertDialog(){
 		LinearLayout dialogForm=(LinearLayout)getLayoutInflater().inflate(R.layout.dialogform,null);
 		final AlertDialog.Builder builder=new AlertDialog.Builder(this);
@@ -327,8 +442,13 @@ public class MainActivity extends BaseActivity
 									final Dialog dialog = builder.create();
 									dialog.setCancelable(false);
 									dialog.show();
+									Window dialogWindow = dialog.getWindow();
+									WindowManager m = getWindowManager();
+									Display d = m.getDefaultDisplay();
+									WindowManager.LayoutParams p = dialogWindow.getAttributes();
+									p.width = (int) (d.getWidth() * 0.9);
+									dialogWindow.setAttributes(p);
 									dialog.getWindow().setContentView(v);
-									dialog.getWindow().setGravity(Gravity.CENTER);
 									cancel.setOnClickListener(new View.OnClickListener() {
 
 										@Override
@@ -336,7 +456,6 @@ public class MainActivity extends BaseActivity
 											dialog.dismiss();
 										}
 									});
-
 									sure.setOnClickListener(new View.OnClickListener() {
 
 										@Override
