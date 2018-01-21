@@ -289,6 +289,7 @@ public class MainActivity extends BaseActivity
 	}
 
 	private void showCommentDialog() {
+		final SharedPreferences.Editor editor=getSharedPreferences(user.getObjectId(),MODE_PRIVATE).edit();
 		AVQuery<AVObject> query = new AVQuery<>("Constant");
 		query.whereEqualTo("name","ifShowCommentDialog");
 		query.getFirstInBackground(new GetCallback<AVObject>() {
@@ -297,41 +298,57 @@ public class MainActivity extends BaseActivity
 				{
 					if (e == null) {
 						if(avObject.getString("value1").equals("Y")){
-							final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-							LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-							View v = inflater.inflate(R.layout.comment_dialog, null);
-							TextView content=(TextView)v.findViewById(R.id.content);
-							Button cancel = (Button) v.findViewById(R.id.cancel);
-							Button sure = (Button) v.findViewById(R.id.sure);
-							content.setText(avObject.getString("value2"));
-							final Dialog dialog = builder.create();
-							dialog.setCancelable(false);
-							dialog.show();
-							Window dialogWindow = dialog.getWindow();
-							WindowManager m = getWindowManager();
-							Display d = m.getDefaultDisplay();
-							WindowManager.LayoutParams p = dialogWindow.getAttributes();
-                            p.width = (int) (d.getWidth() * 0.75);
-							dialogWindow.setAttributes(p);
-							dialog.setContentView(v);
-							cancel.setOnClickListener(new View.OnClickListener() {
+							SharedPreferences pref=getSharedPreferences(user.getObjectId(),MODE_PRIVATE);
+							int ifscd=pref.getInt("ifscd",0);
+							if(ifscd==0){
+								final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+								LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+								View v = inflater.inflate(R.layout.comment_dialog, null);
+								TextView content=(TextView)v.findViewById(R.id.content);
+								Button cancel = (Button) v.findViewById(R.id.cancel);
+								Button sure = (Button) v.findViewById(R.id.sure);
+								content.setText(avObject.getString("value2"));
+								final Dialog dialog = builder.create();
+								dialog.setCancelable(false);
+								dialog.show();
+								Window dialogWindow = dialog.getWindow();
+								WindowManager m = getWindowManager();
+								Display d = m.getDefaultDisplay();
+								WindowManager.LayoutParams p = dialogWindow.getAttributes();
+								p.width = (int) (d.getWidth() * 0.75);
+								dialogWindow.setAttributes(p);
+								dialog.setContentView(v);
 
-								@Override
-								public void onClick(View v) {
-									dialog.dismiss();
-								}
-							});
-                            sure.setOnClickListener(new View.OnClickListener() {
+								editor.putInt("ifscd",1);
+								editor.apply();
+								cancel.setOnClickListener(new View.OnClickListener() {
 
-								@Override
-								public void onClick(View arg0) {
-									dialog.dismiss();
-									List<Course> list=DataSupport.findAll(Course.class);
-									if (list.size()!=0&&list!=null){
-										if(avObject.getString("value3").equals("公选课")) {
-											List<Course> courses= DataSupport.where("start=?",4+"").find(Course.class);
-											if (courses.size()!=0&&courses!=null){
-												for (final Course course : courses){
+									@Override
+									public void onClick(View v) {
+										dialog.dismiss();
+									}
+								});
+								sure.setOnClickListener(new View.OnClickListener() {
+
+									@Override
+									public void onClick(View arg0) {
+										dialog.dismiss();
+										List<Course> list=DataSupport.findAll(Course.class);
+										if (list.size()!=0&&list!=null){
+											if(avObject.getString("value3").equals("公选课")) {
+												List<Course> courses= DataSupport.where("start=?",4+"").find(Course.class);
+												if (courses.size()!=0&&courses!=null){
+													for (final Course course : courses){
+														Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
+														intent.putExtra("date",course.getDate());
+														intent.putExtra("name",course.getCourseName());
+														intent.putExtra("teacher",course.getTeacher());
+														intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+														startActivity(intent);
+													}
+												}else{
+													int index=(int)(Math.random()*list.size());
+													Course course = list.get(index);
 													Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
 													intent.putExtra("date",course.getDate());
 													intent.putExtra("name",course.getCourseName());
@@ -339,7 +356,9 @@ public class MainActivity extends BaseActivity
 													intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
 													startActivity(intent);
 												}
-											}else{
+
+
+											}else if(avObject.getString("value3").equals("随机课")){
 												int index=(int)(Math.random()*list.size());
 												Course course = list.get(index);
 												Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
@@ -349,25 +368,18 @@ public class MainActivity extends BaseActivity
 												intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
 												startActivity(intent);
 											}
-
-
-										}else if(avObject.getString("value3").equals("随机课")){
-											int index=(int)(Math.random()*list.size());
-											Course course = list.get(index);
-											Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
-											intent.putExtra("date",course.getDate());
-											intent.putExtra("name",course.getCourseName());
-											intent.putExtra("teacher",course.getTeacher());
-											intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
-											startActivity(intent);
+										}else{
+											Toast.makeText(MainActivity.this,"客官您还没有课程表哦，先点击右上角的加号获取课表吧！",Toast.LENGTH_SHORT).show();
 										}
-									}else{
-										Toast.makeText(MainActivity.this,"客官您还没有课程表哦，先点击右上角的加号获取课表吧！",Toast.LENGTH_SHORT).show();
-									}
 
-								}
-							});
-							builder.create().show();
+									}
+								});
+								builder.create().show();
+							}
+
+						}else{
+							editor.putInt("ifscd",0);
+							editor.apply();
 						}
 					}else{
 						e.printStackTrace();
