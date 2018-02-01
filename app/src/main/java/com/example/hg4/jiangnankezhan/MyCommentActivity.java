@@ -132,7 +132,6 @@ public class MyCommentActivity  extends BaseActivity implements ViewPager.OnPage
 //        layoutTab.setTabMode(TabLayout.MODE_SCROLLABLE);
 		layoutTab.setupWithViewPager(viewpagerTab);
 		layoutTab.setTabsFromPagerAdapter(adapterFragment);
-
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

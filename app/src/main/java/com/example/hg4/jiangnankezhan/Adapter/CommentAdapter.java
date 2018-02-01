@@ -33,6 +33,7 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CommentActivity;
+import com.example.hg4.jiangnankezhan.MainPageActivity;
 import com.example.hg4.jiangnankezhan.R;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
@@ -65,6 +66,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 		LinearLayout imageList;
 		LinearLayout commentList;
 		AVObject AvComment;
+		AVObject cmter;
 		int maxTalkGroup;
 		public ViewHolder(View view){
 			super(view);
@@ -123,6 +125,14 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 				}
 			}
 		});
+		viewHolder.head.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(mContext, MainPageActivity.class);
+				intent.putExtra("user",viewHolder.cmter.toString());
+				mContext.startActivity(intent);
+			}
+		});
 		return viewHolder;
 	}
 
@@ -138,6 +148,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			holder.AvComment=comment;
 			holder.head.setImageResource(R.drawable.def_ava_round);
 			AVObject user=comment.getAVUser("from");
+			holder.cmter=user;
 			if(user.getAVFile("head")!=null){
 				AVFile file=user.getAVFile("head");
 				if(file!=null&&file.getUrl()!=null){
