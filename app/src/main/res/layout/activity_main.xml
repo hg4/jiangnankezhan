@@ -17,7 +17,14 @@
         android:background="#fff"
         tools:context=".MainActivity">
 
-        <!--
+
+        <FrameLayout
+            android:id="@+id/ly_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/rg_tab_bar">
+
+        </FrameLayout>
         <RadioGroup
         android:id="@+id/rg_tab_bar"
         android:layout_width="match_parent"
@@ -46,23 +53,16 @@
             android:drawableTop="@drawable/message_draw"
             android:text="消息"
             android:textColor="@drawable/text"/>
-
-        <RadioButton
+ </RadioGroup>
+    <!--    <RadioButton
             android:id="@+id/my"
             style="@style/tab_menu_item"
             android:drawableTop="@drawable/my_draw"
             android:text="我"
             android:textColor="@drawable/text"/>
-    </RadioGroup>
- -->
-        <FrameLayout
-            android:id="@+id/ly_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
 
-        </FrameLayout>
+ -->
+
 
     </RelativeLayout>
 

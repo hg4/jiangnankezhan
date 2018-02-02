@@ -1,7 +1,11 @@
 package cn.leancloud.chatkit.view;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import cn.leancloud.chatkit.R;
+import cn.leancloud.chatkit.activity.LCIMConversationActivity;
 import cn.leancloud.chatkit.event.LCIMInputBottomBarEvent;
 import cn.leancloud.chatkit.event.LCIMInputBottomBarLocationClickEvent;
 import cn.leancloud.chatkit.event.LCIMInputBottomBarRecordEvent;
@@ -26,7 +31,7 @@ import de.greenrobot.event.EventBus;
  * 专门负责输入的底部操作栏，与 activity 解耦
  * 当点击相关按钮时发送 InputBottomBarEvent，需要的 View 可以自己去订阅相关消息
  */
-public class LCIMInputBottomBar extends LinearLayout {
+public class LCIMInputBottomBar extends LinearLayout implements ActivityCompat.OnRequestPermissionsResultCallback{
 
   /**
    * 加号 Button
@@ -170,8 +175,14 @@ public class LCIMInputBottomBar extends LinearLayout {
     pictureBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        EventBus.getDefault().post(new LCIMInputBottomBarEvent(
-          LCIMInputBottomBarEvent.INPUTBOTTOMBAR_IMAGE_ACTION, getTag()));
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)!=
+                PackageManager.PERMISSION_GRANTED){
+          ActivityCompat.requestPermissions(LCIMConversationActivity.getLCIMConversationActivity(),new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE},2);
+        }else{
+          EventBus.getDefault().post(new LCIMInputBottomBarEvent(
+                  LCIMInputBottomBarEvent.INPUTBOTTOMBAR_IMAGE_ACTION, getTag()));
+        }
+
       }
     });
 
@@ -183,7 +194,20 @@ public class LCIMInputBottomBar extends LinearLayout {
       }
     });
   }
-
+  @Override
+  public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults){
+    switch (requestCode){
+      case 2:
+        if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+          EventBus.getDefault().post(new LCIMInputBottomBarEvent(
+                  LCIMInputBottomBarEvent.INPUTBOTTOMBAR_IMAGE_ACTION, getTag()));
+        }else{
+Toast.makeText(getContext(),"客官你拒绝了该权限，不能访问相册哦",Toast.LENGTH_SHORT).show();
+        }
+        break;
+      default:
+    }
+  }
   public void addActionView(View view) {
     actionLayout.addView(view);
   }

@@ -18,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -56,6 +57,9 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.example.hg4.jiangnankezhan.Model.Course;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
@@ -67,6 +71,9 @@ import org.w3c.dom.Text;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.leancloud.chatkit.LCChatKit;
+import cn.leancloud.chatkit.activity.LCIMConversationListFragment;
 
 import static android.R.attr.name;
 import static android.view.View.Y;
@@ -90,101 +97,102 @@ public class MainActivity extends BaseActivity
 	private AlertDialog dialog;
 	private NavigationView navigationView;
 	private TextView username;
-	private String getusername=new String();
+	private String getusername = new String();
 	private ImageView mainheadView;
-    private RadioGroup rg_tab_bar;
-    private RadioButton home;
+	private RadioGroup rg_tab_bar;
+	private RadioButton home;
 	private TextView userPoints;
-	private ArrayList<String> replyList=new ArrayList<>();
-    //Fragment Object
-    private FragmentOfhomepage fg1;
-    private FragmentOfschedule fg2;
-    private FragmentOfmessage fg3;
-    private FragmentOfmy fg4;
-    private FragmentManager fManager;
+	private ArrayList<String> replyList = new ArrayList<>();
+	//Fragment Object
+	private FragmentOfhomepage fg1;
+	private FragmentOfschedule fg2;
+	private LCIMConversationListFragment fg3;
+	private FragmentOfmy fg4;
+	private FragmentManager fManager;
 	private DrawerLayout drawer;
 	private FrameLayout director;
-	private AVUser user=AVUser.getCurrentUser();
+	private AVUser user = AVUser.getCurrentUser();
 	private TextView directorNumber;
 	private ReplyService.ReplyBinder replyBinder;
-	private ServiceConnection connection=new ServiceConnection() {
+	private ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			replyBinder=(ReplyService.ReplyBinder) service;
+			replyBinder = (ReplyService.ReplyBinder) service;
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 		}
 	};
-    @Override
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(!PerferencesUtils.getPermission(this,id)){
+		if (!PerferencesUtils.getPermission(this, id)) {
 			setPermissions();
 		}
 		setContentView(R.layout.activity_main);
-        ifnewVersion();
-        showCommentDialog();
+		ifnewVersion();
+		showCommentDialog();
 		savePhone();
-		director=(FrameLayout)findViewById(R.id.director);
-		directorNumber=(TextView)findViewById(R.id.director_number);
-		Intent intent=new Intent(this, ReplyService.class);
+		director = (FrameLayout) findViewById(R.id.director);
+		directorNumber = (TextView) findViewById(R.id.director_number);
+		Intent intent = new Intent(this, ReplyService.class);
 		startService(intent);
-		bindService(intent,connection,BIND_AUTO_CREATE);
-		fg2 = new FragmentOfschedule();
+		bindService(intent, connection, BIND_AUTO_CREATE);
+		/*fg2 = new FragmentOfschedule();
         fManager=getSupportFragmentManager();
 		FragmentTransaction fTransaction = fManager.beginTransaction();
 		fTransaction.replace(R.id.ly_content,fg2);
-        fTransaction.commit();
-        /*rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
-        rg_tab_bar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                FragmentTransaction fTransaction = fManager.beginTransaction();
-                hideAllFragment(fTransaction);
-                switch (i){
-                    case R.id.home:
-                        if(fg1 == null){
-                            fg1 = new FragmentOfhomepage();
-                            fTransaction.add(R.id.ly_content,fg1);
-                        }else{
-                            fTransaction.show(fg1);
-                        }
-                        break;
-                    case R.id.schedule:
-                        if(fg2 == null){
-                            fg2 = new FragmentOfschedule();
-                            fTransaction.add(R.id.ly_content,fg2);
-                        }else{
-                            fTransaction.show(fg2);
-                        }
-                        break;
-                    case R.id.message:
-                        if(fg3 == null){
-                            fg3 = new FragmentOfmessage();
-                            fTransaction.add(R.id.ly_content,fg3);
-                        }else{
-                            fTransaction.show(fg3);
-                        }
-                        break;
-                    case R.id.my:
-                        if(fg4 == null){
-                            fg4 = new FragmentOfmy();
-                            fTransaction.add(R.id.ly_content,fg4);
-                        }else{
-                            fTransaction.show(fg4);
-                        }
-                        break;
-                }
-                fTransaction.commit();
-            }
-        });
-        home = (RadioButton) findViewById(R.id.home);
-        home.setChecked(true);
-        */
+        fTransaction.commit();*/
+		rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
+		rg_tab_bar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+				fManager = getSupportFragmentManager();
+				FragmentTransaction fTransaction = fManager.beginTransaction();
+				hideAllFragment(fTransaction);
+				switch (i) {
+					case R.id.home:
+						if (fg1 == null) {
+							fg1 = new FragmentOfhomepage();
+							fTransaction.add(R.id.ly_content, fg1);
+						} else {
+							fTransaction.show(fg1);
+						}
+						break;
+					case R.id.schedule:
+						if (fg2 == null) {
+							fg2 = new FragmentOfschedule();
+							fTransaction.add(R.id.ly_content, fg2);
+						} else {
+							fTransaction.show(fg2);
+						}
+						break;
+					case R.id.message:
+						if (fg3 == null) {
+							fg3 = new LCIMConversationListFragment();
+							fTransaction.add(R.id.ly_content, fg3);
+						} else {
+							fTransaction.show(fg3);
+						}
+						break;
+				}
+				fTransaction.commit();
+			}
+		});
+		home = (RadioButton) findViewById(R.id.home);
+		home.setChecked(true);
+		LCChatKit.getInstance().open(user.getObjectId(), new AVIMClientCallback() {
+			@Override
+			public void done(AVIMClient avimClient, AVIMException e) {
+				if (null == e) {
+				}
+			}
+		});
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 //		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -212,13 +220,13 @@ public class MainActivity extends BaseActivity
 
 			}
 		});
-		logout=(ImageButton)findViewById(R.id.logout);
-		setting=(ImageButton)findViewById(R.id.setting);
-		userPoints=(TextView)findViewById(R.id.havepoints);
+		logout = (ImageButton) findViewById(R.id.logout);
+		setting = (ImageButton) findViewById(R.id.setting);
+		userPoints = (TextView) findViewById(R.id.havepoints);
 		navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
-		Resources resource=(Resources)getBaseContext().getResources();
-		ColorStateList csl1=(ColorStateList)resource.getColorStateList(R.color.navigation_menu_item_color);
+		Resources resource = (Resources) getBaseContext().getResources();
+		ColorStateList csl1 = (ColorStateList) resource.getColorStateList(R.color.navigation_menu_item_color);
 		navigationView.setItemIconTintList(csl1);
 		navigationView.setItemTextColor(csl1);
 		navigationView.getMenu().getItem(0).setChecked(true);
@@ -228,18 +236,17 @@ public class MainActivity extends BaseActivity
 				showAlertDialog();
 			}
 		});
-		username=(TextView) navigationView.getHeaderView(0).findViewById(R.id.main_username);
-		mainheadView = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.image);
+		username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.main_username);
+		mainheadView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.image);
 		getusername();
 		getmainhead();
 		setting.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Intent intent=new Intent(MainActivity.this,SettingActivity.class);
+				Intent intent = new Intent(MainActivity.this, SettingActivity.class);
 				startActivity(intent);
 			}
 		});
-
 
 
 	}
@@ -259,24 +266,24 @@ public class MainActivity extends BaseActivity
 	public boolean onNavigationItemSelected(MenuItem item) {
 		// Handle navigation view item clicks here.
 		int id1 = item.getItemId();
-		switch (id1){
+		switch (id1) {
 			case R.id.nav_home:
 
 				break;
 			case R.id.nav_display:
-				startActivity(new Intent(MainActivity.this,MyCommentActivity.class));
+				startActivity(new Intent(MainActivity.this, MyCommentActivity.class));
 				break;
 			case R.id.nav_collect:
-				Toast.makeText(this,"功能待开发中...",Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "功能待开发中...", Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.nav_info:
-				startActivity(new Intent(MainActivity.this,PersonInfoActivity.class));
+				startActivity(new Intent(MainActivity.this, PersonInfoActivity.class));
 				break;
 			case R.id.nav_message:
-				Intent intent=new Intent(MainActivity.this,ReplyActivity.class);
-		//		intent.putStringArrayListExtra("reply",replyList);
-				PerferencesUtils.saveUserIntData(this,id,"newcount",0);
-				if(director.getVisibility()==View.VISIBLE)
+				Intent intent = new Intent(MainActivity.this, ReplyActivity.class);
+				//		intent.putStringArrayListExtra("reply",replyList);
+				PerferencesUtils.saveUserIntData(this, id, "newcount", 0);
+				if (director.getVisibility() == View.VISIBLE)
 					director.setVisibility(View.INVISIBLE);
 				startActivity(intent);
 				break;
@@ -288,22 +295,22 @@ public class MainActivity extends BaseActivity
 	}
 
 	private void showCommentDialog() {
-		final SharedPreferences.Editor editor=getSharedPreferences(user.getObjectId(),MODE_PRIVATE).edit();
+		final SharedPreferences.Editor editor = getSharedPreferences(user.getObjectId(), MODE_PRIVATE).edit();
 		AVQuery<AVObject> query = new AVQuery<>("Constant");
-		query.whereEqualTo("name","ifShowCommentDialog");
+		query.whereEqualTo("name", "ifShowCommentDialog");
 		query.getFirstInBackground(new GetCallback<AVObject>() {
 			@Override
 			public void done(final AVObject avObject, AVException e) {
 				{
 					if (e == null) {
-						if(avObject.getString("value1").equals("Y")){
-							SharedPreferences pref=getSharedPreferences(user.getObjectId(),MODE_PRIVATE);
-							int ifscd=pref.getInt("ifscd",0);
-							if(ifscd==0){
-								final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+						if (avObject.getString("value1").equals("Y")) {
+							SharedPreferences pref = getSharedPreferences(user.getObjectId(), MODE_PRIVATE);
+							int ifscd = pref.getInt("ifscd", 0);
+							if (ifscd == 0) {
+								final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 								LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 								View v = inflater.inflate(R.layout.comment_dialog, null);
-								TextView content=(TextView)v.findViewById(R.id.content);
+								TextView content = (TextView) v.findViewById(R.id.content);
 								Button cancel = (Button) v.findViewById(R.id.cancel);
 								Button sure = (Button) v.findViewById(R.id.sure);
 								content.setText(avObject.getString("value2"));
@@ -318,7 +325,7 @@ public class MainActivity extends BaseActivity
 								dialogWindow.setAttributes(p);
 								dialog.setContentView(v);
 
-								editor.putInt("ifscd",1);
+								editor.putInt("ifscd", 1);
 								editor.apply();
 								cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -332,43 +339,43 @@ public class MainActivity extends BaseActivity
 									@Override
 									public void onClick(View arg0) {
 										dialog.dismiss();
-										List<Course> list=DataSupport.findAll(Course.class);
-										if (list.size()!=0&&list!=null){
-											if(avObject.getString("value3").equals("公选课")) {
-												List<Course> courses= DataSupport.where("start=?",4+"").find(Course.class);
-												if (courses.size()!=0&&courses!=null){
-													for (final Course course : courses){
-														Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
-														intent.putExtra("date",course.getDate());
-														intent.putExtra("name",course.getCourseName());
-														intent.putExtra("teacher",course.getTeacher());
-														intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+										List<Course> list = DataSupport.findAll(Course.class);
+										if (list.size() != 0 && list != null) {
+											if (avObject.getString("value3").equals("公选课")) {
+												List<Course> courses = DataSupport.where("start=?", 4 + "").find(Course.class);
+												if (courses.size() != 0 && courses != null) {
+													for (final Course course : courses) {
+														Intent intent = new Intent(MainActivity.this, CosDetailsActivity.class);
+														intent.putExtra("date", course.getDate());
+														intent.putExtra("name", course.getCourseName());
+														intent.putExtra("teacher", course.getTeacher());
+														intent.putExtra("courseBeginNumber", course.getCourseBeginNumber());
 														startActivity(intent);
 													}
-												}else{
-													int index=(int)(Math.random()*list.size());
+												} else {
+													int index = (int) (Math.random() * list.size());
 													Course course = list.get(index);
-													Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
-													intent.putExtra("date",course.getDate());
-													intent.putExtra("name",course.getCourseName());
-													intent.putExtra("teacher",course.getTeacher());
-													intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+													Intent intent = new Intent(MainActivity.this, CosDetailsActivity.class);
+													intent.putExtra("date", course.getDate());
+													intent.putExtra("name", course.getCourseName());
+													intent.putExtra("teacher", course.getTeacher());
+													intent.putExtra("courseBeginNumber", course.getCourseBeginNumber());
 													startActivity(intent);
 												}
 
 
-											}else if(avObject.getString("value3").equals("随机课")){
-												int index=(int)(Math.random()*list.size());
+											} else if (avObject.getString("value3").equals("随机课")) {
+												int index = (int) (Math.random() * list.size());
 												Course course = list.get(index);
-												Intent intent=new Intent(MainActivity.this,CosDetailsActivity.class);
-												intent.putExtra("date",course.getDate());
-												intent.putExtra("name",course.getCourseName());
-												intent.putExtra("teacher",course.getTeacher());
-												intent.putExtra("courseBeginNumber",course.getCourseBeginNumber());
+												Intent intent = new Intent(MainActivity.this, CosDetailsActivity.class);
+												intent.putExtra("date", course.getDate());
+												intent.putExtra("name", course.getCourseName());
+												intent.putExtra("teacher", course.getTeacher());
+												intent.putExtra("courseBeginNumber", course.getCourseBeginNumber());
 												startActivity(intent);
 											}
-										}else{
-											Toast.makeText(MainActivity.this,"客官您还没有课程表哦，先点击右上角的加号获取课表吧！",Toast.LENGTH_SHORT).show();
+										} else {
+											Toast.makeText(MainActivity.this, "客官您还没有课程表哦，先点击右上角的加号获取课表吧！", Toast.LENGTH_SHORT).show();
 										}
 
 									}
@@ -376,11 +383,11 @@ public class MainActivity extends BaseActivity
 								builder.create().show();
 							}
 
-						}else{
-							editor.putInt("ifscd",0);
+						} else {
+							editor.putInt("ifscd", 0);
 							editor.apply();
 						}
-					}else{
+					} else {
 						e.printStackTrace();
 					}
 
@@ -390,16 +397,16 @@ public class MainActivity extends BaseActivity
 		});
 	}
 
-	private void showAlertDialog(){
-		LinearLayout dialogForm=(LinearLayout)getLayoutInflater().inflate(R.layout.dialogform,null);
-		final AlertDialog.Builder builder=new AlertDialog.Builder(this);
+	private void showAlertDialog() {
+		LinearLayout dialogForm = (LinearLayout) getLayoutInflater().inflate(R.layout.dialogform, null);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setView(dialogForm)
 				.setPositiveButton("注销", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						AVUser.getCurrentUser().logOut();
 						finish();
-						startActivity(new Intent(MainActivity.this,LoginActivity.class));
+						startActivity(new Intent(MainActivity.this, LoginActivity.class));
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -409,34 +416,35 @@ public class MainActivity extends BaseActivity
 				});
 		builder.create().show();
 	}
-    private void ifnewVersion(){
-        try {
-            PackageManager packageManager = getPackageManager();
-            final PackageInfo packageInfo = packageManager.getPackageInfo(
-                    getPackageName(), 0);
-			user.put("versioncode",packageInfo.versionCode);
+
+	private void ifnewVersion() {
+		try {
+			PackageManager packageManager = getPackageManager();
+			final PackageInfo packageInfo = packageManager.getPackageInfo(
+					getPackageName(), 0);
+			user.put("versioncode", packageInfo.versionCode);
 			user.saveInBackground();
-            AVQuery<AVObject> query = new AVQuery<>("AppVersion");
+			AVQuery<AVObject> query = new AVQuery<>("AppVersion");
 			query.orderByDescending("createdAt");
-            query.getFirstInBackground(new GetCallback<AVObject>() {
-                @Override
-                public void done(final AVObject avObject, AVException e) {
-                    {
-                        if (e == null) {
-                            if (avObject!=null){
-                                if(packageInfo.versionCode<avObject.getNumber("VersionCode").intValue()){
-                                    final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+			query.getFirstInBackground(new GetCallback<AVObject>() {
+				@Override
+				public void done(final AVObject avObject, AVException e) {
+					{
+						if (e == null) {
+							if (avObject != null) {
+								if (packageInfo.versionCode < avObject.getNumber("VersionCode").intValue()) {
+									final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 									LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 									View v = inflater.inflate(R.layout.version_dialog, null);
-									String[] data=getJsonToStringArray(avObject.getJSONArray("content"));
+									String[] data = getJsonToStringArray(avObject.getJSONArray("content"));
 									TextView currentver = (TextView) v.findViewById(R.id.currentver);
-									TextView newver=(TextView)v.findViewById(R.id.newver);
-									ListView content=(ListView) v.findViewById(R.id.vercontent);
-									ArrayAdapter<String> adapter=new ArrayAdapter<String>(MainActivity.this,
-											R.layout.vscontentlist,data);
+									TextView newver = (TextView) v.findViewById(R.id.newver);
+									ListView content = (ListView) v.findViewById(R.id.vercontent);
+									ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+											R.layout.vscontentlist, data);
 									content.setAdapter(adapter);
-									newver.setText("最新版本："+avObject.getString("VersionName"));
-									currentver.setText("当前版本："+packageInfo.versionName);
+									newver.setText("最新版本：" + avObject.getString("VersionName"));
+									currentver.setText("当前版本：" + packageInfo.versionName);
 									Button cancel = (Button) v.findViewById(R.id.cancel);
 									Button sure = (Button) v.findViewById(R.id.sure);
 									final Dialog dialog = builder.create();
@@ -466,37 +474,37 @@ public class MainActivity extends BaseActivity
 											startActivity(intent);
 										}
 									});
-                                    builder.create().show();
-                                }
-                            }
-                        } else {
-                            e.printStackTrace();
-                        }
+									builder.create().show();
+								}
+							}
+						} else {
+							e.printStackTrace();
+						}
 
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-	private void getusername(){
-		SharedPreferences pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
-		getusername=pref.getString("昵称","");
-		if(!getusername.equals("")){
-			username.setText(getusername);
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		else {
-			AVQuery<AVObject> query=new AVQuery<>("_User");
+
+	}
+
+	private void getusername() {
+		SharedPreferences pref = getSharedPreferences(id + "userdata", MODE_PRIVATE);
+		getusername = pref.getString("昵称", "");
+		if (!getusername.equals("")) {
+			username.setText(getusername);
+		} else {
+			AVQuery<AVObject> query = new AVQuery<>("_User");
 			query.getInBackground(id, new GetCallback<AVObject>() {
 				@Override
 				public void done(AVObject avObject, AVException e) {
-					if(e==null){
-						getusername=avObject.getString("nickname");
-						if(getusername!=null){
+					if (e == null) {
+						getusername = avObject.getString("nickname");
+						if (getusername != null) {
 							username.setText(getusername);
-							PerferencesUtils.saveUserStringData(MainActivity.this,id,"昵称",getusername);
+							PerferencesUtils.saveUserStringData(MainActivity.this, id, "昵称", getusername);
 						}
 
 					}
@@ -506,32 +514,31 @@ public class MainActivity extends BaseActivity
 			});
 		}
 	}
-	private void getuserPoints(){
-		AVQuery<AVObject> query=new AVQuery<>("UserPoints");
-		query.whereEqualTo("User",AVUser.getCurrentUser());
+
+	private void getuserPoints() {
+		AVQuery<AVObject> query = new AVQuery<>("UserPoints");
+		query.whereEqualTo("User", AVUser.getCurrentUser());
 		query.getFirstInBackground(new GetCallback<AVObject>() {
 			@Override
 			public void done(AVObject avObject, AVException e) {
-				if(e==null){
-					if(avObject!=null){
-						int points=avObject.getInt("points");
-						if(points<=99){
-							userPoints.setText(""+points);
-						}
-						else userPoints.setText("99+");
-					}
-					else {
+				if (e == null) {
+					if (avObject != null) {
+						int points = avObject.getInt("points");
+						if (points <= 99) {
+							userPoints.setText("" + points);
+						} else userPoints.setText("99+");
+					} else {
 						userPoints.setText("0");
-						AVObject pointsRelation=new AVObject("UserPoints");
-						pointsRelation.put("User",AVUser.getCurrentUser());
-						pointsRelation.put("points",0);
+						AVObject pointsRelation = new AVObject("UserPoints");
+						pointsRelation.put("User", AVUser.getCurrentUser());
+						pointsRelation.put("points", 0);
 						pointsRelation.saveInBackground();
 					}
-				}
-				else userPoints.setText("0");
+				} else userPoints.setText("0");
 			}
 		});
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -540,34 +547,35 @@ public class MainActivity extends BaseActivity
 		getmainhead();
 
 	}
-	private Bitmap getBitmapFromSharedPreferences(){
-		SharedPreferences sharedPreferences=getSharedPreferences(id+"userdata", MODE_PRIVATE);
-		String imageString=sharedPreferences.getString("image", "");
-		byte[] byteArray= Base64.decode(imageString, Base64.DEFAULT);
-		ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(byteArray);
-		Bitmap bitmap= BitmapFactory.decodeStream(byteArrayInputStream);
+
+	private Bitmap getBitmapFromSharedPreferences() {
+		SharedPreferences sharedPreferences = getSharedPreferences(id + "userdata", MODE_PRIVATE);
+		String imageString = sharedPreferences.getString("image", "");
+		byte[] byteArray = Base64.decode(imageString, Base64.DEFAULT);
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+		Bitmap bitmap = BitmapFactory.decodeStream(byteArrayInputStream);
 		return bitmap;
 	}
-	private void getmainhead(){
-		if(getBitmapFromSharedPreferences()!=null)
+
+	private void getmainhead() {
+		if (getBitmapFromSharedPreferences() != null)
 			mainheadView.setImageBitmap(getBitmapFromSharedPreferences());
 		else {
-			AVQuery<AVObject> query=new AVQuery<>("_User");
+			AVQuery<AVObject> query = new AVQuery<>("_User");
 			query.getInBackground(id, new GetCallback<AVObject>() {
 				@Override
 				public void done(AVObject avObject, AVException e) {
-					if(avObject!=null){
-						AVFile file=avObject.getAVFile("head");
-						if(file!=null){
-						file.getDataInBackground(new GetDataCallback() {
-							@Override
-							public void done(byte[] bytes, AVException e) {
-								if(e==null){
-									mainheadView.setImageBitmap(Utilty.Bytes2Bimap(bytes));
+					if (avObject != null) {
+						AVFile file = avObject.getAVFile("head");
+						if (file != null) {
+							file.getDataInBackground(new GetDataCallback() {
+								@Override
+								public void done(byte[] bytes, AVException e) {
+									if (e == null) {
+										mainheadView.setImageBitmap(Utilty.Bytes2Bimap(bytes));
+									} else e.printStackTrace();
 								}
-								else e.printStackTrace();
-							}
-						});
+							});
 						}
 					}
 				}
@@ -583,36 +591,35 @@ public class MainActivity extends BaseActivity
 		//findReplyNew();
 	}
 
-	private void checkNew(){
-		int newCount=PerferencesUtils.getUserIntData(this,id,"newcount");
-		Log.e("new",newCount+"");
-		if(newCount>0){
+	private void checkNew() {
+		int newCount = PerferencesUtils.getUserIntData(this, id, "newcount");
+		Log.e("new", newCount + "");
+		if (newCount > 0) {
 			director.setVisibility(View.VISIBLE);
-			if(newCount<=99){
-				directorNumber.setText(""+newCount);
-			}
-			else directorNumber.setText("99+");
-		}
-		else director.setVisibility(View.INVISIBLE);
+			if (newCount <= 99) {
+				directorNumber.setText("" + newCount);
+			} else directorNumber.setText("99+");
+		} else director.setVisibility(View.INVISIBLE);
 	}
-    private void hideAllFragment(FragmentTransaction fragmentTransaction){
-        if(fg1 != null)fragmentTransaction.hide(fg1);
-        if(fg2 != null)fragmentTransaction.hide(fg2);
-        if(fg3 != null)fragmentTransaction.hide(fg3);
-        if(fg4 != null)fragmentTransaction.hide(fg4);
-    }
 
-	private void savePhone(){
+	private void hideAllFragment(FragmentTransaction fragmentTransaction) {
+		if (fg1 != null) fragmentTransaction.hide(fg1);
+		if (fg2 != null) fragmentTransaction.hide(fg2);
+		if (fg3 != null) fragmentTransaction.hide(fg3);
+	/*	if (fg4 != null) fragmentTransaction.hide(fg4);*/
+	}
+
+	private void savePhone() {
 		AVQuery<AVUser> query = new AVQuery<>("_User");
 		query.getInBackground(id, new GetCallback<AVUser>() {
 			@Override
 			public void done(AVUser avUser, AVException e) {
-				if(e==null){
+				if (e == null) {
 					if ("".equals(avUser.getMobilePhoneNumber())) {
 						avUser.setMobilePhoneNumber(avUser.getUsername());
 						avUser.saveInBackground();
 					}
-				}else{
+				} else {
 					e.printStackTrace();
 				}
 
@@ -620,16 +627,17 @@ public class MainActivity extends BaseActivity
 		});
 
 	}
+
 	/**
 	 * 设置Android6.0的权限申请
 	 */
 	private void setPermissions() {
 		if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 			//Android 6.0申请权限
-			ActivityCompat.requestPermissions(this,PERMISSION,1);
-			PerferencesUtils.savePermission(this,id,true);
-		}else{
-			Log.i("tag","权限申请ok");
+			ActivityCompat.requestPermissions(this, PERMISSION, 1);
+			PerferencesUtils.savePermission(this, id, true);
+		} else {
+			Log.i("tag", "权限申请ok");
 		}
 	}
 
@@ -637,6 +645,15 @@ public class MainActivity extends BaseActivity
 	protected void onDestroy() {
 		super.onDestroy();
 		unbindService(connection);
-		stopService(new Intent(this,ReplyService.class));
+		stopService(new Intent(this, ReplyService.class));
+		LCChatKit.getInstance().close(new AVIMClientCallback() {
+			@Override
+			public void done(AVIMClient avimClient, AVIMException e) {
+				if (null != e) {
+					e.printStackTrace();
+				} else {
+				}
+			}
+		});
 	}
 }

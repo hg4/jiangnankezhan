@@ -49,6 +49,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:textSize="18sp"
                 android:gravity="top"
                 android:singleLine="true"
                 android:textColor="@android:color/black"/>

@@ -3,6 +3,7 @@ package cn.leancloud.chatkit.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ import cn.leancloud.chatkit.utils.LCIMLogUtils;
  * 会话详情页
  * 包含会话的创建以及拉取，具体的 UI 细节在 LCIMConversationFragment 中
  */
-public class LCIMConversationActivity extends AppCompatActivity {
+public class LCIMConversationActivity extends ActionBarActivity {
 
   protected LCIMConversationFragment conversationFragment;
 
@@ -38,7 +39,6 @@ public class LCIMConversationActivity extends AppCompatActivity {
     conversationFragment = (LCIMConversationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_chat);
     initByIntent(getIntent());
   }
-
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
@@ -74,11 +74,13 @@ public class LCIMConversationActivity extends AppCompatActivity {
   protected void initActionBar(String title) {
     ActionBar actionBar = getSupportActionBar();
     if (null != actionBar) {
-      if (null != title) {
-        actionBar.setTitle(title);
-      }
+     if (null != title) {
+       actionBar.setTitle(title);
+     }
+      actionBar.setDisplayShowTitleEnabled(true);
       actionBar.setDisplayUseLogoEnabled(false);
       actionBar.setDisplayHomeAsUpEnabled(true);
+      actionBar.setHomeAsUpIndicator(R.drawable.default_back_icon);
       finishActivity(RESULT_OK);
     }
   }
@@ -97,6 +99,7 @@ public class LCIMConversationActivity extends AppCompatActivity {
    *
    * @param conversation
    */
+
   protected void updateConversation(AVIMConversation conversation) {
     if (null != conversation) {
       conversationFragment.setConversation(conversation);
@@ -140,4 +143,13 @@ public class LCIMConversationActivity extends AppCompatActivity {
   private void showToast(String content) {
     Toast.makeText(LCIMConversationActivity.this, content, Toast.LENGTH_SHORT).show();
   }
+  public LCIMConversationActivity() {
+    LCIMConversationActivity = this;
+  }
+
+  public static LCIMConversationActivity getLCIMConversationActivity() {
+    return LCIMConversationActivity;
+  }
+  private static LCIMConversationActivity LCIMConversationActivity;
+
 }
