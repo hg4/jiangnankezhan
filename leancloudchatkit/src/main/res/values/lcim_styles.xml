@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="LCIMKitTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/lcim_common_blue</item>
-        <item name="colorPrimaryDark">@color/lcim_common_blue</item>
-        <item name="colorAccent">@color/lcim_common_blue</item>
+        <item name="colorPrimary">@color/colorWhite</item>
+        <item name="colorPrimaryDark">@color/colorWhite</item>
+        <item name="colorAccent">@color/colorWhite</item>
         <item name="actionBarTheme">@style/LCIMActionBarTheme</item>
     </style>
 
@@ -13,11 +13,6 @@
     <style name="LCIMActivity" parent="LCIMKitTheme"/>
 
     <style name="LCIMActivity.NoActionBar">
-        <item name="colorPrimary">@color/lcim_common_blue</item>
-        <item name="colorPrimaryDark">@color/lcim_common_blue</item>
-        <item name="colorAccent">@color/lcim_common_blue</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:editTextStyle">@style/LCIMEditText</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
