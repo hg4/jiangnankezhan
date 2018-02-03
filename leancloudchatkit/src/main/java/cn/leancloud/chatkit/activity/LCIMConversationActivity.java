@@ -3,9 +3,12 @@ package cn.leancloud.chatkit.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVCallback;
@@ -28,16 +31,28 @@ import cn.leancloud.chatkit.utils.LCIMLogUtils;
  * 会话详情页
  * 包含会话的创建以及拉取，具体的 UI 细节在 LCIMConversationFragment 中
  */
-public class LCIMConversationActivity extends ActionBarActivity {
+public class LCIMConversationActivity extends AppCompatActivity {
 
   protected LCIMConversationFragment conversationFragment;
+  private TextView Title;
+  private ImageView back;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.lcim_conversation_activity);
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+    Title=(TextView)findViewById(R.id.title);
+    back=(ImageView)findViewById(R.id.back);
     conversationFragment = (LCIMConversationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_chat);
     initByIntent(getIntent());
+    back.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        finish();
+      }
+    });
   }
   @Override
   protected void onNewIntent(Intent intent) {
@@ -72,15 +87,8 @@ public class LCIMConversationActivity extends ActionBarActivity {
    * @param title
    */
   protected void initActionBar(String title) {
-    ActionBar actionBar = getSupportActionBar();
-    if (null != actionBar) {
      if (null != title) {
-       actionBar.setTitle(title);
-     }
-      actionBar.setDisplayShowTitleEnabled(true);
-      actionBar.setDisplayUseLogoEnabled(false);
-      actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setHomeAsUpIndicator(R.drawable.default_back_icon);
+       Title.setText(title);
       finishActivity(RESULT_OK);
     }
   }
