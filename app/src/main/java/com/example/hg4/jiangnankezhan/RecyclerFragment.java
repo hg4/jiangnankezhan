@@ -81,6 +81,8 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 				break;
 			case 2:swipeToLoadLayout.setLoadMoreEnabled(false);
 				break;
+			case 3:swipeToLoadLayout.setRefreshEnabled(false);
+					swipeToLoadLayout.setLoadMoreEnabled(false);
 			default:
 				break;
 		}

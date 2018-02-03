@@ -78,7 +78,6 @@
             android:layout_marginTop="25dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:text="嘻嘻哈哈嘻嘻哈哈嘻嘻哈哈想嘻嘻嘻嘻嘻嘻小想嘻嘻嘻想嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻寻寻想嘻嘻嘻嘻嘻嘻小想嘻嘻嘻想嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻寻寻想嘻嘻嘻嘻嘻嘻小想嘻嘻嘻想嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻寻寻"
 
             android:textColor="#9e9e9e"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -136,7 +135,7 @@
             app:layout_constraintTop_toTopOf="@+id/comment"/>
 
         <ImageView
-            android:id="@+id/imageView26"
+            android:id="@+id/down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
@@ -158,9 +157,9 @@
             android:text="0"
             android:textSize="10sp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView26"
-            app:layout_constraintLeft_toRightOf="@+id/imageView26"
-            app:layout_constraintTop_toTopOf="@+id/imageView26"/>
+            app:layout_constraintBottom_toBottomOf="@+id/down"
+            app:layout_constraintLeft_toRightOf="@+id/down"
+            app:layout_constraintTop_toTopOf="@+id/down"/>
 
         <TextView
             android:id="@+id/link"
@@ -168,13 +167,12 @@
             android:layout_height="38dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:background="@color/colorRed"
+            android:background="@drawable/link"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:paddingLeft="50dp"
             android:paddingRight="10dp"
-            android:text="毛概哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
             android:textColor="@color/white"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -190,12 +188,12 @@
             android:text="0积分"
             android:textSize="12sp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView27"
-            app:layout_constraintLeft_toRightOf="@+id/imageView27"
-            app:layout_constraintTop_toTopOf="@+id/imageView27"/>
+            app:layout_constraintBottom_toBottomOf="@+id/coin"
+            app:layout_constraintLeft_toRightOf="@+id/coin"
+            app:layout_constraintTop_toTopOf="@+id/coin"/>
 
         <ImageView
-            android:id="@+id/imageView27"
+            android:id="@+id/coin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"

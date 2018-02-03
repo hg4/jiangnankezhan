@@ -3,6 +3,8 @@ package com.example.hg4.jiangnankezhan.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -13,9 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
@@ -23,10 +27,17 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CommentActivity;
+import com.example.hg4.jiangnankezhan.CosContentActivity;
+import com.example.hg4.jiangnankezhan.DownloadActivity;
 import com.example.hg4.jiangnankezhan.MainPageActivity;
+import com.example.hg4.jiangnankezhan.MaterialActivity;
 import com.example.hg4.jiangnankezhan.R;
+import com.example.hg4.jiangnankezhan.RequirementsActivity;
+import com.example.hg4.jiangnankezhan.UploadActivity;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
@@ -42,6 +53,7 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 	private List<AVObject> mCommentList=new ArrayList<>();
 
 	static class ViewHolder extends RecyclerView.ViewHolder{
+		int type=0;
 		CardView cardView;
 		ImageView head;
 		TextView action;
@@ -92,6 +104,28 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 		viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				switch (viewHolder.type){
+					case 0:{
+						Intent intent=new Intent(mContext, RequirementsActivity.class);
+						intent.putExtra("teacher",viewHolder.AvComment.getString("teacher"));
+						intent.putExtra("courseName",viewHolder.AvComment.getString("courseName"));
+						mContext.startActivity(intent);
+						break;
+					}
+					case 1:{
+						Intent intent=new Intent(mContext, DownloadActivity.class);
+						intent.putExtra("courseName",viewHolder.AvComment.getString("Course"));
+						intent.putExtra("content",viewHolder.link.getText().toString());
+						mContext.startActivity(intent);
+						break;
+					}
+					case -1:{
+						Intent intent=new Intent(mContext, CosContentActivity.class);
+						intent.putExtra("courseName",viewHolder.AvComment.getString("courseName"));
+						mContext.startActivity(intent);
+						break;
+					}
+				}
 			}
 		});
 		return viewHolder;
@@ -99,30 +133,32 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 
 	@Override
 	public void onBindViewHolder(final MainPageAdapter.ViewHolder holder, final int position) {
-		int type=0;
-		AVObject comment=mCommentList.get(position);
-		holder.AvComment=comment;
+		AVObject comment = mCommentList.get(position);
+		holder.AvComment = comment;
 		holder.head.setImageResource(R.drawable.def_ava_round);
-		if(comment.getAVFile("resource")!=null)
-			type=1;
-		switch (type){
+		if (comment.getAVFile("resource") != null)
+			holder.type = 1;
+		switch (holder.type) {
 			case 0:
 				holder.action.setText("评价了");
-				AVObject user=comment.getAVUser("from");
-				if(user.getAVFile("head")!=null){
-				AVFile file=user.getAVFile("head");
-				if(file!=null&&file.getUrl()!=null){
-					Glide.with(mContext).load(file.getUrl()).into(holder.head);
-				}
-				holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
+				AVObject user = comment.getAVUser("from");
+				if (user.getAVFile("head") != null) {
+					AVFile file = user.getAVFile("head");
+					if (file != null && file.getUrl() != null) {
+						Glide.with(mContext).load(file.getUrl()).into(holder.head);
+					}
+					if(comment.getInt("type")==3){
+						holder.type=-1;
+					}
+					holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
 					holder.content.setText(comment.getString("content"));
-					Integer intLikeCount=comment.getInt("likeCount");
-					Integer intCommentCount=comment.getInt("commentCount");
+					Integer intLikeCount = comment.getInt("likeCount");
+					Integer intCommentCount = comment.getInt("commentCount");
 					holder.likeCount.setText(intLikeCount.toString());
 					holder.commentCount.setText(intCommentCount.toString());
 					holder.aim.setText(comment.getString("courseName"));
 
-			}
+				}
 				break;
 			case 1:
 				holder.action.setText("上传资料到");
@@ -131,19 +167,35 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 				holder.coin.setVisibility(View.VISIBLE);
 				holder.coinCount.setVisibility(View.VISIBLE);
 				holder.link.setVisibility(View.VISIBLE);
-				holder.content.setText(comment.getString("Introduce"));
-				holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
-				holder.downCount.setText(""+comment.getInt("download"));
-				holder.coinCount.setText(""+comment.getInt("points")+"积分");
-				holder.likeCount.setText(""+comment.getInt("likeCount"));
-				holder.commentCount.setText(""+comment.getInt("commentCount"));
-				holder.aim.setText(comment.getString("Course"));
-				holder.link.setText(comment.getString("Title"));
+				AVObject owner = comment.getAVObject("owner");
+				if (owner.getAVFile("head") != null) {
+					AVFile file = owner.getAVFile("head");
+					if (file != null && file.getUrl() != null) {
+						Glide.with(mContext).load(file.getUrl()).into(holder.head);
+					}
+					holder.content.setText(comment.getString("Introduce"));
+					holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
+					holder.downCount.setText("" + comment.getInt("download"));
+					holder.coinCount.setText("" + comment.getInt("points") + "积分");
+					holder.likeCount.setText("" + comment.getInt("likeCount"));
+					holder.commentCount.setText("" + comment.getInt("commentCount"));
+					holder.aim.setText(comment.getString("Course"));
+					holder.link.setText(comment.getString("Title"));
 
-				break;
+					break;
+				}
 		}
 	}
 
+	@Override
+	public void onViewRecycled(ViewHolder holder) {
+		super.onViewRecycled(holder);
+		holder.down.setVisibility(View.GONE);
+		holder.downCount.setVisibility(View.GONE);
+		holder.coin.setVisibility(View.GONE);
+		holder.coinCount.setVisibility(View.GONE);
+		holder.link.setVisibility(View.GONE);
+	}
 
 	@Override
 	public int getItemCount() {

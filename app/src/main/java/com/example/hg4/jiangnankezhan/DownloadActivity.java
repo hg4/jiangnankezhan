@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -90,6 +91,14 @@ public class DownloadActivity extends BaseActivity {
 		FragmentTransaction fTransaction = fManager.beginTransaction();
 		fTransaction.add(R.id.materielcomment,recyclerFragment);
 		fTransaction.commit();
+		head.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(DownloadActivity.this, MainPageActivity.class);
+				intent.putExtra("user",getOwner.toString());
+				startActivity(intent);
+			}
+		});
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,7 +238,7 @@ public class DownloadActivity extends BaseActivity {
 													if(!list.isEmpty()){
 														flag=true;
 													}
-													if(flag||user.getObjectId().equals(avObject.getAVObject("owner").getObjectId())||isPointEnough(avObject)){
+													if(flag||user.getObjectId().equals(avObject.getAVObject("owner").getObjectId())){
 														avObject.increment("download");
 														avObject.saveInBackground(new SaveCallback() {
 															@Override
@@ -241,6 +250,63 @@ public class DownloadActivity extends BaseActivity {
 																}
 															}
 														});
+													}
+													else if(isPointEnough(avObject)){
+														final FrameLayout confirm=(FrameLayout) getLayoutInflater().inflate(R.layout.confirm_dialog, null);
+														AlertDialog.Builder limitBuilder=new AlertDialog.Builder(DownloadActivity.this);
+														limitBuilder.setView(confirm);
+														final AlertDialog confirmDialog=limitBuilder.create();
+														confirmDialog.show();
+														WindowManager.LayoutParams params = confirmDialog.getWindow().getAttributes();
+														params.width=800;
+														confirmDialog.getWindow().setAttributes(params);
+														Button jump=(Button)confirm.findViewById(R.id.jump);
+														TextView points=(TextView)confirm.findViewById(R.id.points);
+														points.setText(needPoints+"积分");
+														jump.setOnClickListener(new View.OnClickListener() {
+															@Override
+															public void onClick(View v) {
+																userPoints=userPoints-needPoints;
+																userPointObject.put("points",userPoints);
+																userPointObject.saveInBackground(new SaveCallback() {
+																	@Override
+																	public void done(AVException e) {
+																		if(e==null){
+																			Toast.makeText(DownloadActivity.this,"积分-"+needPoints,Toast.LENGTH_SHORT);
+																			AVObject downloadMap=new AVObject("UserDownloadMap");
+																			downloadMap.put("User",user);
+																			downloadMap.put("Course_file",avObject);
+																			downloadMap.saveInBackground(new SaveCallback() {
+																				@Override
+																				public void done(AVException e) {
+																					ownerPointsObject.increment("points",needPoints);
+																					ownerPointsObject.saveInBackground();
+																				}
+																			});
+																		}
+																	}
+																});
+																avObject.increment("download");
+																avObject.saveInBackground(new SaveCallback() {
+																	@Override
+																	public void done(AVException e) {
+																		if(e==null){
+																			Uri uri = Uri.parse(avObject.getAVFile("resource").getUrl());
+																			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+																			startActivity(intent);
+																		}
+																	}
+																});
+															}
+														});
+														Button cancel=(Button)confirm.findViewById(R.id.cancel);
+														cancel.setOnClickListener(new View.OnClickListener() {
+															@Override
+															public void onClick(View v) {
+																confirmDialog.dismiss();
+															}
+														});
+
 
 													}
 													else {
@@ -311,26 +377,6 @@ public class DownloadActivity extends BaseActivity {
 	private boolean isPointEnough(final AVObject avObject){
 		needPoints=avObject.getInt("points");
 		if(userPoints>=needPoints){
-			userPoints=userPoints-needPoints;
-			userPointObject.put("points",userPoints);
-			userPointObject.saveInBackground(new SaveCallback() {
-				@Override
-				public void done(AVException e) {
-					if(e==null){
-						Toast.makeText(DownloadActivity.this,"积分-"+needPoints,Toast.LENGTH_SHORT);
-						AVObject downloadMap=new AVObject("UserDownloadMap");
-						downloadMap.put("User",user);
-						downloadMap.put("Course_file",avObject);
-						downloadMap.saveInBackground(new SaveCallback() {
-							@Override
-							public void done(AVException e) {
-								ownerPointsObject.increment("points",needPoints);
-								ownerPointsObject.saveInBackground();
-							}
-						});
-					}
-				}
-			});
 			return true;
 		}
 		else return false;

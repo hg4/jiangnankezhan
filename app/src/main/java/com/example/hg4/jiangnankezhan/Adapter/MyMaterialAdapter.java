@@ -1,6 +1,7 @@
 package com.example.hg4.jiangnankezhan.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.DeleteCallback;
 import com.bumptech.glide.Glide;
+import com.example.hg4.jiangnankezhan.MainPageActivity;
 import com.example.hg4.jiangnankezhan.R;
 import com.example.hg4.jiangnankezhan.Utils.PopupWindowUtil;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;

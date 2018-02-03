@@ -19,6 +19,7 @@ import com.avos.avoscloud.GetCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CommentActivity;
 import com.example.hg4.jiangnankezhan.CosContentActivity;
+import com.example.hg4.jiangnankezhan.MainPageActivity;
 import com.example.hg4.jiangnankezhan.R;
 import com.example.hg4.jiangnankezhan.RequirementsActivity;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
@@ -100,6 +101,14 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 					intent.putExtra("reply",viewHolder.replyItem.toString());
 					mContext.startActivity(intent);
 				}
+			}
+		});
+		viewHolder.head.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(mContext, MainPageActivity.class);
+				intent.putExtra("user",viewHolder.fromUser.toString());
+				mContext.startActivity(intent);
 			}
 		});
 		return viewHolder;

@@ -12,12 +12,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.Adapter.AdapterFragment;
+import com.example.hg4.jiangnankezhan.Adapter.BaseinfoAdapter;
 import com.example.hg4.jiangnankezhan.Adapter.MainPageAdapter;
 
 import java.lang.reflect.Array;
@@ -38,6 +43,12 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 	private List<AVObject> displayList=new ArrayList<>();
 	private MainPageAdapter mainPageAdapter=new MainPageAdapter(displayList);
 	private AVObject aimUser;
+	private ImageView head;
+	private TextView aimUserName;
+	private TextView aimUserCollege;
+	private RecyclerFragment baseinfoFragment;
+	private List<AVObject> baseDisplayList=new ArrayList<>();
+	private BaseinfoAdapter baseinfoAdapter=new BaseinfoAdapter(baseDisplayList);
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,22 +59,38 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 		if(actionBar!=null)
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		CollapsingToolbarLayout collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
+		head=(ImageView)findViewById(R.id.info_imageView);
+		aimUserName=(TextView)findViewById(R.id.info_nickname);
+		aimUserCollege=(TextView)findViewById(R.id.info_college);
 		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 		if(getIntent().getStringExtra("user")!=null){
 			try{
 				aimUser=AVObject.parseAVObject(getIntent().getStringExtra("user"));
+				baseDisplayList.add(aimUser);
+				aimUserName.setText(aimUser.getString("nickname"));
+				aimUserCollege.setText(aimUser.getString("college"));
+				if (aimUser.getAVFile("head") != null) {
+					AVFile file = aimUser.getAVFile("head");
+					if (file != null && file.getUrl() != null) {
+						Glide.with(this).load(file.getUrl()).into(head);
+					}
+				}
 			}
 			catch (Exception e){
 				e.printStackTrace();
 			}
 		}
+
 		viewpagerTab=(ViewPager) findViewById(R.id.pageviewpager);
 		layoutTab=(TabLayout) findViewById(R.id.tablayout);
 		Bundle bundle1=new Bundle();
 		bundle1.putInt("close",1);
+		Bundle bundle2=new Bundle();
+		bundle2.putInt("close",3);
 		recyclerFragment=RecyclerFragment.newInstance(mainPageAdapter,displayList,bundle1);
+		baseinfoFragment=RecyclerFragment.newInstance(baseinfoAdapter,baseDisplayList,bundle2);
 		fragmentList.add(recyclerFragment);
-		fragmentList.add(new Fragment());
+		fragmentList.add(baseinfoFragment);
 		initData();
 		getCommentData();
 	}
