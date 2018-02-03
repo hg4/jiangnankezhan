@@ -32,6 +32,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.leancloud.chatkit.LCChatKitUser;
+import cn.leancloud.chatkit.cache.LCIMProfileCache;
+
 public class PersonInfoActivity extends BaseActivity implements View.OnClickListener{
 	private List<TextView> text=new ArrayList<>();
 	private List<String> findkeyList=new ArrayList<String>(){{add("nickname");add("sex");add("mobilePhoneNumber");add("email");add("college");add("grade");add("major");add("education");}};
@@ -160,6 +163,10 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 												saveString("昵称", newName);
 												nickname.setText(newName);
 												top_nicknameHolder.setText(newName);
+												if(user.getAVFile("head")!=null&&user.getAVFile("head").getUrl()!=null) {
+													LCChatKitUser user1 = new LCChatKitUser(user.getObjectId(), newName, user.getAVFile("head").getUrl());
+													LCIMProfileCache.getInstance().cacheUser(user1);
+												}
 											}
 
 										}
@@ -416,12 +423,24 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 						Bundle extras = data.getExtras();
 						head = extras.getParcelable("data");
 						if (head != null) {
-							AVFile file=new AVFile("head.jpg",Utilty.Bitmap2Bytes(head));
+							final AVFile file=new AVFile("head.jpg",Utilty.Bitmap2Bytes(head));
 							AVUser.getCurrentUser().remove("head");
 							user.put("head",file);
-							user.saveInBackground();
-							headView.setImageBitmap(head);// 用ImageView显示出来
-							PerferencesUtils.saveBitmapToSharedPreferences(head,id,PersonInfoActivity.this);
+							user.saveInBackground(new SaveCallback() {
+								@Override
+								public void done(AVException e) {
+									if (e==null){
+										headView.setImageBitmap(head);// 用ImageView显示出来
+										PerferencesUtils.saveBitmapToSharedPreferences(head,id,PersonInfoActivity.this);
+										LCChatKitUser user2 = new LCChatKitUser(user.getObjectId(),user.getString("nickname"), file.getUrl());
+										LCIMProfileCache.getInstance().cacheUser(user2);
+									}else{
+										e.printStackTrace();
+									}
+								}
+							});
+
+
 
 						}
 					}

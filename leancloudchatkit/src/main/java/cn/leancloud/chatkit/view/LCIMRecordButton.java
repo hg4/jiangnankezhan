@@ -1,13 +1,19 @@
 package cn.leancloud.chatkit.view;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -23,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 
 import cn.leancloud.chatkit.R;
+import cn.leancloud.chatkit.activity.LCIMConversationActivity;
+import cn.leancloud.chatkit.activity.LCIMConversationFragment;
 import cn.leancloud.chatkit.utils.LCIMAudioHelper;
 import cn.leancloud.chatkit.utils.LCIMLogUtils;
 import cn.leancloud.chatkit.utils.LCIMPathUtils;
@@ -31,7 +39,7 @@ import cn.leancloud.chatkit.utils.LCIMPathUtils;
 /**
  * 录音的按钮
  */
-public class LCIMRecordButton extends Button {
+public class LCIMRecordButton extends Button implements ActivityCompat.OnRequestPermissionsResultCallback {
   public static final int BACK_RECORDING = R.drawable.lcim_chat_voice_bg_pressed;
   public static final int BACK_IDLE = R.drawable.lcim_chat_voice_bg;
   public static final int SLIDE_UP_TO_CANCEL = 0;
@@ -140,10 +148,28 @@ public class LCIMRecordButton extends Button {
     initRecordDialog();
     startTime = System.currentTimeMillis();
     setBackgroundResource(BACK_RECORDING);
-    startRecording();
+    if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO)!=
+            PackageManager.PERMISSION_GRANTED){
+      ActivityCompat.requestPermissions(LCIMConversationActivity.getLCIMConversationActivity(),new String[]{ Manifest.permission.RECORD_AUDIO},1);
+    }else{
+      startRecording();
+    }
+
     recordIndicator.show();
   }
-
+   @Override
+   public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults){
+    switch (requestCode){
+      case 1:
+        if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+          startRecording();
+        }else{
+          Toast.makeText(getContext(),"客官你拒绝了该权限,不能发语音了哦",Toast.LENGTH_SHORT).show();
+        }
+        break;
+      default:
+    }
+}
   private void initRecordDialog() {
     if (null == recordIndicator) {
       recordIndicator = new Dialog(getContext(), R.style.lcim_record_dialog_style);

@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVCallback;
@@ -30,15 +34,26 @@ import cn.leancloud.chatkit.utils.LCIMLogUtils;
 public class LCIMConversationActivity extends AppCompatActivity {
 
   protected LCIMConversationFragment conversationFragment;
+  private TextView Title;
+  private ImageView back;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.lcim_conversation_activity);
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+    Title=(TextView)findViewById(R.id.title);
+    back=(ImageView)findViewById(R.id.back);
     conversationFragment = (LCIMConversationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_chat);
     initByIntent(getIntent());
+    back.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        finish();
+      }
+    });
   }
-
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
@@ -72,13 +87,8 @@ public class LCIMConversationActivity extends AppCompatActivity {
    * @param title
    */
   protected void initActionBar(String title) {
-    ActionBar actionBar = getSupportActionBar();
-    if (null != actionBar) {
-      if (null != title) {
-        actionBar.setTitle(title);
-      }
-      actionBar.setDisplayUseLogoEnabled(false);
-      actionBar.setDisplayHomeAsUpEnabled(true);
+     if (null != title) {
+       Title.setText(title);
       finishActivity(RESULT_OK);
     }
   }
@@ -97,6 +107,7 @@ public class LCIMConversationActivity extends AppCompatActivity {
    *
    * @param conversation
    */
+
   protected void updateConversation(AVIMConversation conversation) {
     if (null != conversation) {
       conversationFragment.setConversation(conversation);
@@ -140,4 +151,13 @@ public class LCIMConversationActivity extends AppCompatActivity {
   private void showToast(String content) {
     Toast.makeText(LCIMConversationActivity.this, content, Toast.LENGTH_SHORT).show();
   }
+  public LCIMConversationActivity() {
+    LCIMConversationActivity = this;
+  }
+
+  public static LCIMConversationActivity getLCIMConversationActivity() {
+    return LCIMConversationActivity;
+  }
+  private static LCIMConversationActivity LCIMConversationActivity;
+
 }

@@ -3,6 +3,7 @@ package cn.leancloud.chatkit.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,13 +44,14 @@ import cn.leancloud.chatkit.utils.LCIMLogUtils;
 import cn.leancloud.chatkit.utils.LCIMNotificationUtils;
 import cn.leancloud.chatkit.utils.LCIMPathUtils;
 import cn.leancloud.chatkit.view.LCIMInputBottomBar;
+import cn.leancloud.chatkit.view.LCIMRecordButton;
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/8/27.
  * 将聊天相关的封装到此 Fragment 里边，只需要通过 setConversation 传入 Conversation 即可
  */
-public class LCIMConversationFragment extends Fragment {
+public class LCIMConversationFragment extends Fragment  {
 
   private static final int REQUEST_IMAGE_CAPTURE = 1;
   private static final int REQUEST_IMAGE_PICK = 2;
@@ -144,7 +146,6 @@ public class LCIMConversationFragment extends Fragment {
       LCIMNotificationUtils.removeTag(imConversation.getConversationId());
     }
   }
-
   @Override
   public void onDestroyView() {
     super.onDestroyView();
