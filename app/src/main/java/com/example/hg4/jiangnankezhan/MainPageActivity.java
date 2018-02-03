@@ -1,5 +1,6 @@
 package com.example.hg4.jiangnankezhan;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +33,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import cn.leancloud.chatkit.activity.LCIMConversationActivity;
+import cn.leancloud.chatkit.utils.LCIMConstants;
+
 public class MainPageActivity extends BaseActivity implements ViewPager.OnPageChangeListener{
 	private String[] stringList = new String[]{"动态","关于TA"};
 	private List<Fragment> fragmentList=new ArrayList<>();
@@ -47,6 +51,8 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 	private TextView aimUserName;
 	private TextView aimUserCollege;
 	private RecyclerFragment baseinfoFragment;
+	private ImageView follow;
+	private ImageView messege;
 	private List<AVObject> baseDisplayList=new ArrayList<>();
 	private BaseinfoAdapter baseinfoAdapter=new BaseinfoAdapter(baseDisplayList);
 	@Override
@@ -62,6 +68,17 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 		head=(ImageView)findViewById(R.id.info_imageView);
 		aimUserName=(TextView)findViewById(R.id.info_nickname);
 		aimUserCollege=(TextView)findViewById(R.id.info_college);
+		follow=(ImageView)findViewById(R.id.follow);
+		messege=(ImageView)findViewById(R.id.message);
+		messege.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainPageActivity.this, LCIMConversationActivity.class);
+				intent.putExtra(LCIMConstants.PEER_ID, aimUser.getObjectId());
+				startActivity(intent);
+
+			}
+		});
 		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 		if(getIntent().getStringExtra("user")!=null){
 			try{
