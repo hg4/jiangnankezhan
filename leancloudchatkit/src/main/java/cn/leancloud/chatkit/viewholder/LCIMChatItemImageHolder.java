@@ -41,7 +41,7 @@ public class LCIMChatItemImageHolder extends LCIMChatItemHolder {
     if (isLeft) {
       contentView.setBackgroundResource(R.drawable.lcim_chat_item_left_bg);
     } else {
-      contentView.setBackgroundResource(R.drawable.lcim_chat_item_right_bg);
+      contentView.setBackgroundResource(R.drawable.lcim_chat_item_right);
     }
 
     contentView.setOnClickListener(new View.OnClickListener() {

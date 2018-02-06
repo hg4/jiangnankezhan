@@ -29,7 +29,7 @@ public class LCIMChatItemLocationHolder extends LCIMChatItemHolder {
     super.initView();
     conventLayout.addView(View.inflate(getContext(), R.layout.lcim_chat_item_location, null));
     contentView = (TextView) itemView.findViewById(R.id.locationView);
-    conventLayout.setBackgroundResource(isLeft ? R.drawable.lcim_chat_item_left_bg : R.drawable.lcim_chat_item_right_bg);
+    conventLayout.setBackgroundResource(isLeft ? R.drawable.lcim_chat_item_left_bg : R.drawable.lcim_chat_item_right);
     contentView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
