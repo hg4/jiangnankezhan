@@ -1,176 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.example.hg4.jiangnankezhan">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.hg4.jiangnankezhan">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
-        tools:replace="icon,label,theme"
         android:name=".LeanCloudApp"
         android:allowBackup="true"
         android:icon="@mipmap/logo_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_icon_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <service android:name="com.avos.avoscloud.PushService"/>
+        android:theme="@style/AppTheme"
+        tools:replace="icon,label,theme">
+        <service android:name="com.avos.avoscloud.PushService" />
+
         <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppTheme.noToolBar">
-        </activity>
+            android:theme="@style/AppTheme.noToolBar"></activity>
         <activity
             android:name=".RegisterActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".RegisterOKActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".OpenActivity"
             android:theme="@style/AppTheme.noToolBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PersonInfoActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".CreateNewpasswordActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".EmailfindActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".ForgetpasswordActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".InputEmailCodeActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".InputPhoneCodeActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".NewpasswordOKActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".PhoneFindActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".ListDiaglogActivity"
             android:label="选择学院"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ListGradeActivity"
             android:label="选择入学年份"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EduLoginActivity"
             android:label=""
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Chgpswd1Activity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Chgpswd2Activity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Chgpswd3Activity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FirstLoginActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".GuideActivity"
-            android:theme="@style/AppTheme.noToolBar"/>
+            android:theme="@style/AppTheme.noToolBar" />
         <activity
             android:name=".CosDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RequirementsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CommentActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".SearchActivity"
             android:label="@string/title_activity_search"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".CosContentActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".MyCommentActivity"
             android:label="@string/title_activity_my_comment"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".MaterialActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UploadActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".DownloadActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".SuggestionActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ComquesListActivity"
             android:label="常见问题"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ReplyActivity"
             android:label="我的回复"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <service
             android:name=".ReplyService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
         <service
             android:name=".EduService"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true"></service>
 
-        <activity android:name=".Utils.AddcsActivity">
-        </activity>
+        <activity android:name=".Utils.AddcsActivity"></activity>
         <activity
             android:name=".MainPageActivity"
             android:label=""
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".FollowerActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".FolloweeActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
