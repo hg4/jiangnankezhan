@@ -154,22 +154,7 @@ public class MainActivity extends BaseActivity
 		});
 		follower=(TextView)navigationView.getHeaderView(0).findViewById(R.id.mian_fans_number);
 		followee=(TextView)navigationView.getHeaderView(0).findViewById(R.id.mian_follow_number);
-		AVFriendshipQuery query = AVUser.friendshipQuery(user.getObjectId(), AVUser.class);
-		query.include("followee");
-		query.include("follower");
-		query.getInBackground(new AVFriendshipCallback() {
-			@Override
-			public void done(AVFriendship friendship, AVException e) {
-				if(e==null){
-					List<AVUser> followers = friendship.getFollowers(); //获取粉丝
-					List<AVUser> followees = friendship.getFollowees(); //获取关注列表
-					follower.setText(""+followers.size());
-					followee.setText(""+followees.size());
-				}else{
-					e.printStackTrace();
-				}
-			}
-		});
+		initfl();
 		director = (FrameLayout) findViewById(R.id.director);
 		directorNumber = (TextView) findViewById(R.id.director_number);
 		Intent intent = new Intent(this, ReplyService.class);
@@ -588,7 +573,7 @@ public class MainActivity extends BaseActivity
 		navigationView.getMenu().getItem(0).setChecked(true);
 		getusername();
 		getmainhead();
-
+       initfl();
 	}
 
 	private Bitmap getBitmapFromSharedPreferences() {
@@ -695,6 +680,24 @@ public class MainActivity extends BaseActivity
 				if (null != e) {
 					e.printStackTrace();
 				} else {
+				}
+			}
+		});
+	}
+	private void initfl(){
+		AVFriendshipQuery query = AVUser.friendshipQuery(user.getObjectId(), AVUser.class);
+		query.include("followee");
+		query.include("follower");
+		query.getInBackground(new AVFriendshipCallback() {
+			@Override
+			public void done(AVFriendship friendship, AVException e) {
+				if(e==null){
+					List<AVUser> followers = friendship.getFollowers(); //获取粉丝
+					List<AVUser> followees = friendship.getFollowees(); //获取关注列表
+					follower.setText(""+followers.size());
+					followee.setText(""+followees.size());
+				}else{
+					e.printStackTrace();
 				}
 			}
 		});

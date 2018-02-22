@@ -33,17 +33,16 @@ public class FollowerActivity extends AppCompatActivity {
         fl=(RecyclerView)findViewById(R.id.followerlist);
         back=(ImageView)findViewById(R.id.back);
         search=(ImageView)findViewById(R.id.follower_sech);
-        String userid=getIntent().getStringExtra("aimuser");
+        final String userid=getIntent().getStringExtra("aimuser");
         AVFriendshipQuery query = AVUser.friendshipQuery(userid, AVUser.class);
         query.include("follower");
         query.getInBackground(new AVFriendshipCallback() {
             @Override
             public void done(AVFriendship friendship, AVException e) {
                 if(e==null){
-                    aimuser=friendship.getUser();
                     SharedPreferences.Editor editor = getSharedPreferences
                             (AVUser.getCurrentUser().getObjectId()+"ifme",MODE_PRIVATE).edit();
-                   if(aimuser.getObjectId().toString().equals(AVUser.getCurrentUser().getObjectId().toString())) {
+                   if(userid.equals(AVUser.getCurrentUser().getObjectId().toString())) {
                       /* search.setVisibility(View.VISIBLE);*/
                        editor.putBoolean("ifme",true);
                        editor.apply();

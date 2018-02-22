@@ -33,17 +33,16 @@ public class FolloweeActivity extends AppCompatActivity {
         fl = (RecyclerView) findViewById(R.id.followeelist);
         back = (ImageView) findViewById(R.id.back);
         add=(ImageView)findViewById(R.id.add);
-        String userid = getIntent().getStringExtra("aimuser");
+        final String userid = getIntent().getStringExtra("aimuser");
         AVFriendshipQuery query = AVUser.friendshipQuery(userid, AVUser.class);
         query.include("followee");
         query.getInBackground(new AVFriendshipCallback() {
             @Override
             public void done(AVFriendship friendship, AVException e) {
                 if (e == null) {
-                    aimuser = friendship.getUser();
                     SharedPreferences.Editor editor = getSharedPreferences
                             (AVUser.getCurrentUser().getObjectId() + "ifme", MODE_PRIVATE).edit();
-                    if(aimuser.getObjectId().toString().equals(AVUser.getCurrentUser().getObjectId().toString())){
+                    if(userid.equals(AVUser.getCurrentUser().getObjectId().toString())){
                         add.setVisibility(View.VISIBLE);
                         editor.putBoolean("ifme",true);
                         editor.apply();
