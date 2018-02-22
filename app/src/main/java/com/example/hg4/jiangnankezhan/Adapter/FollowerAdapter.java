@@ -107,6 +107,24 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
                         }
                     }
                 });
+                iffollow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(iffollow.getText().equals("+关注")){
+                            AVUser.getCurrentUser().followInBackground(holder.follower.getObjectId(), new FollowCallback() {
+                                @Override
+                                public void done(AVObject object, AVException e) {
+                                    if (e == null) {
+                                        Toast.makeText(parent.getContext(),"已关注",Toast.LENGTH_SHORT).show();
+                                        iffollow.setText("已关注");
+                                    } else if (e.getCode() == AVException.DUPLICATE_VALUE) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
                 sendmess.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -120,7 +138,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
                     @Override
                     public void onClick(View view) {
                         popupWindow.dismiss();
-                        holder.follower.unfollowInBackground(AVUser.getCurrentUser().getObjectId(), new FollowCallback() {
+                        holder.follower.unfollowInBackground(AVUser.getCurrentUser().getObjectId().toString(), new FollowCallback() {
                             @Override
                             public void done(AVObject object, AVException e) {
                                 if (e == null) {
@@ -129,6 +147,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
                                     Toast.makeText(parent.getContext(),"已成功移除",Toast.LENGTH_SHORT).show();
                                 } else {
                                     e.printStackTrace();
+                                    Toast.makeText(parent.getContext(),"无法移除",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

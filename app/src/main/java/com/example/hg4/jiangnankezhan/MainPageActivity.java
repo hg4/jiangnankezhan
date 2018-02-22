@@ -151,9 +151,7 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 
 			}
 		});
-
-
-
+		initfl();
 		follower.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -170,6 +168,21 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 				startActivity(intent);
 			}
 		});
+
+		viewpagerTab=(ViewPager) findViewById(R.id.pageviewpager);
+		layoutTab=(TabLayout) findViewById(R.id.tablayout);
+		Bundle bundle1=new Bundle();
+		bundle1.putInt("close",1);
+		Bundle bundle2=new Bundle();
+		bundle2.putInt("close",3);
+		recyclerFragment=RecyclerFragment.newInstance(mainPageAdapter,displayList,bundle1);
+		baseinfoFragment=RecyclerFragment.newInstance(baseinfoAdapter,baseDisplayList,bundle2);
+		fragmentList.add(recyclerFragment);
+		fragmentList.add(baseinfoFragment);
+		initData();
+		getCommentData();
+	}
+	private void initfl(){
 		AVFriendshipQuery query = AVUser.friendshipQuery(aimUser.getObjectId(), AVUser.class);
 		query.include("followee");
 		query.include("follower");
@@ -191,18 +204,6 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 				}
 			}
 		});
-		viewpagerTab=(ViewPager) findViewById(R.id.pageviewpager);
-		layoutTab=(TabLayout) findViewById(R.id.tablayout);
-		Bundle bundle1=new Bundle();
-		bundle1.putInt("close",1);
-		Bundle bundle2=new Bundle();
-		bundle2.putInt("close",3);
-		recyclerFragment=RecyclerFragment.newInstance(mainPageAdapter,displayList,bundle1);
-		baseinfoFragment=RecyclerFragment.newInstance(baseinfoAdapter,baseDisplayList,bundle2);
-		fragmentList.add(recyclerFragment);
-		fragmentList.add(baseinfoFragment);
-		initData();
-		getCommentData();
 	}
 	private void initData() {
 		adapterFragment= new AdapterFragment(getSupportFragmentManager(),fragmentList,stringList);
@@ -213,6 +214,7 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 //        layoutTab.setTabMode(TabLayout.MODE_SCROLLABLE);
 		layoutTab.setupWithViewPager(viewpagerTab);
 		layoutTab.setTabsFromPagerAdapter(adapterFragment);
+
 	}
 	private void getCommentData(){
 		AVQuery<AVObject> avQuery1=new AVQuery<>("Course_comment");
@@ -273,5 +275,10 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 	@Override
 	public void onPageScrollStateChanged(int state) {
 
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		initfl();
 	}
 }

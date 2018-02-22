@@ -15,7 +15,6 @@ import com.avos.avoscloud.AVFriendshipQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.callback.AVFriendshipCallback;
 import com.example.hg4.jiangnankezhan.Adapter.FolloweeAdapter;
-import com.example.hg4.jiangnankezhan.Adapter.FollowerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class FolloweeActivity extends AppCompatActivity {
                     aimuser = friendship.getUser();
                     SharedPreferences.Editor editor = getSharedPreferences
                             (AVUser.getCurrentUser().getObjectId() + "ifme", MODE_PRIVATE).edit();
-                    if(aimuser==null){
+                    if(aimuser.getObjectId().toString().equals(AVUser.getCurrentUser().getObjectId().toString())){
                         add.setVisibility(View.VISIBLE);
                         editor.putBoolean("ifme",true);
                         editor.apply();
@@ -63,7 +62,13 @@ public class FolloweeActivity extends AppCompatActivity {
                 }
             }
         });
-
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(FolloweeActivity.this,FollowSearchActivity.class);
+                startActivity(intent);
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

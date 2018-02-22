@@ -1,29 +1,24 @@
 package com.example.hg4.jiangnankezhan;
 
-import android.content.Context;
+
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFriendship;
 import com.avos.avoscloud.AVFriendshipQuery;
-import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.callback.AVFriendshipCallback;
 import com.example.hg4.jiangnankezhan.Adapter.FollowerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.hg4.jiangnankezhan.R.id.edit;
 
 public class FollowerActivity extends AppCompatActivity {
     private List<AVUser> followerlist=new ArrayList<>();
@@ -48,8 +43,8 @@ public class FollowerActivity extends AppCompatActivity {
                     aimuser=friendship.getUser();
                     SharedPreferences.Editor editor = getSharedPreferences
                             (AVUser.getCurrentUser().getObjectId()+"ifme",MODE_PRIVATE).edit();
-                   if(aimuser==null) {
-                       search.setVisibility(View.VISIBLE);
+                   if(aimuser.getObjectId().toString().equals(AVUser.getCurrentUser().getObjectId().toString())) {
+                      /* search.setVisibility(View.VISIBLE);*/
                        editor.putBoolean("ifme",true);
                        editor.apply();
                    }else{
@@ -67,7 +62,6 @@ public class FollowerActivity extends AppCompatActivity {
                 }
             }
         });
-
        back.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {

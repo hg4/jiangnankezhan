@@ -168,6 +168,9 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".FolloweeActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".FollowSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
