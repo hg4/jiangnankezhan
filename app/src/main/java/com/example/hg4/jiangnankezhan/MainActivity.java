@@ -177,6 +177,14 @@ public class MainActivity extends BaseActivity
 							fTransaction.show(fg3);
 						}
 						break;
+					case R.id.my:
+						if (fg4 == null) {
+							fg4 = new FragmentOfmy();
+							fTransaction.add(R.id.ly_content, fg4);
+						} else {
+							fTransaction.show(fg4);
+						}
+						break;
 				}
 				fTransaction.commit();
 			}
@@ -606,7 +614,7 @@ public class MainActivity extends BaseActivity
 		if (fg1 != null) fragmentTransaction.hide(fg1);
 		if (fg2 != null) fragmentTransaction.hide(fg2);
 		if (fg3 != null) fragmentTransaction.hide(fg3);
-	/*	if (fg4 != null) fragmentTransaction.hide(fg4);*/
+		if (fg4 != null) fragmentTransaction.hide(fg4);
 	}
 
 	private void savePhone() {

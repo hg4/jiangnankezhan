@@ -12,22 +12,24 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
-        tools:replace="icon,label,theme"
         android:name=".LeanCloudApp"
         android:allowBackup="true"
         android:icon="@mipmap/logo_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_icon_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="icon,label,theme">
         <service android:name="com.avos.avoscloud.PushService"/>
+
         <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.USER_PRESENT"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.noToolBar">
@@ -169,6 +171,11 @@
         <activity
             android:name=".MainPageActivity"
             android:label=""
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".MyFollowedActivity"
+            android:label="@string/title_activity_my_followed"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

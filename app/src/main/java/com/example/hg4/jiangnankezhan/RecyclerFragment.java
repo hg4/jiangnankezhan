@@ -90,14 +90,11 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 
 	protected void loadMoreComment(){
 		if(commentList.size()>index){
-			displayCmtList.clear();
-			displayCmtList.addAll(commentList.subList(0,index));
+			displayCmtList.addAll(commentList.subList(index-INCREMENT,index));
 			index=index+INCREMENT;
 		}
 		else {
-			displayCmtList.clear();
-			index=commentList.size();
-			displayCmtList.addAll(commentList.subList(0,index));
+			displayCmtList.addAll(commentList.subList(index-INCREMENT,commentList.size()));
 			if(swipeToLoadLayout!=null)
 				swipeToLoadLayout.setLoadMoreEnabled(false);
 		}
@@ -111,6 +108,8 @@ public class RecyclerFragment extends Fragment implements OnRefreshListener, OnL
 			@Override
 			public void run() {
 				swipeToLoadLayout.setRefreshing(false);
+				displayCmtList.clear();
+				index=ORI;
 				loadMoreComment();
 			}
 		},1000);

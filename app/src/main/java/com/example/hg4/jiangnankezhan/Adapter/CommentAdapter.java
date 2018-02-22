@@ -157,6 +157,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			}
 			if(!user.getString("nickname").equals("（请填写）"))
 				holder.username.setText(user.getString("nickname"));
+			else holder.username.setText("匿名用户");
 			holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
 			holder.comment.setText(comment.getString("content"));
 			Integer intLikeCount=comment.getInt("likeCount");
@@ -253,6 +254,8 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 	public void onViewRecycled(ViewHolder holder) {
 		holder.imageList.removeAllViews();
 		holder.commentList.removeAllViews();
+		holder.hot.setVisibility(View.GONE);
+		holder.mostnew.setVisibility(View.GONE);
 	}
 
 	@Override

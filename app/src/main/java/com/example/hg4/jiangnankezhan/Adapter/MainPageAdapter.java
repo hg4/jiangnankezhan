@@ -9,6 +9,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ import java.util.List;
 public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHolder> {
 	private Context mContext;
 	private List<AVObject> mCommentList=new ArrayList<>();
+	private int type=0;
 
 	static class ViewHolder extends RecyclerView.ViewHolder{
 		int type=0;
@@ -93,7 +95,10 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 	public MainPageAdapter(List<AVObject> commentList){
 		mCommentList=commentList;
 	}
-
+	public MainPageAdapter(List<AVObject> commentList,int type){
+		mCommentList=commentList;
+		this.type=type;
+	}
 	@Override
 	public MainPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		if(mContext==null){
@@ -140,8 +145,17 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 			holder.type = 1;
 		switch (holder.type) {
 			case 0:
-				holder.action.setText("评价了");
 				AVObject user = comment.getAVUser("from");
+				if(type==1){
+					String fromName=user.getString("nickname");
+					SpannableString spannableString=new SpannableString(fromName+"评价了");
+					ForegroundColorSpan colorSpan1=new ForegroundColorSpan(mContext.getResources().getColor(R.color.black));
+					AbsoluteSizeSpan sizeSpan=new AbsoluteSizeSpan(36);
+					spannableString.setSpan(sizeSpan,fromName.length(),fromName.length()+3,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+					spannableString.setSpan(colorSpan1,fromName.length(),fromName.length()+3,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+					holder.action.setText(spannableString);
+			}
+				else holder.action.setText("评价了");
 				if (user.getAVFile("head") != null) {
 					AVFile file = user.getAVFile("head");
 					if (file != null && file.getUrl() != null) {
@@ -161,13 +175,22 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 				}
 				break;
 			case 1:
-				holder.action.setText("上传资料到");
 				holder.down.setVisibility(View.VISIBLE);
 				holder.downCount.setVisibility(View.VISIBLE);
 				holder.coin.setVisibility(View.VISIBLE);
 				holder.coinCount.setVisibility(View.VISIBLE);
 				holder.link.setVisibility(View.VISIBLE);
 				AVObject owner = comment.getAVObject("owner");
+				if(type==1) {
+				String fromName=owner.getString("nickname");
+				SpannableString spannableString=new SpannableString(fromName+"上传资料到");
+				ForegroundColorSpan colorSpan1=new ForegroundColorSpan(mContext.getResources().getColor(R.color.black));
+				AbsoluteSizeSpan sizeSpan=new AbsoluteSizeSpan(36);
+				spannableString.setSpan(sizeSpan,fromName.length(),fromName.length()+5,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+				spannableString.setSpan(colorSpan1,fromName.length(),fromName.length()+5,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+					holder.action.setText(spannableString);
+			}
+			else holder.action.setText("上传资料到");
 				if (owner.getAVFile("head") != null) {
 					AVFile file = owner.getAVFile("head");
 					if (file != null && file.getUrl() != null) {
@@ -181,7 +204,6 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 					holder.commentCount.setText("" + comment.getInt("commentCount"));
 					holder.aim.setText(comment.getString("Course"));
 					holder.link.setText(comment.getString("Title"));
-
 					break;
 				}
 		}
@@ -190,6 +212,7 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 	@Override
 	public void onViewRecycled(ViewHolder holder) {
 		super.onViewRecycled(holder);
+		holder.type=0;
 		holder.down.setVisibility(View.GONE);
 		holder.downCount.setVisibility(View.GONE);
 		holder.coin.setVisibility(View.GONE);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/curri_user_w"
+    <item android:drawable="@drawable/ribbon_w"
         android:state_checked="true" />
-    <item android:drawable="@drawable/curri_user_b" />
+    <item android:drawable="@drawable/ribbon" />
 
 </selector>

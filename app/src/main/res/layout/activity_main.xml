@@ -33,7 +33,7 @@
         android:background="#fff"
         android:orientation="horizontal">
 
-        <RadioButton
+            <RadioButton
             android:id="@+id/home"
             style="@style/tab_menu_item"
             android:drawableTop="@drawable/home_draw"
@@ -53,7 +53,14 @@
             android:drawableTop="@drawable/message_draw"
             android:text="消息"
             android:textColor="@drawable/text"/>
- </RadioGroup>
+
+            <RadioButton
+                android:id="@+id/my"
+                style="@style/tab_menu_item"
+                android:drawableTop="@drawable/my_draw"
+                android:text="动态"
+                android:textColor="@drawable/text"/>
+        </RadioGroup>
     <!--    <RadioButton
             android:id="@+id/my"
             style="@style/tab_menu_item"
