@@ -173,11 +173,14 @@
             android:label=""
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".FollowerActivity"
+                  android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".FolloweeActivity"
+                  android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".MyFollowedActivity"
-            android:label="@string/title_activity_my_followed"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:name=".FollowSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>

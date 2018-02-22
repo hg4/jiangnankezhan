@@ -11,16 +11,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVFriendship;
+import com.avos.avoscloud.AVFriendshipQuery;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.FollowCallback;
+import com.avos.avoscloud.callback.AVFriendshipCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.Adapter.AdapterFragment;
 import com.example.hg4.jiangnankezhan.Adapter.BaseinfoAdapter;
@@ -55,6 +62,9 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 	private ImageView messege;
 	private List<AVObject> baseDisplayList=new ArrayList<>();
 	private BaseinfoAdapter baseinfoAdapter=new BaseinfoAdapter(baseDisplayList);
+	private TextView followee;
+	private TextView follower;
+	private TextView iffollow;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,6 +79,10 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 		aimUserName=(TextView)findViewById(R.id.info_nickname);
 		aimUserCollege=(TextView)findViewById(R.id.info_college);
 		follow=(ImageView)findViewById(R.id.follow);
+		followee=(TextView)findViewById(R.id.info_follow);
+		follower=(TextView)findViewById(R.id.info_follower);
+		iffollow=(TextView)findViewById(R.id.textView41);
+
 		messege=(ImageView)findViewById(R.id.message);
 		messege.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -79,6 +93,7 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 
 			}
 		});
+
 		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 		if(getIntent().getStringExtra("user")!=null){
 			try{
@@ -97,6 +112,62 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 				e.printStackTrace();
 			}
 		}
+		if(AVUser.getCurrentUser().getObjectId().equals(aimUser.getObjectId())){
+			follow.setVisibility(View.INVISIBLE);
+			iffollow.setVisibility(View.INVISIBLE);
+		}
+		follow.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if (iffollow.getText().equals("+关注")){
+					AVUser.getCurrentUser().followInBackground(aimUser.getObjectId(), new FollowCallback() {
+						@Override
+						public void done(AVObject object, AVException e) {
+							if (e == null) {
+								Toast.makeText(MainPageActivity.this,"已关注",Toast.LENGTH_SHORT).show();
+								iffollow.setText("取消关注");
+								int newfollower=Integer.parseInt(follower.getText().toString())+1;
+								follower.setText(String.valueOf(newfollower));
+							} else if (e.getCode() == AVException.DUPLICATE_VALUE) {
+								e.printStackTrace();
+							}
+						}
+					});
+				}else{
+					AVUser.getCurrentUser().unfollowInBackground(aimUser.getObjectId(), new FollowCallback() {
+						@Override
+						public void done(AVObject object, AVException e) {
+							if (e == null) {
+								Toast.makeText(MainPageActivity.this,"已取消关注",Toast.LENGTH_SHORT).show();
+								iffollow.setText("+关注");
+								int newfollower=Integer.parseInt(follower.getText().toString())-1;
+								follower.setText(String.valueOf(newfollower));
+							} else {
+								e.printStackTrace();
+							}
+						}
+					});
+				}
+
+			}
+		});
+		initfl();
+		follower.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(MainPageActivity.this, FollowerActivity.class);
+				intent.putExtra("aimuser",aimUser.getObjectId());
+				startActivity(intent);
+			}
+		});
+		followee.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(MainPageActivity.this, FolloweeActivity.class);
+				intent.putExtra("aimuser",aimUser.getObjectId());
+				startActivity(intent);
+			}
+		});
 
 		viewpagerTab=(ViewPager) findViewById(R.id.pageviewpager);
 		layoutTab=(TabLayout) findViewById(R.id.tablayout);
@@ -111,6 +182,29 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 		initData();
 		getCommentData();
 	}
+	private void initfl(){
+		AVFriendshipQuery query = AVUser.friendshipQuery(aimUser.getObjectId(), AVUser.class);
+		query.include("followee");
+		query.include("follower");
+		query.getInBackground(new AVFriendshipCallback() {
+			@Override
+			public void done(AVFriendship friendship, AVException e) {
+				if(e==null){
+					List<AVUser> followers = friendship.getFollowers(); //获取粉丝
+					List<AVUser> followees = friendship.getFollowees(); //获取关注列表
+					follower.setText(""+followers.size());
+					followee.setText(""+followees.size());
+					for(int i=0; i<followers.size(); i++){
+						if(followers.get(i).getObjectId().equals(AVUser.getCurrentUser().getObjectId())){
+							iffollow.setText("取消关注");
+						}
+					}
+				}else{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 	private void initData() {
 		adapterFragment= new AdapterFragment(getSupportFragmentManager(),fragmentList,stringList);
 		viewpagerTab.setAdapter(adapterFragment);
@@ -120,6 +214,7 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 //        layoutTab.setTabMode(TabLayout.MODE_SCROLLABLE);
 		layoutTab.setupWithViewPager(viewpagerTab);
 		layoutTab.setTabsFromPagerAdapter(adapterFragment);
+
 	}
 	private void getCommentData(){
 		AVQuery<AVObject> avQuery1=new AVQuery<>("Course_comment");
@@ -180,5 +275,10 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 	@Override
 	public void onPageScrollStateChanged(int state) {
 
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		initfl();
 	}
 }
