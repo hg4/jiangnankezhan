@@ -19,12 +19,15 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVFriendship;
+import com.avos.avoscloud.AVFriendshipQuery;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.avos.avoscloud.callback.AVFriendshipCallback;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
@@ -44,7 +47,7 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 	private String key;
 	private String value;
 	private SharedPreferences pref;
-	private AVUser user;
+	private AVUser user=AVUser.getCurrentUser();
 	private String id=AVUser.getCurrentUser().getObjectId();
 	private String username=AVUser.getCurrentUser().getUsername();
 	private ImageView headView;
@@ -66,6 +69,8 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 	private TextView major;
 	private TextView edu;
 	private AVObject getUser;
+	private TextView followee;
+	private TextView follower;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,6 +85,8 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 		grade_holder=(ConstraintLayout)findViewById(R.id.grade_holder);
 		major_holder=(ConstraintLayout)findViewById(R.id.major_holder);
 		education_holder=(ConstraintLayout)findViewById(R.id.education_holder);
+        followee=(TextView)findViewById(R.id.info_follow);
+		follower=(TextView)findViewById(R.id.info_follower);
 		nickname=(TextView)findViewById(R.id.item_nickname);
 		sex=(TextView)findViewById(R.id.item_sex);
 		phone=(TextView)findViewById(R.id.item_phone);
@@ -97,6 +104,7 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 		text.add(major);
 		text.add(edu);
 		findUser();
+		initfl();
 		pref=getSharedPreferences(id+"userdata",MODE_PRIVATE);
 		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 		//SharedPreferences.Editor editor=getSharedPreferences(id+"userdata",MODE_PRIVATE).edit();
@@ -141,7 +149,24 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 		editor.putString(key,data);
 		editor.apply();
 	}
-
+	private void initfl(){
+		AVFriendshipQuery query = AVUser.friendshipQuery(user.getObjectId(), AVUser.class);
+		query.include("followee");
+		query.include("follower");
+		query.getInBackground(new AVFriendshipCallback() {
+			@Override
+			public void done(AVFriendship friendship, AVException e) {
+				if(e==null){
+					List<AVUser> followers = friendship.getFollowers(); //获取粉丝
+					List<AVUser> followees = friendship.getFollowees(); //获取关注列表
+					follower.setText(""+followers.size());
+					followee.setText(""+followees.size());
+				}else{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 	@Override
 	public void onClick(final View v) {
 		switch (v.getId()){

@@ -23,6 +23,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.text.Layout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
@@ -51,12 +52,15 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVFriendship;
+import com.avos.avoscloud.AVFriendshipQuery;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.callback.AVFriendshipCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
@@ -114,6 +118,9 @@ public class MainActivity extends BaseActivity
 	private AVUser user = AVUser.getCurrentUser();
 	private TextView directorNumber;
 	private ReplyService.ReplyBinder replyBinder;
+	private ImageView head;
+	private TextView followee;
+	private TextView follower;
 	private ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -135,6 +142,34 @@ public class MainActivity extends BaseActivity
 		ifnewVersion();
 		showCommentDialog();
 		savePhone();
+		navigationView=(android.support.design.widget.NavigationView)findViewById(R.id.nav_view);
+		head=(ImageView)navigationView.getHeaderView(0).findViewById(R.id.holder);
+		head.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(MainActivity.this, MainPageActivity.class);
+				intent.putExtra("user",user.toString());
+				startActivity(intent);
+			}
+		});
+		follower=(TextView)navigationView.getHeaderView(0).findViewById(R.id.mian_fans_number);
+		followee=(TextView)navigationView.getHeaderView(0).findViewById(R.id.mian_follow_number);
+		AVFriendshipQuery query = AVUser.friendshipQuery(user.getObjectId(), AVUser.class);
+		query.include("followee");
+		query.include("follower");
+		query.getInBackground(new AVFriendshipCallback() {
+			@Override
+			public void done(AVFriendship friendship, AVException e) {
+				if(e==null){
+					List<AVUser> followers = friendship.getFollowers(); //获取粉丝
+					List<AVUser> followees = friendship.getFollowees(); //获取关注列表
+					follower.setText(""+followers.size());
+					followee.setText(""+followees.size());
+				}else{
+					e.printStackTrace();
+				}
+			}
+		});
 		director = (FrameLayout) findViewById(R.id.director);
 		directorNumber = (TextView) findViewById(R.id.director_number);
 		Intent intent = new Intent(this, ReplyService.class);
