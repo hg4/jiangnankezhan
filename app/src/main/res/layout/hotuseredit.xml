@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/editbase">
+    <TextView
+        android:id="@+id/iffollow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#Ac7281"
+        android:layout_marginTop="27dp"
+        android:textSize="16sp"
+        android:text="+关注"
+        android:layout_marginLeft="19dp"/>
+    <TextView
+        android:id="@+id/sendmess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#212121"
+        android:layout_marginTop="33dp"
+        android:textSize="16sp"
+        android:text="发消息"
+        android:layout_marginLeft="19dp"/>
+    <TextView
+        android:id="@+id/mainpage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#212121"
+        android:textSize="16sp"
+        android:layout_marginTop="33dp"
+        android:text="查看详情"
+        android:layout_marginLeft="19dp"/>
+
+</LinearLayout>

@@ -23,7 +23,7 @@ public class FolloweeActivity extends AppCompatActivity {
     private List<AVUser> followeelist = new ArrayList<>();
     private RecyclerView fl;
     private ImageView back;
-    private AVUser aimuser;
+    private FolloweeAdapter adapter;
     private ImageView add;
 
     @Override
@@ -33,6 +33,23 @@ public class FolloweeActivity extends AppCompatActivity {
         fl = (RecyclerView) findViewById(R.id.followeelist);
         back = (ImageView) findViewById(R.id.back);
         add=(ImageView)findViewById(R.id.add);
+        getFl();
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(FolloweeActivity.this,FollowSearchActivity.class);
+                startActivity(intent);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    private void getFl(){
         final String userid = getIntent().getStringExtra("aimuser");
         AVFriendshipQuery query = AVUser.friendshipQuery(userid, AVUser.class);
         query.include("followee");
@@ -54,26 +71,18 @@ public class FolloweeActivity extends AppCompatActivity {
                     followeelist = followees;
                     GridLayoutManager layoutManager = new GridLayoutManager(FolloweeActivity.this, 3);
                     fl.setLayoutManager(layoutManager);
-                    FolloweeAdapter adapter = new FolloweeAdapter(followeelist);
+                    adapter = new FolloweeAdapter(followeelist);
                     fl.setAdapter(adapter);
                 } else {
                     e.printStackTrace();
                 }
             }
         });
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(FolloweeActivity.this,FollowSearchActivity.class);
-                startActivity(intent);
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getFl();
     }
 
 }

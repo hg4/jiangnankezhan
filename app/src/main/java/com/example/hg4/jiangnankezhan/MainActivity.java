@@ -121,6 +121,7 @@ public class MainActivity extends BaseActivity
 	private ImageView head;
 	private TextView followee;
 	private TextView follower;
+	private int activevalue;
 	private ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -142,6 +143,7 @@ public class MainActivity extends BaseActivity
 		ifnewVersion();
 		showCommentDialog();
 		savePhone();
+		setActiveValue();
 		navigationView=(android.support.design.widget.NavigationView)findViewById(R.id.nav_view);
 		head=(ImageView)navigationView.getHeaderView(0).findViewById(R.id.holder);
 		head.setOnClickListener(new View.OnClickListener() {
@@ -696,6 +698,34 @@ public class MainActivity extends BaseActivity
 					List<AVUser> followees = friendship.getFollowees(); //获取关注列表
 					follower.setText(""+followers.size());
 					followee.setText(""+followees.size());
+				}else{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	private void setActiveValue(){
+		AVQuery<AVObject> query = new AVQuery<>("Course_comment");
+		query.whereEqualTo("from",user);
+		query.findInBackground(new FindCallback<AVObject>() {
+			@Override
+			public void done(List<AVObject> list, AVException e) {
+				if(e==null){
+                    activevalue=list.size();
+				}else{
+					e.printStackTrace();
+				}
+			}
+		});
+		AVQuery<AVObject> query1 = new AVQuery<>("Course_file");
+		query1.whereEqualTo("owner",user);
+		query1.findInBackground(new FindCallback<AVObject>() {
+			@Override
+			public void done(List<AVObject> list, AVException e) {
+				if(e==null){
+                    activevalue+=list.size();
+					user.put("activevalue",activevalue);
+					user.saveInBackground();
 				}else{
 					e.printStackTrace();
 				}

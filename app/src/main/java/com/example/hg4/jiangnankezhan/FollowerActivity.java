@@ -1,7 +1,4 @@
 package com.example.hg4.jiangnankezhan;
-
-
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +21,6 @@ public class FollowerActivity extends AppCompatActivity {
     private List<AVUser> followerlist=new ArrayList<>();
     private  RecyclerView fl;
     private ImageView back;
-    private AVUser aimuser;
     private ImageView search;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +31,9 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.example.hg4.jiangnankezhan.Adapter.FollowerAdapter;
 import com.example.hg4.jiangnankezhan.Adapter.HomeCmtAdapter;
+import com.example.hg4.jiangnankezhan.Adapter.HomeUserAdapter;
 import com.example.hg4.jiangnankezhan.Model.Course;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
@@ -60,10 +63,12 @@ public class FragmentOfhomepage extends Fragment {
     private TextView course;
 	private String teacher;
     private List<AVObject> cmtList=new ArrayList<>();
+    private List<AVObject> hotuserlist=new ArrayList<>();
     private ConstraintLayout hotmater;
     private ConstraintLayout hotcourse;
     private RecyclerView cmtRecommend;
-    Integer curWeek;
+    private RecyclerView hotuser;
+    Integer curWeek=0;
     private List<Course> courseList=new ArrayList<>();
     private AVUser user=AVUser.getCurrentUser();
     static final String[] PERMISSION = new String[]{
@@ -83,6 +88,7 @@ public class FragmentOfhomepage extends Fragment {
         nextCourse=(TextView)view.findViewById(R.id.nextcourse);
         material=(TextView)view.findViewById(R.id.material);
         course=(TextView)view.findViewById(R.id.course);
+        hotuser=(RecyclerView)view.findViewById(R.id.hotuser_recycleview);
         cmtRecommend=(RecyclerView)view.findViewById(R.id.hotcmt_recycleview);
         hotmater=(ConstraintLayout)view.findViewById(R.id.hotmaterial);
         hotcourse=(ConstraintLayout)view.findViewById(R.id.hotcourse);
@@ -112,6 +118,7 @@ public class FragmentOfhomepage extends Fragment {
         setHotMaterial();
         setHotCourse();
         setHotRec();
+        setUser();
         return view;
     }
 
@@ -302,6 +309,35 @@ public class FragmentOfhomepage extends Fragment {
             }
         });
 
+    }
+    private void setUser(){
+        AVQuery<AVObject> avQuery=new AVQuery<>("_User");
+        avQuery.setLimit(10);
+        avQuery.orderByDescending("activevalue");
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                try{
+                    long time=TimeUtils.currentDateParserLong();
+                    Random random=new Random(time);
+                    int count=0;
+                    while(count<3){
+                        int index=random.nextInt(60);
+                        if(index<list.size()){
+                            AVObject u=list.get(index);
+                            hotuserlist.add(u);
+                            count++;
+                        }
+                    }
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+                GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+                hotuser.setLayoutManager(layoutManager);
+                HomeUserAdapter adapter=new HomeUserAdapter(hotuserlist);
+                hotuser.setAdapter(adapter);
+            }
+        });
     }
     private String setTime(int cosbeginnumber,int cosendnumber){
         String begintime,endtime;

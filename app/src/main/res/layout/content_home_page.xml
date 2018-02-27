@@ -244,6 +244,9 @@
             <include
                 layout="@layout/content_hotcmt"
                 />
+            <include
+                layout="@layout/content_hotuser"
+                />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
