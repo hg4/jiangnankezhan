@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class Course extends DataSupport{
 	private int id;
-	private int courseBeginNumber;
+	private int courseBeginNumber;//
 	private int isSingle = 0;
 	private int isDouble = 0;
 	private int start;

@@ -31,6 +31,7 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
@@ -253,6 +254,7 @@ public class CommentActivity extends BaseActivity {
                     courseName=intent.getStringExtra("courseName");
                     teacher=intent.getStringExtra("teacher");
                     if(commentCheck(content.getText().toString())){
+                        incHot();
                         AVObject comment=new AVObject("Course_comment");
                         comment.put("from", AVUser.getCurrentUser());
                         comment.put("type",type);
@@ -309,6 +311,7 @@ public class CommentActivity extends BaseActivity {
                     courseName=intent.getStringExtra("courseName");
                     teacher=intent.getStringExtra("teacher");
                     if(commentCheck(content.getText().toString())){
+                        incHot();
                         AVObject comment=new AVObject("Course_comment");
                         comment.put("from", AVUser.getCurrentUser());
                         comment.put("type",type);
@@ -497,9 +500,21 @@ public class CommentActivity extends BaseActivity {
                 }
             });
         }
-
-
-
+    }
+    private void incHot(){
+        AVQuery<AVObject> avQuery=new AVQuery<>("Course");
+        avQuery.whereEqualTo("courseName",courseName);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if(list!=null){
+                    for(AVObject obj:list){
+                        obj.increment("hot",2);
+                        obj.saveInBackground();
+                    }
+                }
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

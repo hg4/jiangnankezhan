@@ -73,6 +73,7 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
         Name = getIntent().getStringExtra("name");
         weekday = getIntent().getStringExtra("date");
         teacher = getIntent().getStringExtra("teacher");
+		incrementBrowse();
         content_button=(ImageView)findViewById(R.id.content_button);
         content_layout=(ConstraintLayout)findViewById(R.id.content_layout);
         material_layout=(ConstraintLayout)findViewById(R.id.material);
@@ -242,4 +243,20 @@ public class CosDetailsActivity extends BaseActivity implements View.OnClickList
                 break;
         }
     }
+    void incrementBrowse(){
+		AVQuery<AVObject> avQuery=new AVQuery<>("Course");
+		avQuery.whereEqualTo("courseName",Name);
+		avQuery.findInBackground(new FindCallback<AVObject>() {
+			@Override
+			public void done(List<AVObject> list, AVException e) {
+				if(list!=null){
+					for(AVObject obj:list){
+						obj.increment("browse");
+						obj.increment("hot");
+						obj.saveInBackground();
+					}
+				}
+			}
+		});
+	}
 }

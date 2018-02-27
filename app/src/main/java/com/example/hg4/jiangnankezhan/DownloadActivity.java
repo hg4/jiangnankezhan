@@ -85,7 +85,7 @@ public class DownloadActivity extends BaseActivity {
 		downNumber=(TextView)findViewById(R.id.downloadnumber);
 		coinNumber=(TextView)findViewById(R.id.coinnumber);
 		Bundle bundle=new Bundle();
-		bundle.putInt("close",0);
+		bundle.putInt("close",3);
 		recyclerFragment=RecyclerFragment.newInstance(cmtAdapter,displayList,bundle);
 		FragmentManager fManager=getSupportFragmentManager();
 		FragmentTransaction fTransaction = fManager.beginTransaction();
@@ -113,6 +113,7 @@ public class DownloadActivity extends BaseActivity {
                         {
                             if (e == null) {
                                 avObject.put("likeCount",Integer.parseInt(likenumber.getText().toString()));
+								avObject.increment("hot",2);
                                 avObject.saveInBackground();
                                 like.setClickable(false);
                             } else {
@@ -140,6 +141,7 @@ public class DownloadActivity extends BaseActivity {
                     if (e == null) {
 						if(avObject!=null){
 							fileObject=avObject;
+							incHot();
                         if(!"".equals(avObject.getString("Introduce"))){
                             content.setText(avObject.getString("Introduce"));
                         }
@@ -240,6 +242,7 @@ public class DownloadActivity extends BaseActivity {
 													}
 													if(flag||user.getObjectId().equals(avObject.getAVObject("owner").getObjectId())){
 														avObject.increment("download");
+														avObject.increment("hot",3);
 														avObject.saveInBackground(new SaveCallback() {
 															@Override
 															public void done(AVException e) {
@@ -381,7 +384,11 @@ public class DownloadActivity extends BaseActivity {
 		}
 		else return false;
 	}
-
+	private void incHot(){
+		fileObject.increment("browse");
+		fileObject.increment("hot");
+		fileObject.saveInBackground();
+	}
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode!=0){

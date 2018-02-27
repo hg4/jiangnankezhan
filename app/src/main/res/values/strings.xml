@@ -17,6 +17,7 @@
     <string name="title_activity_reply">ReplyActivity</string>
     <string name="title_activity_main_page">MainPageActivity</string>
     <string name="title_activity_my_followed">MyFollowedActivity</string>
+    <string name="title_activity_home_page">HomePageActivity</string>
 
 
 </resources>
