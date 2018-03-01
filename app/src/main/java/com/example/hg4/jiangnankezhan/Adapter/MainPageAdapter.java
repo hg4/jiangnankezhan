@@ -161,6 +161,7 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 					if (file != null && file.getUrl() != null) {
 						Glide.with(mContext).load(file.getUrl()).into(holder.head);
 					}
+				}
 					if(comment.getInt("type")==3){
 						holder.type=-1;
 					}
@@ -171,8 +172,6 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 					holder.likeCount.setText(intLikeCount.toString());
 					holder.commentCount.setText(intCommentCount.toString());
 					holder.aim.setText(comment.getString("courseName"));
-
-				}
 				break;
 			case 1:
 				holder.down.setVisibility(View.VISIBLE);
