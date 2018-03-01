@@ -9,6 +9,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,6 +69,7 @@ public class FragmentOfhomepage extends Fragment {
     private ConstraintLayout hotcourse;
     private RecyclerView cmtRecommend;
     private RecyclerView hotuser;
+    private NestedScrollView scroll;
     Integer curWeek=0;
     private List<Course> courseList=new ArrayList<>();
     private AVUser user=AVUser.getCurrentUser();
@@ -113,6 +115,8 @@ public class FragmentOfhomepage extends Fragment {
                 startActivity(intent);
             }
         });
+        head.setFocusableInTouchMode(true);
+        head.requestFocus();//解决nestscrollview嵌套recycleview导致直接显示recycleview第一个item的问题
         sethead();
         setNowAndNext();
         setHotMaterial();
@@ -125,7 +129,6 @@ public class FragmentOfhomepage extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
        // ImageView error=new ImageView(this.getContext());
        // error.setImageResource(R.drawable.net_error);
        // error.setScaleType(ImageView.ScaleType.CENTER_CROP);

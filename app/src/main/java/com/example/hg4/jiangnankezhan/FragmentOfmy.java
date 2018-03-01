@@ -39,6 +39,7 @@ public class FragmentOfmy extends Fragment {
     private AVUser user=AVUser.getCurrentUser();
     private Dialog dialog;
     private ImageView head;
+    private int index;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup contain, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fg_my,contain,false);
@@ -67,6 +68,10 @@ public class FragmentOfmy extends Fragment {
                 @Override
                 public void done(final List<AVUser> list0, AVException e) {
                     if(list0!=null){
+                        final boolean[] ready=new boolean[list0.size()];
+                        for(int i=0;i<list0.size();i++){
+                            ready[i]=false;
+                        }
                         for(final AVUser aimUser:list0){
                             AVQuery<AVObject> avQuery1=new AVQuery<>("Course_comment");
                             avQuery1.whereEqualTo("from",aimUser);
@@ -74,34 +79,47 @@ public class FragmentOfmy extends Fragment {
                             avQuery1.findInBackground(new FindCallback<AVObject>() {
                                 @Override
                                 public void done(List<AVObject> list, AVException e) {
-                                    if(list!=null){
-                                        myCmtList.addAll(list);
-                                    }
-                                    AVQuery<AVObject> avQuery2=new AVQuery<>("Course_file");
-                                    avQuery2.whereEqualTo("owner",aimUser);
-                                    avQuery2.include("owner");
-                                    avQuery2.findInBackground(new FindCallback<AVObject>() {
-                                        @Override
-                                        public void done(List<AVObject> list, AVException e) {
-                                            if(list!=null){
-                                                myCmtList.addAll(list);
-                                                if(aimUser.equals(list0.get(list0.size()-1))){
-                                                    Collections.sort(myCmtList, new Comparator<AVObject>() {
-                                                        @Override
-                                                        public int compare(AVObject o1, AVObject o2) {
-                                                            if(o1.getCreatedAt().getTime()>o2.getCreatedAt().getTime())
-                                                                return -1;
-                                                            else return 1;
-                                                        }
-                                                    });
-                                                    myCmtList=myCmtList.subList(0,100);
-                                                    fragment.commentList=myCmtList;
-                                                    fragment.loadMoreComment();
-                                                    Utilty.dismissDiaglog(dialog,1500);
-                                                }
-                                            }
+                                    if(e==null){
+                                        if(list!=null){
+                                            myCmtList.addAll(list);
                                         }
-                                    });
+                                        AVQuery<AVObject> avQuery2=new AVQuery<>("Course_file");
+                                        avQuery2.whereEqualTo("owner",aimUser);
+                                        avQuery2.include("owner");
+                                        avQuery2.findInBackground(new FindCallback<AVObject>() {
+                                            @Override
+                                            public void done(List<AVObject> list, AVException e) {
+                                                if(list!=null){
+                                                    myCmtList.addAll(list);
+                                                    ready[index]=true;
+                                                    index++;
+                                                    boolean flag=true;
+                                                    for(int i=0;i<ready.length;i++){
+                                                        if(ready[i]==false){
+                                                            flag=false;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if(flag){
+                                                        Collections.sort(myCmtList, new Comparator<AVObject>() {
+                                                            @Override
+                                                            public int compare(AVObject o1, AVObject o2) {
+                                                                if(o1.getCreatedAt().getTime()>o2.getCreatedAt().getTime())
+                                                                    return -1;
+                                                                else return 1;
+                                                            }
+                                                        });
+                                                        myCmtList=myCmtList.subList(0,100);
+                                                        fragment.commentList=myCmtList;
+                                                        fragment.loadMoreComment();
+                                                        Utilty.dismissDiaglog(dialog,1500);
+                                                    }
+                                                }
+                                                else e.printStackTrace();
+                                            }
+                                        });
+                                    }
+                                    else e.printStackTrace();
                                 }
                             });
                         }

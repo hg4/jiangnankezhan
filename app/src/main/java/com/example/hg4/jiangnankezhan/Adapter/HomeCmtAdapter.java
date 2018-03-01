@@ -115,6 +115,7 @@ public class HomeCmtAdapter extends RecyclerView.Adapter<HomeCmtAdapter.ViewHold
 			if (file != null && file.getUrl() != null) {
 				Glide.with(mContext).load(file.getUrl()).into(holder.head);
 			}
+		}
 			if(comment.getInt("type")==3){
 				holder.type=-1;
 			}
@@ -125,7 +126,7 @@ public class HomeCmtAdapter extends RecyclerView.Adapter<HomeCmtAdapter.ViewHold
 			holder.likeCount.setText(intLikeCount.toString());
 			holder.commentCount.setText(intCommentCount.toString());
 			holder.aim.setText(comment.getString("courseName"));
-		}
+
 	}
 
 	@Override
