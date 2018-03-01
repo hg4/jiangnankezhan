@@ -89,7 +89,6 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
                 popupWindow.showAsDropDown(holder.edit,xpos, 0);
                 TextView sendmess=(TextView)view1.findViewById(R.id.sendmess);
                 final TextView iffollow=(TextView)view1.findViewById(R.id.iffollow);
-                TextView removefan=(TextView)view1.findViewById(R.id.removefan);
                 AVFriendshipQuery query = AVUser.friendshipQuery(holder.follower.getObjectId(), AVUser.class);
                 query.include("follower");
                 query.getInBackground(new AVFriendshipCallback() {
@@ -134,25 +133,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
                         parent.getContext().startActivity(intent);
                     }
                 });
-                removefan.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        popupWindow.dismiss();
-                        holder.follower.unfollowInBackground(AVUser.getCurrentUser().getObjectId().toString(), new FollowCallback() {
-                            @Override
-                            public void done(AVObject object, AVException e) {
-                                if (e == null) {
-                                    followerlist.remove(holder.follower);
-                                    FollowerAdapter.this.notifyDataSetChanged();
-                                    Toast.makeText(parent.getContext(),"已成功移除",Toast.LENGTH_SHORT).show();
-                                } else {
-                                    e.printStackTrace();
-                                    Toast.makeText(parent.getContext(),"无法移除",Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                });
+
             }
         });
         return holder;

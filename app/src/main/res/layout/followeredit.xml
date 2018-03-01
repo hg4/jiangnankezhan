@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#Ac7281"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="47dp"
         android:textSize="16sp"
         android:text="+关注"
         android:layout_marginLeft="19dp"/>
@@ -18,18 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#212121"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="43dp"
         android:textSize="16sp"
         android:text="发消息"
-        android:layout_marginLeft="19dp"/>
-    <TextView
-        android:id="@+id/removefan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#212121"
-        android:textSize="16sp"
-        android:layout_marginTop="33dp"
-        android:text="移除粉丝"
         android:layout_marginLeft="19dp"/>
 
 </LinearLayout>
