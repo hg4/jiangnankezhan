@@ -156,6 +156,22 @@ public class MainActivity extends BaseActivity
 		});
 		follower=(TextView)navigationView.getHeaderView(0).findViewById(R.id.mian_fans_number);
 		followee=(TextView)navigationView.getHeaderView(0).findViewById(R.id.mian_follow_number);
+		follower.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(MainActivity.this, FollowerActivity.class);
+				intent.putExtra("aimuser",user.getObjectId());
+				startActivity(intent);
+			}
+		});
+		followee.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(MainActivity.this, FolloweeActivity.class);
+				intent.putExtra("aimuser",user.getObjectId());
+				startActivity(intent);
+			}
+		});
 		initfl();
 		director = (FrameLayout) findViewById(R.id.director);
 		directorNumber = (TextView) findViewById(R.id.director_number);

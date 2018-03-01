@@ -129,6 +129,22 @@ public class PersonInfoActivity extends BaseActivity implements View.OnClickList
 		grade_holder.setOnClickListener(this);
 		major_holder.setOnClickListener(this);
 		education_holder.setOnClickListener(this);
+		follower.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(PersonInfoActivity.this, FollowerActivity.class);
+				intent.putExtra("aimuser",user.getObjectId());
+				startActivity(intent);
+			}
+		});
+		followee.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(PersonInfoActivity.this, FolloweeActivity.class);
+				intent.putExtra("aimuser",user.getObjectId());
+				startActivity(intent);
+			}
+		});
 	}
 	private void initInfo(){
 		String defaultValue="";

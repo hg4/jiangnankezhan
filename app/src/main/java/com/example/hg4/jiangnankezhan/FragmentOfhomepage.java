@@ -322,10 +322,11 @@ public class FragmentOfhomepage extends Fragment {
                     Random random=new Random(time);
                     int count=0;
                     while(count<3){
-                        int index=random.nextInt(60);
+                        int index=random.nextInt(list.size());
                         if(index<list.size()){
                             AVObject u=list.get(index);
                             hotuserlist.add(u);
+                            list.remove(index);
                             count++;
                         }
                     }
