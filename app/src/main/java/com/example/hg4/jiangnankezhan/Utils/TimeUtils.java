@@ -44,6 +44,7 @@ public class TimeUtils {
 
 
 	public TimeUtils() {
+		format.setTimeZone(TimeZone.getDefault());
 	}
 
 	/**
@@ -459,7 +460,7 @@ public class TimeUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ct;
+		return ct+8*3600000;
 	}
 
 	/**

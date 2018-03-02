@@ -39,13 +39,16 @@ public class CustomUserProvider implements LCChatProfileProvider {
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                for(int i=0;i<list.size();i++){
-                    AVObject user= list.get(i);
-                    if(user.getAVFile("head")!=null&&user.getAVFile("head").getUrl()!=null){
-                        partUsers.add(new LCChatKitUser(user.getObjectId(),user.getString("nickname"),user.getAVFile("head").getUrl()));
-                    }
+                if(list!=null){
+                    for(int i=0;i<list.size();i++){
+                        AVObject user= list.get(i);
+                        if(user.getAVFile("head")!=null&&user.getAVFile("head").getUrl()!=null){
+                            partUsers.add(new LCChatKitUser(user.getObjectId(),user.getString("nickname"),user.getAVFile("head").getUrl()));
+                        }
 
+                    }
                 }
+
             }
         });
     }

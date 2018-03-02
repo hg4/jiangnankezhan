@@ -69,7 +69,7 @@ public class FragmentOfhomepage extends Fragment {
     private ConstraintLayout hotcourse;
     private RecyclerView cmtRecommend;
     private RecyclerView hotuser;
-    private NestedScrollView scroll;
+    private ConstraintLayout hpLayout;
     Integer curWeek=0;
     private List<Course> courseList=new ArrayList<>();
     private AVUser user=AVUser.getCurrentUser();
@@ -82,6 +82,7 @@ public class FragmentOfhomepage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup contain, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home_page,contain,false);
         head=(ImageView)view.findViewById(R.id.head);
+        hpLayout=(ConstraintLayout)view.findViewById(R.id.hplayout);
         nowTime=(TextView)view.findViewById(R.id.nowtime);
         nextTime=(TextView)view.findViewById(R.id.nexttime);
         nowClass=(TextView)view.findViewById(R.id.nowclassroom);
@@ -129,10 +130,12 @@ public class FragmentOfhomepage extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-       // ImageView error=new ImageView(this.getContext());
-       // error.setImageResource(R.drawable.net_error);
-       // error.setScaleType(ImageView.ScaleType.CENTER_CROP);
-       // hpLayout.addView(error);
+        if(!Utilty.isNetworkAvailable(getContext())){
+            ImageView error=new ImageView(this.getContext());
+             error.setImageResource(R.drawable.net_error);
+             error.setScaleType(ImageView.ScaleType.CENTER_CROP);
+             hpLayout.addView(error);
+        }
 
     }
     private void sethead(){
@@ -272,11 +275,13 @@ public class FragmentOfhomepage extends Fragment {
                 return 3;
             }
             if(time>=time2int(13,30,0)&&time<time2int(15,25,0)){
+                return 6;
+            }
+            if(time>=time2int(15,25,0)&&time<time2int(17,0,0)){
                 return 8;
             }
-            if(time>=time2int(15,25,0)&&time<time2int(20,55,0)){
+            if(time>=time2int(17,0,0)&&time<time2int(20,55,0))
                 return 10;
-            }
             return 0;
         }
         else return 0;
@@ -299,6 +304,7 @@ public class FragmentOfhomepage extends Fragment {
                             if(index<list.size()){
                                 AVObject cmtObj=list.get(index);
                                 cmtList.add(cmtObj);
+                                list.remove(index);
                                 count++;
                             }
                         }

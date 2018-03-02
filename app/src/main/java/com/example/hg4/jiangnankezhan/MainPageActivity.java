@@ -115,6 +115,7 @@ public class MainPageActivity extends BaseActivity implements ViewPager.OnPageCh
 		if(AVUser.getCurrentUser().getObjectId().equals(aimUser.getObjectId())){
 			follow.setVisibility(View.INVISIBLE);
 			iffollow.setVisibility(View.INVISIBLE);
+			messege.setVisibility(View.INVISIBLE);
 		}
 		follow.setOnClickListener(new View.OnClickListener() {
 			@Override
