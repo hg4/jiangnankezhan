@@ -120,7 +120,7 @@ public class SimilarCmtAdapter extends RecyclerView.Adapter<SimilarCmtAdapter.Vi
 		}
 		if(!user.getString("nickname").equals("（请填写）"))
 			holder.nickname.setText(user.getString("nickname"));
-		holder.date.setText(TimeUtils.dateToString(similarComment.getUpdatedAt()));
+		holder.date.setText(TimeUtils.dateToString(similarComment.getCreatedAt()));
 		holder.content.setText(similarComment.getString("content"));
 	}
 

@@ -175,6 +175,8 @@ public class CommentActivity extends BaseActivity {
                                                     else {
                                                         //子评论发表成功后，父评论最大talk组+1
                                                         avObject.increment("maxTalkGroup");
+                                                        avObject.increment("hot",2);
+                                                        avObject.increment("commentCount");
                                                         avObject.saveInBackground();
                                                         if(content.getText().length()>=15){
                                                             Toast.makeText(CommentActivity.this,"发表成功,积分+1",Toast.LENGTH_SHORT).show();
@@ -217,6 +219,10 @@ public class CommentActivity extends BaseActivity {
                                 comment.put("targetUser",targetUser);
                                 comment.put("talkGroup",reply.getInt("talkGroup"));
                                 comment.put("to",reply.getAVObject("to"));
+                                AVObject tocmt=reply.getAVObject("to");
+                                tocmt.increment("hot",2);
+                                tocmt.increment("commentCount");
+                                tocmt.saveInBackground();
                                 comment.saveInBackground(new SaveCallback() {
                                         @Override
                                         public void done(AVException e) {

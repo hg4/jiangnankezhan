@@ -111,7 +111,7 @@ public class MyMaterialAdapter extends RecyclerView.Adapter<MyMaterialAdapter.Vi
 			holder.username.setText(holder.owner.getString("nickname"));
 			holder.content.setText(fileObject.getString("Introduce"));
 			holder.materialName.setText(fileObject.getString("Title"));
-			holder.date.setText(TimeUtils.dateToString(fileObject.getUpdatedAt()));
+			holder.date.setText(TimeUtils.dateToString(fileObject.getCreatedAt()));
 			holder.likeCount.setText(fileObject.getInt("likeCount")+"");
 		}
 	}

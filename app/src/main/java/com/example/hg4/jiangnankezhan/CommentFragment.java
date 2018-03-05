@@ -128,29 +128,32 @@ public class CommentFragment extends RecyclerFragment {
 									commentList=createHot(list);
 									loadMoreComment();
 								}else{
-									swipeToLoadLayout.setRefreshEnabled(false);
-									swipeToLoadLayout.setLoadMoreEnabled(false);
+									if(teacher!=null&&!"".equals(teacher)){
+										swipeToLoadLayout.setRefreshEnabled(false);
+										swipeToLoadLayout.setLoadMoreEnabled(false);
 
-									AVQuery<AVObject> avQuery=new AVQuery<AVObject>("Course_comment");
-									avQuery.whereEqualTo("teacher",teacher);
-									avQuery.whereEqualTo("type",type);
-									avQuery.include("from");
-									avQuery.findInBackground(new FindCallback<AVObject>() {
-										@Override
-										public void done(List<AVObject> list, AVException e) {
-											if(list.size()!=0){
-												if(list.size()>2){
-													list=list.subList(0,1);
+										AVQuery<AVObject> avQuery=new AVQuery<AVObject>("Course_comment");
+										avQuery.whereEqualTo("teacher",teacher);
+										avQuery.whereEqualTo("type",type);
+										avQuery.include("from");
+										avQuery.findInBackground(new FindCallback<AVObject>() {
+											@Override
+											public void done(List<AVObject> list, AVException e) {
+												if(list.size()!=0){
+													if(list.size()>=2){
+														list=list.subList(0,1);
+													}
+													info.setVisibility(View.VISIBLE);
+													displayCmtList=list;
+													commentList=list;
+													commentView.setAdapter(new SimilarCmtAdapter(displayCmtList));
+
 												}
-												info.setVisibility(View.VISIBLE);
-												displayCmtList=list;
-												commentList=list;
-												commentView.setAdapter(new SimilarCmtAdapter(displayCmtList));
-
+												else noholder.setImageResource(R.drawable.nocom2);
 											}
-											else noholder.setImageResource(R.drawable.nocom2);
-										}
-									});
+										});
+									}
+
 								}
 							}
 						}
@@ -176,8 +179,7 @@ public class CommentFragment extends RecyclerFragment {
 									noholder.setImageResource(0);
 									commentList=createHot(list);
 									loadMoreComment();
-								}else{
-
+								}else if(teacher!=null&&!"".equals(teacher)){
 									swipeToLoadLayout.setRefreshEnabled(false);
 									swipeToLoadLayout.setLoadMoreEnabled(false);
 									AVQuery<AVObject> avQuery=new AVQuery<AVObject>("Course_comment");
@@ -189,7 +191,7 @@ public class CommentFragment extends RecyclerFragment {
 										public void done(List<AVObject> list, AVException e) {
 											if(e==null){
 												if(list.size()!=0){
-													if(list.size()>2){
+													if(list.size()>=2){
 														list=list.subList(0,1);
 													}
 													info.setVisibility(View.VISIBLE);

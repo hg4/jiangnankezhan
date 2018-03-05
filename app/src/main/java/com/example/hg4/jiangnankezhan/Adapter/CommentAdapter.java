@@ -106,6 +106,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 				//点赞
 					if(viewHolder.AvComment!=null){
 						viewHolder.AvComment.increment("likeCount");
+						viewHolder.AvComment.increment("hot",2);
 						viewHolder.AvComment.saveInBackground();
 						Integer likecount=viewHolder.AvComment.getInt("likeCount");
 						viewHolder.likeCount.setText(likecount.toString());
@@ -158,7 +159,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ViewHol
 			if(!user.getString("nickname").equals("（请填写）"))
 				holder.username.setText(user.getString("nickname"));
 			else holder.username.setText("匿名用户");
-			holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
+			holder.date.setText(TimeUtils.dateToString(comment.getCreatedAt()));
 			holder.comment.setText(comment.getString("content"));
 			Integer intLikeCount=comment.getInt("likeCount");
 			Integer intCommentCount=comment.getInt("commentCount");

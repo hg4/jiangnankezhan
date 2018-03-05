@@ -8,19 +8,25 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.example.hg4.jiangnankezhan.CosContentActivity;
 import com.example.hg4.jiangnankezhan.R;
 import com.example.hg4.jiangnankezhan.RequirementsActivity;
 import com.example.hg4.jiangnankezhan.Utils.TimeUtils;
+import com.example.hg4.jiangnankezhan.Utils.Utilty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +110,8 @@ public class HomeCmtAdapter extends RecyclerView.Adapter<HomeCmtAdapter.ViewHold
 		holder.head.setImageResource(R.drawable.def_ava_round);
 		AVObject user = comment.getAVUser("from");
 		String fromName=user.getString("nickname");
+		if(fromName.equals("（请填写）"))
+		 	fromName="匿名用户";
 		SpannableString spannableString=new SpannableString(fromName+"评价了");
 		ForegroundColorSpan colorSpan1=new ForegroundColorSpan(mContext.getResources().getColor(R.color.black));
 		AbsoluteSizeSpan sizeSpan=new AbsoluteSizeSpan(36);
@@ -119,14 +127,33 @@ public class HomeCmtAdapter extends RecyclerView.Adapter<HomeCmtAdapter.ViewHold
 			if(comment.getInt("type")==3){
 				holder.type=-1;
 			}
-			holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
+			holder.date.setText(TimeUtils.dateToString(comment.getCreatedAt()));
 			holder.content.setText(comment.getString("content"));
 			Integer intLikeCount = comment.getInt("likeCount");
 			Integer intCommentCount = comment.getInt("commentCount");
 			holder.likeCount.setText(intLikeCount.toString());
 			holder.commentCount.setText(intCommentCount.toString());
 			holder.aim.setText(comment.getString("courseName"));
+			AVQuery<AVObject> imgQuery=new AVQuery<>("cscmt_imagelist");
+			imgQuery.whereEqualTo("from",comment);
+			imgQuery.findInBackground(new FindCallback<AVObject>() {
+			@Override
+			public void done(List<AVObject> list, AVException e) {
+				if(e==null&&list.size()!=0){
+						AVObject image=list.get(0);
+						AVFile pic=image.getAVFile("image");
+						if(pic!=null){
+							final String url=pic.getUrl();
+							Glide.with(mContext).load(url).centerCrop().placeholder(R.drawable.placeholder).into(holder.prepic);
+						}
 
+
+				}
+				else {
+					Log.e("test",((Integer)list.size()).toString());
+				}
+			}
+		});
 	}
 
 	@Override

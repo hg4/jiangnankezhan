@@ -165,7 +165,7 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 					if(comment.getInt("type")==3){
 						holder.type=-1;
 					}
-					holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
+					holder.date.setText(TimeUtils.dateToString(comment.getCreatedAt()));
 					holder.content.setText(comment.getString("content"));
 					Integer intLikeCount = comment.getInt("likeCount");
 					Integer intCommentCount = comment.getInt("commentCount");
@@ -196,7 +196,7 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 						Glide.with(mContext).load(file.getUrl()).into(holder.head);
 					}
 					holder.content.setText(comment.getString("Introduce"));
-					holder.date.setText(TimeUtils.dateToString(comment.getUpdatedAt()));
+					holder.date.setText(TimeUtils.dateToString(comment.getCreatedAt()));
 					holder.downCount.setText("" + comment.getInt("download"));
 					holder.coinCount.setText("" + comment.getInt("points") + "积分");
 					holder.likeCount.setText("" + comment.getInt("likeCount"));
