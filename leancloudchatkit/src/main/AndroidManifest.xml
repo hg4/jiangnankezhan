@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="cn.leancloud.chatkit.activity.LCIMImageActivity"/>
+        <activity android:name="cn.leancloud.chatkit.activity.LCIMImageActivity"
+            android:theme="@style/LCIMActivity.NoActionBar"/>
 
         <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
             <intent-filter>

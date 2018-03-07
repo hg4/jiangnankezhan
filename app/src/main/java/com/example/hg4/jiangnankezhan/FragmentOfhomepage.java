@@ -9,6 +9,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -51,6 +53,7 @@ import java.util.Random;
  */
 
 public class FragmentOfhomepage extends Fragment {
+    private DrawerLayout drawer;
     private ImageView head;
     private TextView nowTime;
     private TextView nextTime;
@@ -81,6 +84,7 @@ public class FragmentOfhomepage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup contain, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home_page,contain,false);
+        drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer_layout);
         head=(ImageView)view.findViewById(R.id.head);
         hpLayout=(ConstraintLayout)view.findViewById(R.id.hplayout);
         nowTime=(TextView)view.findViewById(R.id.nowtime);
@@ -114,6 +118,12 @@ public class FragmentOfhomepage extends Fragment {
                 intent.putExtra("name",courseObj.getString("courseName"));
                 intent.putExtra("date",courseObj.getString("date"));
                 startActivity(intent);
+            }
+        });
+        head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawer.openDrawer(GravityCompat.START);
             }
         });
         head.setFocusableInTouchMode(true);

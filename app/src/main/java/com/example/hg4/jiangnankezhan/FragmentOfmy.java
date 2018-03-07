@@ -14,12 +14,15 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVFriendship;
+import com.avos.avoscloud.AVFriendshipQuery;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.callback.AVFriendshipCallback;
 import com.example.hg4.jiangnankezhan.Adapter.MainPageAdapter;
 import com.example.hg4.jiangnankezhan.Utils.PerferencesUtils;
 import com.example.hg4.jiangnankezhan.Utils.Utilty;
@@ -63,6 +66,23 @@ public class FragmentOfmy extends Fragment {
                 Utilty.dismissDiaglog(dialog,1000);
                 Toast.makeText(getContext(),"网络连接不可用",Toast.LENGTH_SHORT).show();
             }
+            AVFriendshipQuery query = AVUser.friendshipQuery(user.getObjectId(), AVUser.class);
+            query.include("followee");
+            query.getInBackground(new AVFriendshipCallback() {
+                @Override
+                public void done(AVFriendship friendship, AVException e) {
+                    if(e==null){
+                        List<AVUser> followees = friendship.getFollowees(); //获取关注列表
+                        if(followees.size()==0){
+                            Toast.makeText(getContext(),"您还没有关注任何人哦！",Toast.LENGTH_SHORT).show();
+                            Utilty.dismissDiaglog(dialog,1000);
+                        }
+                    }else{
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             AVQuery<AVUser> followeeQuery=user.followeeQuery(user.getObjectId(),AVUser.class);
             followeeQuery.findInBackground(new FindCallback<AVUser>() {
                 @Override

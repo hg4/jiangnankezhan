@@ -31,15 +31,7 @@
             android:textColor="#222D43"
             android:textSize="22dp" />
 
-        <ImageView
-            android:id="@+id/follower_sech"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="165dp"
-            android:background="@null"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/curri_search"/>
+
 
     </LinearLayout>
     <android.support.v7.widget.RecyclerView

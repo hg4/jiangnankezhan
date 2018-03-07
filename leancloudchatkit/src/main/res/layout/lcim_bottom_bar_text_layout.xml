@@ -20,6 +20,7 @@
 
         <EditText
             android:id="@+id/input_bar_et_content"
+            android:textCursorDrawable="@null"
             style="@style/lcim_input_bar_edittext_style"/>
     </FrameLayout>
 

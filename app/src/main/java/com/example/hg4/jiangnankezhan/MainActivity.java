@@ -692,15 +692,18 @@ public class MainActivity extends BaseActivity
 		super.onDestroy();
 		unbindService(connection);
 		stopService(new Intent(this, ReplyService.class));
-		LCChatKit.getInstance().close(new AVIMClientCallback() {
-			@Override
-			public void done(AVIMClient avimClient, AVIMException e) {
-				if (null != e) {
-					e.printStackTrace();
-				} else {
+		if(Utilty.isNetworkAvailable(MainActivity.this)){
+			LCChatKit.getInstance().close(new AVIMClientCallback() {
+				@Override
+				public void done(AVIMClient avimClient, AVIMException e) {
+					if (null != e) {
+						e.printStackTrace();
+					} else {
+					}
 				}
-			}
-		});
+			});
+		}
+
 	}
 	private void initfl(){
 		AVFriendshipQuery query = AVUser.friendshipQuery(user.getObjectId(), AVUser.class);
@@ -728,24 +731,25 @@ public class MainActivity extends BaseActivity
 			public void done(List<AVObject> list, AVException e) {
 				if(e==null){
                     activevalue=list.size();
+					AVQuery<AVObject> query1 = new AVQuery<>("Course_file");
+					query1.whereEqualTo("owner",user);
+					query1.findInBackground(new FindCallback<AVObject>() {
+						@Override
+						public void done(List<AVObject> list, AVException e) {
+							if(e==null){
+								activevalue+=list.size();
+								user.put("activevalue",activevalue);
+								user.saveInBackground();
+							}else{
+								e.printStackTrace();
+							}
+						}
+					});
 				}else{
 					e.printStackTrace();
 				}
 			}
 		});
-		AVQuery<AVObject> query1 = new AVQuery<>("Course_file");
-		query1.whereEqualTo("owner",user);
-		query1.findInBackground(new FindCallback<AVObject>() {
-			@Override
-			public void done(List<AVObject> list, AVException e) {
-				if(e==null){
-                    activevalue+=list.size();
-					user.put("activevalue",activevalue);
-					user.saveInBackground();
-				}else{
-					e.printStackTrace();
-				}
-			}
-		});
+
 	}
 }

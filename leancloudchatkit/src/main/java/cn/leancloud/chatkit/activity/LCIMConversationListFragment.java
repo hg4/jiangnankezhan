@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 
@@ -21,6 +22,7 @@ import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
 import cn.leancloud.chatkit.event.LCIMConversationItemLongClickEvent;
 import cn.leancloud.chatkit.event.LCIMIMTypeMessageEvent;
 import cn.leancloud.chatkit.event.LCIMOfflineMessageCountChangeEvent;
+import cn.leancloud.chatkit.utils.LCIMPathUtils;
 import cn.leancloud.chatkit.view.LCIMDividerItemDecoration;
 import cn.leancloud.chatkit.viewholder.LCIMConversationItemHolder;
 import de.greenrobot.event.EventBus;
@@ -56,7 +58,11 @@ public class LCIMConversationListFragment extends Fragment {
   @Override
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    updateConversationList();
+    if(!LCIMPathUtils.isNetworkAvailable(getContext())){
+      Toast.makeText(getContext(),"网络连接不可用",Toast.LENGTH_SHORT).show();
+    }else{
+      updateConversationList();
+    }
   }
 
   @Override
