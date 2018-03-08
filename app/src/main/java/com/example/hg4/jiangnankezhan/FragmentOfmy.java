@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class FragmentOfmy extends Fragment {
     private AVUser user=AVUser.getCurrentUser();
     private Dialog dialog;
     private ImageView head;
+    private DrawerLayout drawer;
     private int index;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup contain, Bundle savedInstanceState) {
@@ -53,7 +56,14 @@ public class FragmentOfmy extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         head=(ImageView) getView().findViewById(R.id.head);
+        drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer_layout);
         sethead();
+        head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
         MainPageAdapter mainPageAdapter=new MainPageAdapter(displayList,1);
         final RecyclerFragment fragment=RecyclerFragment.newInstance(mainPageAdapter,displayList,new Bundle());
         FragmentManager fManager=getChildFragmentManager();

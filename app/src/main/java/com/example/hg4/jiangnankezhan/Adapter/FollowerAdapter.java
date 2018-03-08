@@ -121,6 +121,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
                                     }
                                 }
                             });
+                            popupWindow.dismiss();
                         }
                     }
                 });

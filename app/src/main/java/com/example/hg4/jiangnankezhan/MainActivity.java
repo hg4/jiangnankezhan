@@ -178,11 +178,6 @@ public class MainActivity extends BaseActivity
 		Intent intent = new Intent(this, ReplyService.class);
 		startService(intent);
 		bindService(intent, connection, BIND_AUTO_CREATE);
-		/*fg2 = new FragmentOfschedule();
-        fManager=getSupportFragmentManager();
-		FragmentTransaction fTransaction = fManager.beginTransaction();
-		fTransaction.replace(R.id.ly_content,fg2);
-        fTransaction.commit();*/
 		rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
 		rg_tab_bar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
@@ -591,7 +586,7 @@ public class MainActivity extends BaseActivity
 		navigationView.getMenu().getItem(0).setChecked(true);
 		getusername();
 		getmainhead();
-       initfl();
+        initfl();
 	}
 
 	private Bitmap getBitmapFromSharedPreferences() {

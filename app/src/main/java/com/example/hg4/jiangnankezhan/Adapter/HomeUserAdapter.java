@@ -116,6 +116,7 @@ public class HomeUserAdapter extends RecyclerView.Adapter<HomeUserAdapter.ViewHo
                                     }
                                 }
                             });
+                            popupWindow.dismiss();
                         }
                     }
                 });
@@ -131,6 +132,7 @@ public class HomeUserAdapter extends RecyclerView.Adapter<HomeUserAdapter.ViewHo
                 mainpage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        popupWindow.dismiss();
                         Intent intent=new Intent(parent.getContext(), MainPageActivity.class);
                         intent.putExtra("user",holder.user.toString());
                         parent.getContext().startActivity(intent);
