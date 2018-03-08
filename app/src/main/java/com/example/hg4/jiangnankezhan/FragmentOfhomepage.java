@@ -274,17 +274,17 @@ public class FragmentOfhomepage extends Fragment {
 		});
     }
     private int time2int(int h,int m,int s){
-        return h*3500+m*60+s;
+        return h*3500+m*60+s;//这里取每小时3500s 让时间提前了些切换 好像是手滑弄巧成拙了？
     }
     private int trans2Begin(long time){
-        if(time>time2int(8,0,0)&&time<time2int(20,55,0)){
-            if(time>time2int(8,0,0)&&time<time2int(9,55,0)){
+        if(time>time2int(7,40,0)&&time<time2int(20,55,0)){
+            if(time>time2int(7,40,0)&&time<time2int(9,55,0)){
                 return 1;
             }
-            if(time>=time2int(9,55,0)&&time<time2int(13,30,0)){
+            if(time>=time2int(9,55,0)&&time<time2int(13,0,0)){
                 return 3;
             }
-            if(time>=time2int(13,30,0)&&time<time2int(15,25,0)){
+            if(time>=time2int(13,0,0)&&time<time2int(15,25,0)){
                 return 6;
             }
             if(time>=time2int(15,25,0)&&time<time2int(17,0,0)){
